@@ -7,24 +7,79 @@ const jwt = require("jsonwebtoken");
 
 const signup = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const {
+      name,
+      email,
+      address,
+      password
+    } = req.body;
 
-    if (!email || !password) {
+    // Required fields
+    if (
+      !name ||
+      !email ||
+      !address ||
+      !password
+    ) {
       return res.status(400).json({
-        message: "Email and password are required"
+        message:
+          "Name, email, address and password are required"
+      });
+    }
+
+    // Name validation
+    const trimmedName = name.trim();
+
+    if (
+      trimmedName.length < 20 ||
+      trimmedName.length > 60
+    ) {
+      return res.status(400).json({
+        message:
+          "Name must be between 20 and 60 characters"
       });
     }
 
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(email)) {
+    const trimmedEmail =
+      email.trim().toLowerCase();
+
+    if (!emailRegex.test(trimmedEmail)) {
       return res.status(400).json({
-        message: "Please enter a valid email address"
+        message:
+          "Please enter a valid email address"
+      });
+    }
+
+    // Address validation
+    const trimmedAddress =
+      address.trim();
+
+    if (
+      trimmedAddress.length === 0
+    ) {
+      return res.status(400).json({
+        message:
+          "Address is required"
+      });
+    }
+
+    if (
+      trimmedAddress.length > 400
+    ) {
+      return res.status(400).json({
+        message:
+          "Address cannot exceed 400 characters"
       });
     }
 
     // Password validation
+    // 8-16 characters
+    // At least one uppercase letter
+    // At least one special character
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
@@ -36,46 +91,69 @@ const signup = async (req, res) => {
     }
 
     // Check existing email
-    const existingUser = await pool.query(
-      "SELECT id FROM users WHERE email = $1",
-      [email]
-    );
+    const existingUser =
+      await pool.query(
+        "SELECT id FROM users WHERE email = $1",
+        [trimmedEmail]
+      );
 
-    if (existingUser.rows.length > 0) {
+    if (
+      existingUser.rows.length > 0
+    ) {
       return res.status(400).json({
-        message: "Email already registered"
+        message:
+          "Email already registered"
       });
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
+    // Hash password
+    const passwordHash =
+      await bcrypt.hash(password, 10);
 
-    // Since public signup is only for Normal Users,
-    // role is always set to 'user'.
-    const defaultName = `RateHub User ${Date.now()}`;
-
-    const result = await pool.query(
-      `INSERT INTO users
-       (name, email, password_hash, address, role)
-       VALUES ($1, $2, $3, $4, 'user')
-       RETURNING id, name, email, address, role`,
-      [
-        defaultName,
-        email,
-        passwordHash,
-        ""
-      ]
-    );
+    // Public signup is ALWAYS a Normal User
+    const result =
+      await pool.query(
+        `
+        INSERT INTO users
+          (
+            name,
+            email,
+            password_hash,
+            address,
+            role
+          )
+        VALUES
+          ($1, $2, $3, $4, 'user')
+        RETURNING
+          id,
+          name,
+          email,
+          address,
+          role
+        `,
+        [
+          trimmedName,
+          trimmedEmail,
+          passwordHash,
+          trimmedAddress
+        ]
+      );
 
     res.status(201).json({
-      message: "User registered successfully",
+      message:
+        "User registered successfully",
       user: result.rows[0]
     });
 
   } catch (error) {
-    console.error("Signup error:", error);
+    console.error(
+      "Signup error:",
+      error
+    );
 
     res.status(500).json({
-      message: "Signup failed"
+      message:
+        "Signup failed"
     });
   }
 };
@@ -85,71 +163,101 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const {
+      email,
+      password,
+      role
+    } = req.body;
 
-    if (!email || !password || !role) {
+    if (
+      !email ||
+      !password ||
+      !role
+    ) {
       return res.status(400).json({
-        message: "Email, password and login role are required"
+        message:
+          "Email, password and login role are required"
       });
     }
 
-    // Check whether selected role is valid
-    const allowedRoles = ["user", "admin", "owner"];
+    // Allowed roles
+    const allowedRoles = [
+      "user",
+      "admin",
+      "owner"
+    ];
 
-    if (!allowedRoles.includes(role)) {
+    if (
+      !allowedRoles.includes(role)
+    ) {
       return res.status(400).json({
-        message: "Invalid login role"
+        message:
+          "Invalid login role"
       });
     }
 
     // Find user by email
-    const result = await pool.query(
-      "SELECT * FROM users WHERE email = $1",
-      [email]
-    );
+    const result =
+      await pool.query(
+        "SELECT * FROM users WHERE email = $1",
+        [email.trim().toLowerCase()]
+      );
 
-    if (result.rows.length === 0) {
+    if (
+      result.rows.length === 0
+    ) {
       return res.status(401).json({
-        message: "Invalid email or password"
+        message:
+          "Invalid email or password"
       });
     }
 
-    const user = result.rows[0];
+    const user =
+      result.rows[0];
 
     // Check password
-    const passwordMatch = await bcrypt.compare(
-      password,
-      user.password_hash
-    );
+    const passwordMatch =
+      await bcrypt.compare(
+        password,
+        user.password_hash
+      );
 
     if (!passwordMatch) {
       return res.status(401).json({
-        message: "Invalid email or password"
+        message:
+          "Invalid email or password"
       });
     }
 
-    // Check selected role against database role
-    if (user.role !== role) {
+    // Check selected role
+    if (
+      user.role !== role
+    ) {
       return res.status(403).json({
-        message: `This account is not registered as ${role}`
+        message:
+          `This account is not registered as ${role}`
       });
     }
 
     // Generate JWT
-    const token = jwt.sign(
-      {
-        id: user.id,
-        role: user.role
-      },
-      "ratehub_secret_key",
-      {
-        expiresIn: "1d"
-      }
-    );
+    const token =
+      jwt.sign(
+        {
+          id: user.id,
+          role: user.role
+        },
+        "ratehub_secret_key",
+        {
+          expiresIn: "1d"
+        }
+      );
 
     res.json({
-      message: "Login successful",
+      message:
+        "Login successful",
+
       token,
+
       user: {
         id: user.id,
         name: user.name,
@@ -160,10 +268,14 @@ const login = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Login error:", error);
+    console.error(
+      "Login error:",
+      error
+    );
 
     res.status(500).json({
-      message: "Login failed"
+      message:
+        "Login failed"
     });
   }
 };
@@ -171,72 +283,110 @@ const login = async (req, res) => {
 
 // ==================== CHANGE PASSWORD ====================
 
-const changePassword = async (req, res) => {
+const changePassword = async (
+  req,
+  res
+) => {
   try {
-    const { currentPassword, newPassword } = req.body;
+    const {
+      currentPassword,
+      newPassword
+    } = req.body;
 
-    const userId = req.user.id;
+    const userId =
+      req.user.id;
 
-    if (!currentPassword || !newPassword) {
+    if (
+      !currentPassword ||
+      !newPassword
+    ) {
       return res.status(400).json({
-        message: "Current password and new password are required"
+        message:
+          "Current password and new password are required"
       });
     }
 
+    // Password validation
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
-    if (!passwordRegex.test(newPassword)) {
+    if (
+      !passwordRegex.test(
+        newPassword
+      )
+    ) {
       return res.status(400).json({
         message:
           "New password must be 8-16 characters with at least one uppercase letter and one special character"
       });
     }
 
-    const result = await pool.query(
-      "SELECT password_hash FROM users WHERE id = $1",
-      [userId]
-    );
+    // Get current password hash
+    const result =
+      await pool.query(
+        "SELECT password_hash FROM users WHERE id = $1",
+        [userId]
+      );
 
-    if (result.rows.length === 0) {
+    if (
+      result.rows.length === 0
+    ) {
       return res.status(404).json({
-        message: "User not found"
+        message:
+          "User not found"
       });
     }
 
-    const passwordMatch = await bcrypt.compare(
-      currentPassword,
-      result.rows[0].password_hash
-    );
+    // Verify current password
+    const passwordMatch =
+      await bcrypt.compare(
+        currentPassword,
+        result.rows[0].password_hash
+      );
 
     if (!passwordMatch) {
       return res.status(401).json({
-        message: "Current password is incorrect"
+        message:
+          "Current password is incorrect"
       });
     }
 
-    const newPasswordHash = await bcrypt.hash(
-      newPassword,
-      10
-    );
+    // Hash new password
+    const newPasswordHash =
+      await bcrypt.hash(
+        newPassword,
+        10
+      );
 
+    // Update password
     await pool.query(
-      `UPDATE users
-       SET password_hash = $1,
-           updated_at = CURRENT_TIMESTAMP
-       WHERE id = $2`,
-      [newPasswordHash, userId]
+      `
+      UPDATE users
+      SET
+        password_hash = $1,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = $2
+      `,
+      [
+        newPasswordHash,
+        userId
+      ]
     );
 
     res.json({
-      message: "Password changed successfully"
+      message:
+        "Password changed successfully"
     });
 
   } catch (error) {
-    console.error("Change password error:", error);
+    console.error(
+      "Change password error:",
+      error
+    );
 
     res.status(500).json({
-      message: "Failed to change password"
+      message:
+        "Failed to change password"
     });
   }
 };

@@ -1,4 +1,5 @@
-const API_URL = "https://store-rating-platform-mtuu.onrender.com/api";
+const API_URL =
+  "https://store-rating-platform-mtuu.onrender.com/api";
 
 const getToken = () => localStorage.getItem("token");
 
@@ -40,7 +41,9 @@ export const loginUser = async (
 // SIGNUP
 // =========================
 export const signupUser = async (
+  name,
   email,
+  address,
   password
 ) => {
   const response = await fetch(
@@ -51,7 +54,9 @@ export const signupUser = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        name,
         email,
+        address,
         password,
       }),
     }
