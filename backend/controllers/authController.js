@@ -3,17 +3,39 @@ const pool = require("../db/db");
 const jwt = require("jsonwebtoken");
 
 // ==================== SIGNUP ====================
+// Public signup creates only a Normal User
 
 const signup = async (req, res) => {
   try {
-    const { name, email, password, address } = req.body;
+    const { email, password } = req.body;
 
-    if (!name || !email || !password) {
+    if (!email || !password) {
       return res.status(400).json({
-        message: "Name, email and password are required"
+        message: "Email and password are required"
       });
     }
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "Please enter a valid email address"
+      });
+    }
+
+    // Password validation
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
+
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must be 8-16 characters with at least one uppercase letter and one special character"
+      });
+    }
+
+    // Check existing email
     const existingUser = await pool.query(
       "SELECT id FROM users WHERE email = $1",
       [email]
@@ -27,12 +49,21 @@ const signup = async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
+    // Since public signup is only for Normal Users,
+    // role is always set to 'user'.
+    const defaultName = `RateHub User ${Date.now()}`;
+
     const result = await pool.query(
       `INSERT INTO users
        (name, email, password_hash, address, role)
        VALUES ($1, $2, $3, $4, 'user')
        RETURNING id, name, email, address, role`,
-      [name, email, passwordHash, address]
+      [
+        defaultName,
+        email,
+        passwordHash,
+        ""
+      ]
     );
 
     res.status(201).json({
@@ -41,7 +72,7 @@ const signup = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("Signup error:", error);
 
     res.status(500).json({
       message: "Signup failed"
@@ -54,14 +85,24 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
-    if (!email || !password) {
+    if (!email || !password || !role) {
       return res.status(400).json({
-        message: "Email and password are required"
+        message: "Email, password and login role are required"
       });
     }
 
+    // Check whether selected role is valid
+    const allowedRoles = ["user", "admin", "owner"];
+
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({
+        message: "Invalid login role"
+      });
+    }
+
+    // Find user by email
     const result = await pool.query(
       "SELECT * FROM users WHERE email = $1",
       [email]
@@ -75,6 +116,7 @@ const login = async (req, res) => {
 
     const user = result.rows[0];
 
+    // Check password
     const passwordMatch = await bcrypt.compare(
       password,
       user.password_hash
@@ -86,6 +128,14 @@ const login = async (req, res) => {
       });
     }
 
+    // Check selected role against database role
+    if (user.role !== role) {
+      return res.status(403).json({
+        message: `This account is not registered as ${role}`
+      });
+    }
+
+    // Generate JWT
     const token = jwt.sign(
       {
         id: user.id,
@@ -110,7 +160,7 @@ const login = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
 
     res.status(500).json({
       message: "Login failed"
@@ -183,7 +233,7 @@ const changePassword = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("Change password error:", error);
 
     res.status(500).json({
       message: "Failed to change password"
