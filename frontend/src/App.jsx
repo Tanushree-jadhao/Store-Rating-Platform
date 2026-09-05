@@ -23,7 +23,6 @@ function App() {
   // =========================
   // AUTH STATE
   // =========================
-
   const [loggedIn, setLoggedIn] = useState(false);
   const [role, setRole] = useState("");
   const [activePage, setActivePage] = useState("dashboard");
@@ -31,7 +30,6 @@ function App() {
   // =========================
   // LOGIN STATE
   // =========================
-
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginRole, setLoginRole] = useState("user");
@@ -40,7 +38,6 @@ function App() {
   // =========================
   // SIGNUP STATE
   // =========================
-
   const [showSignup, setShowSignup] = useState(false);
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
@@ -52,7 +49,6 @@ function App() {
   // =========================
   // ADMIN STATE
   // =========================
-
   const [adminStats, setAdminStats] = useState({
     totalUsers: 0,
     totalStores: 0,
@@ -77,21 +73,19 @@ function App() {
   // =========================
   // USER STATE
   // =========================
-
   const [stores, setStores] = useState([]);
   const [userMessage, setUserMessage] = useState("");
   const [selectedRatings, setSelectedRatings] = useState({});
+  const [storeSearch, setStoreSearch] = useState("");
 
   // =========================
   // OWNER STATE
   // =========================
-
   const [ownerData, setOwnerData] = useState(null);
 
   // =========================
   // CHANGE PASSWORD
   // =========================
-
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
@@ -99,7 +93,6 @@ function App() {
   // =========================
   // RESTORE LOGIN
   // =========================
-
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
@@ -125,9 +118,24 @@ function App() {
   }, []);
 
   // =========================
+  // FILTERED STORES
+  // =========================
+  const filteredStores = stores.filter((store) => {
+    const search = storeSearch.trim().toLowerCase();
+
+    if (!search) {
+      return true;
+    }
+
+    return (
+      store.name?.toLowerCase().includes(search) ||
+      store.address?.toLowerCase().includes(search)
+    );
+  });
+
+  // =========================
   // LOAD DATA
   // =========================
-
   useEffect(() => {
     if (!loggedIn) {
       return;
@@ -208,7 +216,6 @@ function App() {
   // =========================
   // LOGIN
   // =========================
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError("");
@@ -237,7 +244,6 @@ function App() {
   // =========================
   // SIGNUP
   // =========================
-
   const handleSignup = async (e) => {
     e.preventDefault();
     setSignupError("");
@@ -287,7 +293,6 @@ function App() {
     }
 
     try {
-      // CREATE ACCOUNT WITH SELECTED ROLE
       await signupUser(
         name,
         email,
@@ -296,7 +301,6 @@ function App() {
         signupRole
       );
 
-      // AUTOMATIC LOGIN WITH SELECTED ROLE
       const loginData = await loginUser(
         email,
         signupPassword,
@@ -304,18 +308,15 @@ function App() {
       );
 
       localStorage.setItem("token", loginData.token);
-
       localStorage.setItem(
         "user",
         JSON.stringify(loginData.user)
       );
 
-      // OPEN CORRECT DASHBOARD
       setRole(loginData.user.role);
       setLoggedIn(true);
       setActivePage("dashboard");
 
-      // RESET FORM
       setSignupName("");
       setSignupEmail("");
       setSignupAddress("");
@@ -330,7 +331,6 @@ function App() {
   // =========================
   // LOGOUT
   // =========================
-
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -338,18 +338,20 @@ function App() {
     setLoggedIn(false);
     setRole("");
     setActivePage("dashboard");
+
     setShowSignup(false);
 
     setLoginEmail("");
     setLoginPassword("");
     setLoginError("");
+
     setSignupError("");
+    setStoreSearch("");
   };
 
   // =========================
   // CHANGE PASSWORD
   // =========================
-
   const handleChangePassword = async (e) => {
     e.preventDefault();
     setPasswordMessage("");
@@ -361,6 +363,7 @@ function App() {
       );
 
       setPasswordMessage(data.message);
+
       setCurrentPassword("");
       setNewPassword("");
     } catch (error) {
@@ -371,7 +374,6 @@ function App() {
   // =========================
   // ADMIN CREATE USER
   // =========================
-
   const handleCreateUser = async (e) => {
     e.preventDefault();
     setAdminMessage("");
@@ -408,7 +410,6 @@ function App() {
   // =========================
   // ADMIN CREATE STORE
   // =========================
-
   const handleCreateStore = async (e) => {
     e.preventDefault();
     setAdminMessage("");
@@ -443,7 +444,6 @@ function App() {
   // =========================
   // ADMIN USER DETAILS
   // =========================
-
   const handleUserDetails = async (userId) => {
     try {
       const data = await getAdminUserDetails(userId);
@@ -456,7 +456,6 @@ function App() {
   // =========================
   // USER RATING
   // =========================
-
   const handleRating = (storeId, rating) => {
     setSelectedRatings((prev) => ({
       ...prev,
@@ -502,7 +501,6 @@ function App() {
   // =========================
   // LOGIN / SIGNUP SCREEN
   // =========================
-
   if (!loggedIn) {
     return (
       <div className="auth-page">
@@ -654,7 +652,6 @@ function App() {
                   />
                 </div>
 
-                {/* ROLE SELECT */}
                 <div className="form-group">
                   <label htmlFor="signup-role">
                     Account Type
@@ -719,10 +716,8 @@ function App() {
   // =========================
   // MAIN APPLICATION
   // =========================
-
   return (
     <div className="app">
-
       {/* TOP BAR */}
       <header className="topbar">
         <div className="brand">⭐ RateHub</div>
@@ -747,7 +742,6 @@ function App() {
       </header>
 
       <div className="layout">
-
         {/* SIDEBAR */}
         <aside className="sidebar">
           <button
@@ -843,9 +837,7 @@ function App() {
 
         {/* CONTENT */}
         <main className="content">
-
           {/* ================= ADMIN DASHBOARD ================= */}
-
           {activePage === "dashboard" &&
             role === "admin" && (
               <>
@@ -871,7 +863,6 @@ function App() {
             )}
 
           {/* ================= USER DASHBOARD ================= */}
-
           {activePage === "dashboard" &&
             role === "user" && (
               <>
@@ -887,6 +878,18 @@ function App() {
                   </div>
                 )}
 
+                {/* SEARCH */}
+                <div className="search-box">
+                  <input
+                    type="text"
+                    value={storeSearch}
+                    onChange={(e) =>
+                      setStoreSearch(e.target.value)
+                    }
+                    placeholder="🔍 Search stores by name or address..."
+                  />
+                </div>
+
                 <div className="store-grid">
                   {stores.length === 0 ? (
                     <div className="details-card">
@@ -895,8 +898,16 @@ function App() {
                         No stores have been added yet.
                       </p>
                     </div>
+                  ) : filteredStores.length === 0 ? (
+                    <div className="details-card">
+                      <h2>No matching stores</h2>
+                      <p>
+                        Try searching with another store name
+                        or address.
+                      </p>
+                    </div>
                   ) : (
-                    stores.map((store) => (
+                    filteredStores.map((store) => (
                       <div
                         className="store-card"
                         key={store.id}
@@ -959,9 +970,7 @@ function App() {
                           type="button"
                           className="rating-submit-btn"
                           onClick={() =>
-                            handleSubmitRating(
-                              store.id
-                            )
+                            handleSubmitRating(store.id)
                           }
                         >
                           {store.user_rating
@@ -976,7 +985,6 @@ function App() {
             )}
 
           {/* ================= OWNER DASHBOARD ================= */}
-
           {activePage === "dashboard" &&
             role === "owner" && (
               <>
@@ -1043,7 +1051,6 @@ function App() {
             )}
 
           {/* ================= ADMIN USERS ================= */}
-
           {activePage === "users" &&
             role === "admin" && (
               <>
@@ -1117,7 +1124,6 @@ function App() {
             )}
 
           {/* ================= ADMIN STORES ================= */}
-
           {activePage === "stores" &&
             role === "admin" && (
               <>
@@ -1161,22 +1167,42 @@ function App() {
             )}
 
           {/* ================= USER STORES ================= */}
-
           {activePage === "stores" &&
             role === "user" && (
               <>
                 <h1>All Stores</h1>
 
+                <div className="search-box">
+                  <input
+                    type="text"
+                    value={storeSearch}
+                    onChange={(e) =>
+                      setStoreSearch(e.target.value)
+                    }
+                    placeholder="🔍 Search stores by name or address..."
+                  />
+                </div>
+
                 <div className="store-grid">
                   {stores.length === 0 ? (
                     <div className="details-card">
                       <h2>No stores available</h2>
+
                       <p>
                         No stores have been added yet.
                       </p>
                     </div>
+                  ) : filteredStores.length === 0 ? (
+                    <div className="details-card">
+                      <h2>No matching stores</h2>
+
+                      <p>
+                        Try searching with another store name
+                        or address.
+                      </p>
+                    </div>
                   ) : (
-                    stores.map((store) => (
+                    filteredStores.map((store) => (
                       <div
                         className="store-card"
                         key={store.id}
@@ -1235,9 +1261,7 @@ function App() {
                           type="button"
                           className="rating-submit-btn"
                           onClick={() =>
-                            handleSubmitRating(
-                              store.id
-                            )
+                            handleSubmitRating(store.id)
                           }
                         >
                           {store.user_rating
@@ -1252,7 +1276,6 @@ function App() {
             )}
 
           {/* ================= ADD USER ================= */}
-
           {activePage === "add-user" &&
             role === "admin" && (
               <>
@@ -1340,7 +1363,6 @@ function App() {
             )}
 
           {/* ================= ADD STORE ================= */}
-
           {activePage === "add-store" &&
             role === "admin" && (
               <>
@@ -1426,7 +1448,6 @@ function App() {
             )}
 
           {/* ================= CHANGE PASSWORD ================= */}
-
           {activePage === "password" && (
             <>
               <h1>Change Password</h1>
@@ -1477,7 +1498,6 @@ function App() {
               </form>
             </>
           )}
-
         </main>
       </div>
     </div>
