@@ -809,16 +809,6 @@ function App() {
             </div>
           </div>
 
-          <button
-            className="secondary-btn"
-            onClick={() => setShowChangePassword(!showChangePassword)}
-          >
-            🔐 Change Password
-          </button>
-
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
         </div>
       </header>
 
@@ -993,28 +983,30 @@ function App() {
                 <span>▦</span>
                 Explore Stores
               </button>
-              <button className="sidebar-item" type="button">
-                <span>★</span>
-                My Reviews
-              </button>
-              <button className="sidebar-item" type="button">
-                <span>♥</span>
-                Saved Stores
-              </button>
-              <button className="sidebar-item" type="button">
-                <span>👤</span>
-                Profile
-              </button>
-              <button className="sidebar-item" type="button">
-                <span>⚙</span>
-                Settings
-              </button>
             </>
           )}
 
           <div className="sidebar-help">
             <span>?</span>
             Help & Support
+          </div>
+
+          <div className="sidebar-bottom-actions">
+            <button
+              className="sidebar-change-password"
+              type="button"
+              onClick={() => setShowChangePassword(!showChangePassword)}
+            >
+              🔐 Change Password
+            </button>
+
+            <button
+              className="sidebar-logout"
+              type="button"
+              onClick={handleLogout}
+            >
+              🚪 Logout
+            </button>
           </div>
         </aside>
 
@@ -1625,238 +1617,176 @@ function App() {
           {/* =====================================================
               USER DASHBOARD
           ===================================================== */}
-         {/* =====================================================
-    USER DASHBOARD
-===================================================== */}
-{role === "user" && (
-  <div className="reference-dashboard user-reference-dashboard">
-    <div className="reference-hero">
-      <div className="reference-hero-icon user">👤</div>
+          {role === "user" && (
+            <div className="reference-dashboard user-reference-dashboard">
 
-      <div>
-        <span>USER PANEL</span>
-        <h2>User Dashboard</h2>
-        <p>
-          Discover great stores and share your experiences.
-        </p>
-      </div>
-    </div>
-
-    <div className="reference-stats-grid four">
-      <div className="reference-stat purple">
-        <div className="reference-stat-icon">🏪</div>
-        <div>
-          <span>STORES AVAILABLE</span>
-          <strong>{stores.length}</strong>
-          <small>Stores on platform</small>
-        </div>
-      </div>
-
-      <div className="reference-stat blue">
-        <div className="reference-stat-icon">★</div>
-        <div>
-          <span>STORES RATED</span>
-          <strong>
-            {stores.filter((store) => store.user_rating).length}
-          </strong>
-          <small>Your submitted ratings</small>
-        </div>
-      </div>
-
-      <div className="reference-stat orange">
-        <div className="reference-stat-icon">⭐</div>
-        <div>
-          <span>YOUR AVERAGE</span>
-          <strong>
-            {(() => {
-              const rated = stores
-                .filter((store) => store.user_rating)
-                .map((store) => Number(store.user_rating));
-
-              return rated.length
-                ? (
-                    rated.reduce((a, b) => a + b, 0) /
-                    rated.length
-                  ).toFixed(1)
-                : "0.0";
-            })()}
-          </strong>
-          <small>Average rating you gave</small>
-        </div>
-      </div>
-
-      <div className="reference-stat green">
-        <div className="reference-stat-icon">♥</div>
-        <div>
-          <span>TOP RATED</span>
-          <strong>
-            {stores.length
-              ? Math.max(
-                  ...stores.map((store) =>
-                    Number(store.overall_rating || 0)
-                  )
-                ).toFixed(1)
-              : "0.0"}
-          </strong>
-          <small>Highest store rating</small>
-        </div>
-      </div>
-    </div>
-
-    {/* EXPLORE STORES */}
-    <section className="reference-panel explore-panel">
-      <div className="table-panel-head">
-        <div>
-          <span>STORE DISCOVERY</span>
-          <h3>Explore Stores</h3>
-          <p>Search and rate your favourite stores.</p>
-        </div>
-
-        <div className="large-search">
-          🔍
-          <input
-            type="text"
-            placeholder="Search by store name or address..."
-            value={storeSearch}
-            onChange={(e) => setStoreSearch(e.target.value)}
-          />
-        </div>
-      </div>
-
-      {stores.length === 0 ? (
-        <div className="empty-card">
-          <h3>No stores available</h3>
-          <p>Please check again later.</p>
-        </div>
-      ) : (
-        <div className="user-store-reference-grid">
-          {stores
-            .filter((store) => {
-              const search = storeSearch.toLowerCase();
-
-              return (
-                store.name?.toLowerCase().includes(search) ||
-                store.address?.toLowerCase().includes(search)
-              );
-            })
-            .map((store) => (
-              <div
-                className="reference-store-card"
-                key={store.id}
-              >
-                <div className="reference-store-top">
-                  <div className="store-reference-icon">
-                    🏪
-                  </div>
-
-                  <span className="reference-rating">
-                    ⭐{" "}
-                    {Number(
-                      store.overall_rating || 0
-                    ).toFixed(1)}
-                  </span>
+              <div className="reference-hero">
+                <div className="reference-hero-icon user">👤</div>
+                <div>
+                  <span>USER PANEL</span>
+                  <h2>User Dashboard</h2>
+                  <p>Discover great stores and share your experiences.</p>
                 </div>
-
-                <h4>{store.name}</h4>
-
-                <p className="store-address">
-                  📍 {store.address}
-                </p>
-
-                {/* YOUR RATING */}
-                <div className="your-rating-box">
-                  <span>Your Rating</span>
-
-                  <strong>
-                    {store.user_rating
-                      ? `${store.user_rating}/5`
-                      : "Not rated"}
-                  </strong>
-                </div>
-
-                {/* STAR RATING */}
-                <div className="star-rating-selector">
-                  <span className="rating-label">
-                    Rate this store
-                  </span>
-
-                  <div className="rating-stars-input">
-                    {[1, 2, 3, 4, 5].map((star) => {
-                      const selectedRating = Number(
-                        ratingValues[store.id] || 0
-                      );
-
-                      return (
-                        <button
-                          key={star}
-                          type="button"
-                          className={
-                            star <= selectedRating
-                              ? "star-button selected"
-                              : "star-button"
-                          }
-                          onClick={() =>
-                            handleRatingChange(
-                              store.id,
-                              star
-                            )
-                          }
-                          aria-label={`Rate ${star} out of 5`}
-                        >
-                          ★
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <small className="rating-help">
-                    {ratingValues[store.id]
-                      ? `${ratingValues[store.id]} out of 5`
-                      : "Select stars"}
-                  </small>
-                </div>
-
-                <button
-                  type="button"
-                  className="primary-btn reference-rate-btn"
-                  onClick={() =>
-                    handleSubmitRating(store)
-                  }
-                >
-                  {store.user_rating
-                    ? "Update Rating"
-                    : "Submit Rating"}
-                </button>
               </div>
-            ))}
-        </div>
-      )}
 
-      {stores.length > 0 &&
-        stores.filter((store) => {
-          const search = storeSearch.toLowerCase();
+              <div className="reference-stats-grid four">
+                <div className="reference-stat purple">
+                  <div className="reference-stat-icon">🏪</div>
+                  <div>
+                    <span>STORES AVAILABLE</span>
+                    <strong>{stores.length}</strong>
+                    <small>Stores on platform</small>
+                  </div>
+                </div>
 
-          return (
-            store.name?.toLowerCase().includes(search) ||
-            store.address?.toLowerCase().includes(search)
-          );
-        }).length === 0 && (
-          <div className="empty-card">
-            <h3>No matching stores found</h3>
-            <p>
-              Try another store name or address.
-            </p>
-          </div>
-        )}
-    </section>
+                <div className="reference-stat blue">
+                  <div className="reference-stat-icon">★</div>
+                  <div>
+                    <span>STORES RATED</span>
+                    <strong>
+                      {stores.filter((store) => store.user_rating).length}
+                    </strong>
+                    <small>Your submitted ratings</small>
+                  </div>
+                </div>
 
-    {message && (
-      <div className="dashboard-message">
-        {message}
-      </div>
-    )}
-  </div>
-)}
+                <div className="reference-stat orange">
+                  <div className="reference-stat-icon">⭐</div>
+                  <div>
+                    <span>YOUR AVERAGE</span>
+                    <strong>
+                      {(() => {
+                        const rated = stores
+                          .filter((store) => store.user_rating)
+                          .map((store) => Number(store.user_rating));
+                        return rated.length
+                          ? (rated.reduce((a, b) => a + b, 0) / rated.length).toFixed(1)
+                          : "0.0";
+                      })()}
+                    </strong>
+                    <small>Average rating you gave</small>
+                  </div>
+                </div>
+
+                <div className="reference-stat green">
+                  <div className="reference-stat-icon">♥</div>
+                  <div>
+                    <span>TOP RATED</span>
+                    <strong>
+                      {stores.length
+                        ? Math.max(
+                            ...stores.map((store) =>
+                              Number(store.overall_rating || 0)
+                            )
+                          ).toFixed(1)
+                        : "0.0"}
+                    </strong>
+                    <small>Highest store rating</small>
+                  </div>
+                </div>
+              </div>
+
+              <section className="reference-panel explore-panel">
+                <div className="table-panel-head">
+                  <div>
+                    <span>STORE DISCOVERY</span>
+                    <h3>Explore Stores</h3>
+                    <p>Search and rate your favourite stores.</p>
+                  </div>
+
+                  <div className="large-search">
+                    🔍
+                    <input
+                      type="text"
+                      placeholder="Search by store name or address..."
+                      value={storeSearch}
+                      onChange={(e) => setStoreSearch(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {stores.length === 0 ? (
+                  <div className="empty-card">
+                    <h3>No stores available</h3>
+                    <p>Please check again later.</p>
+                  </div>
+                ) : (
+                  <div className="user-store-reference-grid">
+                    {stores
+                      .filter((store) => {
+                        const search = storeSearch.toLowerCase();
+                        return (
+                          store.name?.toLowerCase().includes(search) ||
+                          store.address?.toLowerCase().includes(search)
+                        );
+                      })
+                      .map((store) => (
+                        <div className="reference-store-card" key={store.id}>
+                          <div className="reference-store-top">
+                            <div className="store-reference-icon">🏪</div>
+                            <span className="reference-rating">
+                              ⭐ {Number(store.overall_rating || 0).toFixed(1)}
+                            </span>
+                          </div>
+
+                          <h4>{store.name}</h4>
+                          <p>📍 {store.address}</p>
+
+                          <div className="your-rating-box">
+                            <span>Your Rating</span>
+                            <strong>
+                              {store.user_rating
+                                ? `${store.user_rating}/5`
+                                : "Not rated"}
+                            </strong>
+                          </div>
+
+                          <select
+                            value={ratingValues[store.id] || ""}
+                            onChange={(e) =>
+                              handleRatingChange(store.id, e.target.value)
+                            }
+                          >
+                            <option value="">Select Rating</option>
+                            <option value="1">⭐ 1</option>
+                            <option value="2">⭐ 2</option>
+                            <option value="3">⭐ 3</option>
+                            <option value="4">⭐ 4</option>
+                            <option value="5">⭐ 5</option>
+                          </select>
+
+                          <button
+                            className="primary-btn reference-rate-btn"
+                            onClick={() => handleSubmitRating(store)}
+                          >
+                            {store.user_rating ? "Update Rating" : "Submit Rating"}
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                )}
+
+                {stores.length > 0 &&
+                  stores.filter((store) => {
+                    const search = storeSearch.toLowerCase();
+                    return (
+                      store.name?.toLowerCase().includes(search) ||
+                      store.address?.toLowerCase().includes(search)
+                    );
+                  }).length === 0 && (
+                    <div className="empty-card">
+                      <h3>No matching stores found</h3>
+                      <p>Try another store name or address.</p>
+                    </div>
+                  )}
+              </section>
+
+              {message && (
+                <div className="dashboard-message">{message}</div>
+              )}
+            </div>
+          )}
+
         </main>
       </div>
 
