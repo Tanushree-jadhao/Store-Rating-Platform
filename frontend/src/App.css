@@ -10365,3 +10365,14 @@ tbody tr:hover {
   font-size: 22px !important;
   font-weight: 800 !important;
 }
+/* Add Store form - normal readable font size */
+.reference-dashboard .form-group label {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.reference-dashboard .form-group input,
+.reference-dashboard .form-group textarea,
+.reference-dashboard .form-group select {
+  font-size: 15px !important;
+}
