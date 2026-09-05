@@ -50,6 +50,7 @@ function App() {
   const [loginRole, setLoginRole] = useState("");
 
   const [showSignup, setShowSignup] = useState(false);
+
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupAddress, setSignupAddress] = useState("");
@@ -281,7 +282,7 @@ function App() {
     try {
       const data = await getStoreDetails(id);
       setSelectedStore(data.store || data);
-    } catch  {
+    } catch {
       setMessage("Unable to load store details.");
     }
   };
@@ -527,15 +528,19 @@ function App() {
                 </button>
               </form>
 
-              <button
-                className="text-btn"
-                onClick={() => {
-                  setShowSignup(false);
-                  setMessage("");
-                }}
-              >
-                Already have an account? Login
-              </button>
+              <div className="login-footer">
+                <span>Already have an account?</span>
+
+                <button
+                  className="text-btn"
+                  onClick={() => {
+                    setShowSignup(false);
+                    setMessage("");
+                  }}
+                >
+                  Login
+                </button>
+              </div>
             </>
           ) : (
             <>
@@ -573,15 +578,19 @@ function App() {
                 </button>
               </form>
 
-              <button
-                className="text-btn"
-                onClick={() => {
-                  setShowSignup(true);
-                  setMessage("");
-                }}
-              >
-                Create a new account
-              </button>
+              <div className="login-footer">
+                <span>Don't have an account?</span>
+
+                <button
+                  className="text-btn"
+                  onClick={() => {
+                    setShowSignup(true);
+                    setMessage("");
+                  }}
+                >
+                  Create Account
+                </button>
+              </div>
             </>
           )}
         </div>
@@ -948,10 +957,16 @@ function App() {
                   <div className="store-card" key={store.id}>
                     <div className="store-card-header">
                       <h3>{store.name}</h3>
-                      <span>⭐ {Number(store.overall_rating || 0).toFixed(2)}</span>
+
+                      <span>
+                        ⭐{" "}
+                        {Number(store.overall_rating || 0).toFixed(2)}
+                      </span>
                     </div>
 
-                    <p className="store-address">{store.address}</p>
+                    <p className="store-address">
+                      {store.address}
+                    </p>
 
                     <div className="rating-info">
                       <p>
@@ -982,7 +997,9 @@ function App() {
                       className="primary-btn"
                       onClick={() => handleSubmitRating(store)}
                     >
-                      {store.user_rating ? "Update Rating" : "Submit Rating"}
+                      {store.user_rating
+                        ? "Update Rating"
+                        : "Submit Rating"}
                     </button>
                   </div>
                 ))}
@@ -1004,7 +1021,9 @@ function App() {
               </div>
             )}
 
-          {message && <div className="dashboard-message">{message}</div>}
+          {message && (
+            <div className="dashboard-message">{message}</div>
+          )}
         </div>
       )}
 
@@ -1022,13 +1041,17 @@ function App() {
               <div className="stats-grid">
                 <div className="stat-card">
                   <h3>Average Rating</h3>
+
                   <strong>
-                    {Number(ownerData.store.average_rating || 0).toFixed(2)}
+                    {Number(
+                      ownerData.store.average_rating || 0
+                    ).toFixed(2)}
                   </strong>
                 </div>
 
                 <div className="stat-card">
                   <h3>Total Ratings</h3>
+
                   <strong>
                     {ownerData.store.total_ratings || 0}
                   </strong>
@@ -1036,6 +1059,7 @@ function App() {
 
                 <div className="stat-card">
                   <h3>Users Who Rated</h3>
+
                   <strong>
                     {ownerData.usersWhoRated?.length || 0}
                   </strong>
@@ -1110,6 +1134,7 @@ function App() {
             <div className="modal-icon">👤</div>
 
             <h2>User Details</h2>
+
             <p className="modal-subtitle">
               Complete account information
             </p>
@@ -1126,7 +1151,9 @@ function App() {
 
             <div className="user-detail-row">
               <span>Address</span>
-              <strong>{selectedUser.address || "Not provided"}</strong>
+              <strong>
+                {selectedUser.address || "Not provided"}
+              </strong>
             </div>
 
             <div className="user-detail-row">
@@ -1163,6 +1190,7 @@ function App() {
             <div className="modal-icon">🏪</div>
 
             <h2>Store Details</h2>
+
             <p className="modal-subtitle">
               Complete store information
             </p>
