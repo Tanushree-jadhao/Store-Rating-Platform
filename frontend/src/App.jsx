@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import "./App.css";
 
@@ -197,7 +198,6 @@ function App() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     setLoginMessage("");
 
     if (!email || !password) {
@@ -235,7 +235,6 @@ function App() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-
     setSignupMessage("");
 
     if (
@@ -331,7 +330,6 @@ function App() {
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
-
     setUserCreateMessage("");
 
     try {
@@ -364,7 +362,6 @@ function App() {
 
   const handleCreateStore = async (e) => {
     e.preventDefault();
-
     setStoreCreateMessage("");
 
     try {
@@ -453,7 +450,6 @@ function App() {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-
     setPasswordMessage("");
 
     if (!currentPassword || !newPassword) {
@@ -525,13 +521,13 @@ function App() {
           <div className="auth-card">
 
             <div className="brand-header">
-              <div className="brand-icon">🏪</div>
-
-              <h1>Store Rating Platform</h1>
+              <h1>
+                <span className="brand-icon">🏪</span>
+                Store Rating Platform
+              </h1>
 
               <p>
-                Rate stores. Share experiences. Make better
-                choices.
+                Rate stores. Share experiences. Make better choices.
               </p>
             </div>
 
@@ -629,7 +625,6 @@ function App() {
             >
               Already have an account? Login
             </button>
-
           </div>
         </div>
       );
@@ -640,19 +635,14 @@ function App() {
         <div className="auth-card">
 
           <div className="brand-header">
-            <div className="brand-icon">🏪</div>
-
-            <h1>Store Rating Platform</h1>
+            <h1>
+              <span className="brand-icon">🏪</span>
+              Store Rating Platform
+            </h1>
 
             <p>
-              Rate stores. Share experiences. Make better
-              choices.
+              Rate stores. Share experiences. Make better choices.
             </p>
-          </div>
-
-          <div className="login-heading">
-            <h2>Login</h2>
-            <span>Login to your account</span>
           </div>
 
           <form onSubmit={handleLogin}>
@@ -723,7 +713,6 @@ function App() {
           >
             Don't have an account? Create Account
           </button>
-
         </div>
       </div>
     );
@@ -737,13 +726,11 @@ function App() {
       {/* TOPBAR */}
 
       <header className="topbar">
-
         <div className="topbar-brand">
           🏪 Store Rating Platform
         </div>
 
         <div className="topbar-right">
-
           <span className="user-name">
             {user?.name}
           </span>
@@ -755,7 +742,6 @@ function App() {
           >
             Logout
           </button>
-
         </div>
       </header>
 
@@ -889,7 +875,6 @@ function App() {
               Change Password
             </button>
           )}
-
         </aside>
 
         {/* MAIN CONTENT */}
@@ -912,7 +897,6 @@ function App() {
                 </div>
 
                 <div className="stats-grid">
-
                   <div className="stat-card">
                     <span>Total Users</span>
 
@@ -936,7 +920,6 @@ function App() {
                       {adminStats.totalRatings}
                     </strong>
                   </div>
-
                 </div>
               </>
             )}
@@ -958,9 +941,7 @@ function App() {
                 </div>
 
                 <div className="section-card">
-
                   <div className="section-header">
-
                     <div>
                       <h3>Stores</h3>
 
@@ -978,11 +959,9 @@ function App() {
                         setStoreSearch(e.target.value)
                       }
                     />
-
                   </div>
 
                   <div className="store-grid">
-
                     {filteredStores.length === 0 ? (
                       <p className="empty-text">
                         {stores.length === 0
@@ -995,13 +974,11 @@ function App() {
                           className="store-card"
                           key={store.id}
                         >
-
                           <h3>{store.name}</h3>
 
                           <p>{store.address}</p>
 
                           <div className="rating-info">
-
                             <span>
                               Overall Rating:{" "}
                               {Number(
@@ -1014,11 +991,9 @@ function App() {
                               {store.user_rating ||
                                 "Not rated"}
                             </span>
-
                           </div>
 
                           <div className="rating-actions">
-
                             <select
                               value={ratingValue}
                               onChange={(e) =>
@@ -1061,13 +1036,10 @@ function App() {
                                 ? "Update Rating"
                                 : "Rate Store"}
                             </button>
-
                           </div>
-
                         </div>
                       ))
                     )}
-
                   </div>
 
                   {ratingMessage && (
@@ -1075,7 +1047,6 @@ function App() {
                       {ratingMessage}
                     </div>
                   )}
-
                 </div>
               </>
             )}
@@ -1087,7 +1058,6 @@ function App() {
             ownerData && (
               <>
                 <div className="page-header">
-
                   <h2>
                     Store Owner Dashboard
                   </h2>
@@ -1096,11 +1066,9 @@ function App() {
                     View your store performance
                     and customer ratings.
                   </p>
-
                 </div>
 
                 <div className="stats-grid">
-
                   <div className="stat-card">
                     <span>Average Rating</span>
 
@@ -1120,11 +1088,9 @@ function App() {
                         ?.total_ratings || 0}
                     </strong>
                   </div>
-
                 </div>
 
                 <div className="section-card">
-
                   <h3>
                     {ownerData.store?.name}
                   </h3>
@@ -1145,9 +1111,7 @@ function App() {
                     </p>
                   ) : (
                     <div className="table-wrapper">
-
                       <table>
-
                         <thead>
                           <tr>
                             <th>Name</th>
@@ -1157,11 +1121,9 @@ function App() {
                         </thead>
 
                         <tbody>
-
                           {ownerData.usersWhoRated.map(
                             (item) => (
                               <tr key={item.id}>
-
                                 <td>
                                   {item.name}
                                 </td>
@@ -1173,18 +1135,13 @@ function App() {
                                 <td>
                                   ⭐ {item.rating}
                                 </td>
-
                               </tr>
                             )
                           )}
-
                         </tbody>
-
                       </table>
-
                     </div>
                   )}
-
                 </div>
               </>
             )}
@@ -1195,20 +1152,16 @@ function App() {
             role === "admin" && (
               <>
                 <div className="page-header">
-
                   <h2>Users</h2>
 
                   <p>
                     View and manage registered
                     users.
                   </p>
-
                 </div>
 
                 <div className="section-card">
-
                   <div className="section-header">
-
                     <h3>All Users</h3>
 
                     <input
@@ -1220,13 +1173,10 @@ function App() {
                         setUserSearch(e.target.value)
                       }
                     />
-
                   </div>
 
                   <div className="table-wrapper">
-
                     <table>
-
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -1237,10 +1187,8 @@ function App() {
                       </thead>
 
                       <tbody>
-
                         {filteredUsers.map((item) => (
                           <tr key={item.id}>
-
                             <td>
                               {item.name}
                             </td>
@@ -1258,7 +1206,6 @@ function App() {
                             </td>
 
                             <td>
-
                               <button
                                 type="button"
                                 className="secondary-btn"
@@ -1270,18 +1217,12 @@ function App() {
                               >
                                 View
                               </button>
-
                             </td>
-
                           </tr>
                         ))}
-
                       </tbody>
-
                     </table>
-
                   </div>
-
                 </div>
               </>
             )}
@@ -1292,21 +1233,16 @@ function App() {
             role === "admin" && (
               <>
                 <div className="page-header">
-
                   <h2>Stores</h2>
 
                   <p>
                     View all registered stores.
                   </p>
-
                 </div>
 
                 <div className="section-card">
-
                   <div className="table-wrapper">
-
                     <table>
-
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -1318,10 +1254,8 @@ function App() {
                       </thead>
 
                       <tbody>
-
                         {adminStores.map((store) => (
                           <tr key={store.id}>
-
                             <td>
                               {store.name}
                             </td>
@@ -1343,7 +1277,6 @@ function App() {
                             </td>
 
                             <td>
-
                               <button
                                 type="button"
                                 className="secondary-btn"
@@ -1355,18 +1288,12 @@ function App() {
                               >
                                 View
                               </button>
-
                             </td>
-
                           </tr>
                         ))}
-
                       </tbody>
-
                     </table>
-
                   </div>
-
                 </div>
               </>
             )}
@@ -1377,20 +1304,16 @@ function App() {
             role === "admin" && (
               <>
                 <div className="page-header">
-
                   <h2>Add User</h2>
 
                   <p>
                     Create a new platform
                     account.
                   </p>
-
                 </div>
 
                 <div className="section-card form-card">
-
                   <form onSubmit={handleCreateUser}>
-
                     <label>Name</label>
 
                     <input
@@ -1482,9 +1405,7 @@ function App() {
                     >
                       Add User
                     </button>
-
                   </form>
-
                 </div>
               </>
             )}
@@ -1495,20 +1416,16 @@ function App() {
             role === "admin" && (
               <>
                 <div className="page-header">
-
                   <h2>Add Store</h2>
 
                   <p>
                     Create a store and assign
                     an owner.
                   </p>
-
                 </div>
 
                 <div className="section-card form-card">
-
                   <form onSubmit={handleCreateStore}>
-
                     <label>Store Name</label>
 
                     <input
@@ -1562,9 +1479,7 @@ function App() {
                     >
                       Add Store
                     </button>
-
                   </form>
-
                 </div>
               </>
             )}
@@ -1575,20 +1490,16 @@ function App() {
             role === "user" && (
               <>
                 <div className="page-header">
-
                   <h2>All Stores</h2>
 
                   <p>
                     Search and rate available
                     stores.
                   </p>
-
                 </div>
 
                 <div className="section-card">
-
                   <div className="section-header">
-
                     <h3>Stores</h3>
 
                     <input
@@ -1600,11 +1511,9 @@ function App() {
                         setStoreSearch(e.target.value)
                       }
                     />
-
                   </div>
 
                   <div className="store-grid">
-
                     {filteredStores.length === 0 ? (
                       <p className="empty-text">
                         {stores.length === 0
@@ -1617,13 +1526,11 @@ function App() {
                           className="store-card"
                           key={store.id}
                         >
-
                           <h3>{store.name}</h3>
 
                           <p>{store.address}</p>
 
                           <div className="rating-info">
-
                             <span>
                               Overall Rating:{" "}
                               {Number(
@@ -1636,11 +1543,9 @@ function App() {
                               {store.user_rating ||
                                 "Not rated"}
                             </span>
-
                           </div>
 
                           <div className="rating-actions">
-
                             <select
                               value={ratingValue}
                               onChange={(e) =>
@@ -1683,15 +1588,11 @@ function App() {
                                 ? "Update Rating"
                                 : "Rate Store"}
                             </button>
-
                           </div>
-
                         </div>
                       ))
                     )}
-
                   </div>
-
                 </div>
               </>
             )}
@@ -1701,19 +1602,15 @@ function App() {
           {activePage === "change-password" && (
             <>
               <div className="page-header">
-
                 <h2>Change Password</h2>
 
                 <p>
                   Update your account password.
                 </p>
-
               </div>
 
               <div className="section-card form-card">
-
                 <form onSubmit={handleChangePassword}>
-
                   <label>
                     Current Password
                   </label>
@@ -1756,13 +1653,10 @@ function App() {
                   >
                     Change Password
                   </button>
-
                 </form>
-
               </div>
             </>
           )}
-
         </main>
       </div>
 
@@ -1775,14 +1669,12 @@ function App() {
             setSelectedUser(null)
           }
         >
-
           <div
             className="user-details-modal"
             onClick={(e) =>
               e.stopPropagation()
             }
           >
-
             <button
               type="button"
               className="modal-close"
@@ -1850,7 +1742,6 @@ function App() {
             >
               Close
             </button>
-
           </div>
         </div>
       )}
@@ -1864,14 +1755,12 @@ function App() {
             setSelectedStore(null)
           }
         >
-
           <div
             className="user-details-modal"
             onClick={(e) =>
               e.stopPropagation()
             }
           >
-
             <button
               type="button"
               className="modal-close"
@@ -1938,11 +1827,9 @@ function App() {
             >
               Close
             </button>
-
           </div>
         </div>
       )}
-
     </div>
   );
 }
