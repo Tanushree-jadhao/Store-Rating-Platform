@@ -824,6 +824,126 @@ function App() {
       </header>
 
       {/* =====================================================
+          DASHBOARD SIDEBAR
+      ===================================================== */}
+
+      <aside className={`dashboard-sidebar ${role}-sidebar`}>
+        <div className="sidebar-section-title">
+          {role === "admin"
+            ? "🛡️ ADMINISTRATION"
+            : role === "owner"
+            ? "🏪 STORE OWNER"
+            : "👤 USER PANEL"}
+        </div>
+
+        <button
+          className="sidebar-item active"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <span>▦</span>
+          Dashboard
+        </button>
+
+        {role === "admin" && (
+          <>
+            <button className="sidebar-item" onClick={handleAdminUsers}>
+              <span>👥</span>
+              Manage Users
+            </button>
+
+            <button className="sidebar-item" onClick={handleAdminStores}>
+              <span>🏪</span>
+              Manage Stores
+            </button>
+
+            <button
+              className="sidebar-item"
+              onClick={async () => {
+                setShowAddUser(true);
+                setShowAddStore(false);
+                setUserCreateMessage("");
+                setStoreCreateMessage("");
+                await loadAdminUsers();
+              }}
+            >
+              <span>👤+</span>
+              Add User
+            </button>
+
+            <button
+              className="sidebar-item"
+              onClick={async () => {
+                setShowAddStore(true);
+                setShowAddUser(false);
+                setUserCreateMessage("");
+                setStoreCreateMessage("");
+                await loadAdminUsers();
+              }}
+            >
+              <span>🏬</span>
+              Add Store
+            </button>
+          </>
+        )}
+
+        {role === "owner" && (
+          <>
+            <button
+              className="sidebar-item"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
+              <span>🏪</span>
+              My Store
+            </button>
+
+            <button
+              className="sidebar-item"
+              onClick={() =>
+                document
+                  .querySelector(".owner-dashboard .table-card")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              <span>⭐</span>
+              Ratings & Reviews
+            </button>
+          </>
+        )}
+
+        {role === "user" && (
+          <button
+            className="sidebar-item"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            <span>🏪</span>
+            Explore Stores
+          </button>
+        )}
+
+        <div className="sidebar-bottom">
+          <button
+            className="sidebar-item"
+            onClick={() => setShowChangePassword(true)}
+          >
+            <span>⚙️</span>
+            Settings
+          </button>
+
+          <button
+            className="sidebar-item help-item"
+            onClick={() =>
+              setMessage("Use the dashboard options to manage your account.")
+            }
+          >
+            <span>?</span>
+            Help & Support
+          </button>
+        </div>
+      </aside>
+
+      <div className="dashboard-main">
+
+      {/* =====================================================
           CHANGE PASSWORD
       ===================================================== */}
 
@@ -1910,6 +2030,8 @@ function App() {
 
         </div>
       )}
+
+      </div>
 
       {/* =====================================================
           USER DETAILS MODAL
