@@ -1040,3 +1040,62 @@ max-width: 340px;
   color: #1d4ed8 !important;
   text-decoration: underline;
 }
+/* ===== RATEHUB PREMIUM BACKGROUND ===== */
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #f8fafc 100%);
+}
+
+/* Main page background */
+.app-container {
+  background: linear-gradient(
+    135deg,
+    #eff6ff 0%,
+    #dbeafe 45%,
+    #f8fafc 100%
+  ) !important;
+}
+
+/* Login / Signup card */
+.auth-card {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border: 1px solid rgba(37, 99, 235, 0.12) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 20px 50px rgba(30, 64, 175, 0.15) !important;
+}
+
+/* Main headings */
+.auth-card h1,
+.auth-card h2 {
+  color: #1e3a8a !important;
+}
+
+/* Primary buttons */
+button[type="submit"] {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  border: none !important;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25) !important;
+}
+
+button[type="submit"]:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af) !important;
+  transform: translateY(-1px);
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 9px !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+  outline: none !important;
+}
