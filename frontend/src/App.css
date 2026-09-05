@@ -9087,3 +9087,320 @@ tbody tr:hover {
 .owner-reference-dashboard .panel-icon {
   color: #0f766e;
 }
+/* =========================================================
+   FINAL DASHBOARD DESIGN
+   REFERENCE IMAGE MATCH
+   LOGIN / SIGNUP UNTOUCHED
+   ========================================================= */
+
+/* Dashboard overall */
+.dashboard-layout {
+  display: flex !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.dashboard-sidebar {
+  width: 270px !important;
+  min-width: 270px !important;
+  min-height: 100vh !important;
+  padding: 28px 20px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+/* ADMIN */
+.admin-sidebar {
+  background: linear-gradient(180deg, #071b32 0%, #08243f 100%) !important;
+}
+
+/* OWNER */
+.owner-sidebar {
+  background: linear-gradient(180deg, #064e3b 0%, #065f46 100%) !important;
+}
+
+/* USER */
+.user-sidebar {
+  background: linear-gradient(180deg, #24124d 0%, #2e1760 100%) !important;
+}
+
+/* Sidebar heading */
+.sidebar-section-title {
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+  margin: 8px 8px 20px !important;
+}
+
+/* Sidebar buttons */
+.sidebar-item {
+  width: 100% !important;
+  min-height: 48px !important;
+  padding: 0 16px !important;
+  border: none !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  transition: 0.2s ease !important;
+}
+
+.sidebar-item span {
+  width: 22px !important;
+  text-align: center !important;
+  font-size: 17px !important;
+}
+
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.10) !important;
+}
+
+/* Active dashboard */
+.admin-sidebar .sidebar-item.active {
+  background: #2563eb !important;
+}
+
+.owner-sidebar .sidebar-item.active {
+  background: #10b981 !important;
+}
+
+.user-sidebar .sidebar-item.active {
+  background: #8b5cf6 !important;
+}
+
+/* Help */
+.sidebar-help {
+  margin-top: auto !important;
+  color: #ffffff !important;
+  padding: 14px 16px !important;
+  font-size: 14px !important;
+}
+
+/* =========================================================
+   MAIN AREA
+   ========================================================= */
+
+.dashboard-main {
+  flex: 1 !important;
+  min-width: 0 !important;
+  padding: 44px 46px !important;
+  background: #f8fafc !important;
+  box-sizing: border-box !important;
+}
+
+/* =========================================================
+   DASHBOARD HEADER
+   ========================================================= */
+
+.reference-dashboard {
+  width: 100% !important;
+}
+
+.reference-dashboard h1,
+.dashboard-main h1 {
+  color: #0f172a !important;
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  margin-bottom: 8px !important;
+}
+
+.reference-dashboard > p {
+  color: #475569 !important;
+  font-size: 17px !important;
+}
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+.reference-stats-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 22px !important;
+  margin-top: 30px !important;
+}
+
+.reference-stat {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  min-height: 115px !important;
+  padding: 22px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
+}
+
+.reference-stat-icon {
+  width: 64px !important;
+  height: 64px !important;
+  min-width: 64px !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 28px !important;
+}
+
+.reference-stat.blue .reference-stat-icon {
+  background: #e8f0ff !important;
+}
+
+.reference-stat.green .reference-stat-icon {
+  background: #e7f8f1 !important;
+}
+
+.reference-stat.purple .reference-stat-icon {
+  background: #f0eaff !important;
+}
+
+.reference-stat strong {
+  display: block !important;
+  margin-top: 8px !important;
+  font-size: 28px !important;
+  color: #0f172a !important;
+}
+
+.reference-stat span {
+  color: #334155 !important;
+  font-size: 15px !important;
+}
+
+/* =========================================================
+   WELCOME CARD
+   ========================================================= */
+
+.reference-panel {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
+}
+
+.reference-hero {
+  margin-top: 26px !important;
+  min-height: 125px !important;
+  padding: 25px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 22px !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
+}
+
+/* Admin welcome */
+.admin-reference-dashboard .reference-hero-icon {
+  background: #e8f0ff !important;
+  color: #2563eb !important;
+}
+
+/* Owner welcome */
+.owner-reference-dashboard .reference-hero-icon {
+  background: #dff8ef !important;
+  color: #059669 !important;
+}
+
+/* User welcome */
+.user-reference-dashboard .reference-hero-icon {
+  background: #eee7ff !important;
+  color: #7c3aed !important;
+}
+
+.reference-hero h2 {
+  margin: 0 0 8px !important;
+  font-size: 22px !important;
+  color: #0f172a !important;
+}
+
+.reference-hero p {
+  margin: 0 !important;
+  font-size: 16px !important;
+  color: #334155 !important;
+}
+
+/* =========================================================
+   OWNER TEAL
+   ========================================================= */
+
+.owner-reference-dashboard .reference-stat.green strong,
+.owner-reference-dashboard .reference-stat.purple strong {
+  color: #059669 !important;
+}
+
+.owner-reference-dashboard .reference-stat.green .reference-stat-icon,
+.owner-reference-dashboard .reference-stat.purple .reference-stat-icon {
+  background: #dff8ef !important;
+}
+
+/* =========================================================
+   USER PURPLE
+   ========================================================= */
+
+.user-reference-dashboard .reference-stat.blue strong,
+.user-reference-dashboard .reference-stat.green strong,
+.user-reference-dashboard .reference-stat.purple strong {
+  color: #7c3aed !important;
+}
+
+.user-reference-dashboard .reference-stat.blue .reference-stat-icon,
+.user-reference-dashboard .reference-stat.green .reference-stat-icon,
+.user-reference-dashboard .reference-stat.purple .reference-stat-icon {
+  background: #eee7ff !important;
+}
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+.dashboard-sidebar .logout-btn {
+  margin-top: auto !important;
+  width: 100% !important;
+  min-height: 48px !important;
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+}
+
+.dashboard-sidebar .logout-btn:hover {
+  background: rgba(255,255,255,0.08) !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .dashboard-sidebar {
+    width: 220px !important;
+    min-width: 220px !important;
+  }
+
+  .dashboard-main {
+    padding: 30px 25px !important;
+  }
+
+  .reference-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
