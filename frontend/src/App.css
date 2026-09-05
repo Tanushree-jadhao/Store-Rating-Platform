@@ -788,3 +788,211 @@ tr:hover td {
 .modal-close-btn:hover {
   background: #4338ca;
 }
+/* ================= PREMIUM BRAND HEADER ================= */
+
+.brand-header {
+text-align: center;
+margin-bottom: 30px;
+}
+
+.brand-icon {
+width: 68px;
+height: 68px;
+margin: 0 auto 14px;
+border-radius: 18px;
+background: linear-gradient(135deg, #1e3a8a, #2563eb);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 34px;
+box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+}
+
+.brand-header h1 {
+margin: 0;
+color: #0f172a;
+font-size: 28px;
+font-weight: 750;
+letter-spacing: -0.5px;
+}
+
+.brand-header p {
+margin: 8px auto 0;
+color: #64748b;
+font-size: 14px;
+line-height: 1.5;
+max-width: 340px;
+}
+/* ================= PREMIUM LOGIN BRANDING ================= */
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.brand-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 16px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.22);
+}
+
+.brand-header h1 {
+  margin: 0;
+  color: #172554;
+  font-size: 27px;
+  font-weight: 750;
+  letter-spacing: -0.6px;
+}
+
+.brand-header p {
+  margin: 8px auto 0;
+  color: #64748b;
+  font-size: 13.5px;
+  line-height: 1.5;
+  max-width: 330px;
+}
+
+.login-heading {
+  text-align: left;
+  margin: 0 0 22px;
+  padding-left: 2px;
+}
+
+.login-heading h2 {
+  margin: 0 0 5px;
+  color: #0f172a;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.login-heading span {
+  color: #64748b;
+  font-size: 13.5px;
+}
+.brand-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.brand-header h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 27px;
+  font-weight: 750;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+}
+
+.brand-header .brand-icon {
+  width: auto;
+  height: auto;
+  margin: 0;
+  background: none;
+  box-shadow: none;
+  font-size: 25px;
+}
+
+.brand-header p {
+  margin: 6px auto 0;
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.4;
+  text-align: center;
+}
+/* ===== CENTERED LOGIN PAGE ===== */
+
+.app-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  box-sizing: border-box;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.login-footer {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.login-footer .text-btn {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #4f46e5;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-footer .text-btn:hover {
+  text-decoration: underline;
+}
+/* ===== LOGIN PAGE CENTER ===== */
+
+.app-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+/* ===== CREATE ACCOUNT LINK ===== */
+
+.login-footer {
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.login-footer .text-btn {
+  color: #2563eb;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.login-footer .text-btn:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
