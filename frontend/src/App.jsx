@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 import {
@@ -27,6 +26,7 @@ function App() {
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
+
     if (!savedUser) return null;
 
     try {
@@ -38,6 +38,7 @@ function App() {
 
   const [role, setRole] = useState(() => {
     const savedUser = localStorage.getItem("user");
+
     if (!savedUser) return "";
 
     try {
@@ -52,6 +53,7 @@ function App() {
   const [loginRole, setLoginRole] = useState("");
 
   const [showSignup, setShowSignup] = useState(false);
+
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupAddress, setSignupAddress] = useState("");
@@ -240,6 +242,7 @@ function App() {
       setSignupAddress("");
       setSignupPassword("");
       setSignupRole("user");
+
       setShowSignup(false);
       setMessage("");
     } catch (error) {
@@ -257,6 +260,7 @@ function App() {
     setLoggedIn(false);
     setUser(null);
     setRole("");
+
     setMessage("");
     setOwnerData(null);
     setStores([]);
@@ -287,6 +291,7 @@ function App() {
   const handleAdminUsers = async () => {
     setShowAddUser(false);
     setShowAddStore(false);
+
     setUserCreateMessage("");
     setStoreCreateMessage("");
 
@@ -296,6 +301,7 @@ function App() {
   const handleAdminStores = async () => {
     setShowAddUser(false);
     setShowAddStore(false);
+
     setUserCreateMessage("");
     setStoreCreateMessage("");
 
@@ -739,21 +745,27 @@ function App() {
         <div className="topbar-right">
           <span>{user?.name}</span>
 
-          <button
-            className="secondary-btn"
-            onClick={() =>
-              setShowChangePassword(!showChangePassword)
-            }
-          >
-            Change Password
-          </button>
+          {role !== "admin" && (
+            <>
+              <button
+                className="secondary-btn"
+                onClick={() =>
+                  setShowChangePassword(
+                    !showChangePassword
+                  )
+                }
+              >
+                Change Password
+              </button>
 
-          <button
-            className="logout-btn"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
+              <button
+                className="logout-btn"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </>
+          )}
         </div>
       </header>
 
@@ -922,7 +934,6 @@ function App() {
                   setShowAddStore(false);
                   setUserCreateMessage("");
                   setStoreCreateMessage("");
-
                   await loadAdminUsers();
                 }}
               >
@@ -939,12 +950,46 @@ function App() {
                   setShowAddUser(false);
                   setUserCreateMessage("");
                   setStoreCreateMessage("");
-
                   await loadAdminUsers();
                 }}
               >
                 🏪 Add Store
               </button>
+
+              {/* ADMIN CHANGE PASSWORD + LOGOUT */}
+
+              <div
+                style={{
+                  marginTop: "24px",
+                  paddingTop: "18px",
+                  borderTop: "1px solid #e5e7eb",
+                }}
+              >
+                <button
+                  className="secondary-btn"
+                  style={{
+                    width: "100%",
+                    marginBottom: "10px",
+                  }}
+                  onClick={() =>
+                    setShowChangePassword(
+                      !showChangePassword
+                    )
+                  }
+                >
+                  🔐 Change Password
+                </button>
+
+                <button
+                  className="logout-btn"
+                  style={{
+                    width: "100%",
+                  }}
+                  onClick={handleLogout}
+                >
+                  🚪 Logout
+                </button>
+              </div>
             </div>
 
             {/* ==================== RIGHT ADMIN CONTENT ==================== */}
@@ -1459,7 +1504,6 @@ function App() {
                   );
                 })
                 .map((store) => (
-
                   <div
                     className="store-card"
                     key={store.id}
@@ -1483,7 +1527,6 @@ function App() {
                     </p>
 
                     <div className="rating-info">
-
                       <p>
                         Your Rating:{" "}
                         <strong>
@@ -1492,7 +1535,6 @@ function App() {
                             : "Not rated"}
                         </strong>
                       </p>
-
                     </div>
 
                     <select
@@ -1636,8 +1678,8 @@ function App() {
                 </h2>
 
                 {ownerData.usersWhoRated?.length > 0 ? (
-
                   <div className="table-wrapper">
+
                     <table>
 
                       <thead>
@@ -1676,20 +1718,17 @@ function App() {
                       </tbody>
 
                     </table>
+
                   </div>
-
                 ) : (
-
                   <p className="empty-text">
                     No users have rated your store yet.
                   </p>
-
                 )}
 
               </div>
             </>
           ) : (
-
             <div className="empty-card">
               <h3>No store assigned</h3>
 
@@ -1697,7 +1736,6 @@ function App() {
                 Please contact the administrator.
               </p>
             </div>
-
           )}
 
         </div>
