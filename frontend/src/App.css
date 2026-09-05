@@ -9930,3 +9930,84 @@ tbody tr:hover {
 .dashboard-sidebar .sidebar-section-title {
   font-size: 14px !important;
 }
+/* =========================================================
+   BIGGER & CLEARER ADMIN DASHBOARD TEXT
+   ========================================================= */
+
+/* USERS / STORES / RATINGS */
+.reference-stat span {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+
+.reference-stat strong {
+  font-size: 34px !important;
+  font-weight: 700 !important;
+}
+
+/* MANAGEMENT / USERS / STORES section labels */
+.reference-dashboard .section-label,
+.reference-dashboard .panel-label {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+}
+
+/* Quick Actions */
+.reference-dashboard .quick-actions-title {
+  font-size: 25px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard .quick-actions-subtitle {
+  font-size: 17px !important;
+}
+
+/* Manage Users / Manage Stores / Add User / Add Store */
+.reference-dashboard .quick-action-card h3 {
+  font-size: 19px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard .quick-action-card p {
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+}
+
+.reference-dashboard .quick-action-card {
+  font-size: 17px !important;
+}
+
+/* Recent Users / Recent Stores */
+.reference-dashboard .reference-panel h2 {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard .reference-panel p {
+  font-size: 16px !important;
+}
+
+/* Table */
+.reference-dashboard th {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard td {
+  font-size: 17px !important;
+}
+
+/* No users loaded / No stores loaded */
+.reference-dashboard .empty-state,
+.reference-dashboard .empty-message {
+  font-size: 17px !important;
+}
+
+/* Sidebar */
+.dashboard-sidebar .sidebar-item {
+  font-size: 16px !important;
+}
+
+.dashboard-sidebar .sidebar-section-title {
+  font-size: 15px !important;
+}
