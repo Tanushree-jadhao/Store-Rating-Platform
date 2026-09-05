@@ -26,7 +26,6 @@ function App() {
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
-
     if (!savedUser) return null;
 
     try {
@@ -38,7 +37,6 @@ function App() {
 
   const [role, setRole] = useState(() => {
     const savedUser = localStorage.getItem("user");
-
     if (!savedUser) return "";
 
     try {
@@ -53,7 +51,6 @@ function App() {
   const [loginRole, setLoginRole] = useState("");
 
   const [showSignup, setShowSignup] = useState(false);
-
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupAddress, setSignupAddress] = useState("");
@@ -103,7 +100,9 @@ function App() {
   const [newPassword, setNewPassword] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
 
-  // ==================== DASHBOARD DATA ====================
+  // =========================================================
+  // DASHBOARD DATA
+  // =========================================================
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -112,7 +111,13 @@ function App() {
       try {
         if (role === "admin") {
           const stats = await getAdminDashboardStats();
-          setAdminStats(stats || {});
+          setAdminStats(
+            stats || {
+              totalUsers: 0,
+              totalStores: 0,
+              totalRatings: 0,
+            }
+          );
         }
 
         if (role === "user") {
@@ -132,7 +137,9 @@ function App() {
     loadDashboardData();
   }, [loggedIn, role]);
 
-  // ==================== LOGIN ====================
+  // =========================================================
+  // LOGIN
+  // =========================================================
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -166,7 +173,9 @@ function App() {
     }
   };
 
-  // ==================== SIGNUP ====================
+  // =========================================================
+  // SIGNUP
+  // =========================================================
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -184,6 +193,7 @@ function App() {
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
@@ -250,7 +260,9 @@ function App() {
     }
   };
 
-  // ==================== LOGOUT ====================
+  // =========================================================
+  // LOGOUT
+  // =========================================================
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -260,12 +272,15 @@ function App() {
     setUser(null);
     setRole("");
     setMessage("");
+
     setOwnerData(null);
     setStores([]);
     setShowChangePassword(false);
   };
 
-  // ==================== ADMIN USERS ====================
+  // =========================================================
+  // ADMIN USERS
+  // =========================================================
 
   const loadAdminUsers = async () => {
     try {
@@ -276,7 +291,9 @@ function App() {
     }
   };
 
-  // ==================== ADMIN STORES ====================
+  // =========================================================
+  // ADMIN STORES
+  // =========================================================
 
   const loadAdminStores = async () => {
     try {
@@ -290,6 +307,7 @@ function App() {
   const handleAdminUsers = async () => {
     setShowAddUser(false);
     setShowAddStore(false);
+
     setUserCreateMessage("");
     setStoreCreateMessage("");
 
@@ -299,13 +317,16 @@ function App() {
   const handleAdminStores = async () => {
     setShowAddUser(false);
     setShowAddStore(false);
+
     setUserCreateMessage("");
     setStoreCreateMessage("");
 
     await loadAdminStores();
   };
 
-  // ==================== VIEW USER ====================
+  // =========================================================
+  // VIEW USER
+  // =========================================================
 
   const handleViewUser = async (id) => {
     try {
@@ -316,7 +337,9 @@ function App() {
     }
   };
 
-  // ==================== VIEW STORE ====================
+  // =========================================================
+  // VIEW STORE
+  // =========================================================
 
   const handleViewStore = async (id) => {
     try {
@@ -327,7 +350,9 @@ function App() {
     }
   };
 
-  // ==================== CREATE USER ====================
+  // =========================================================
+  // CREATE USER
+  // =========================================================
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
@@ -361,7 +386,9 @@ function App() {
     }
   };
 
-  // ==================== CREATE STORE ====================
+  // =========================================================
+  // CREATE STORE
+  // =========================================================
 
   const handleCreateStore = async (e) => {
     e.preventDefault();
@@ -393,7 +420,9 @@ function App() {
     }
   };
 
-  // ==================== FILTER USERS ====================
+  // =========================================================
+  // FILTER USERS
+  // =========================================================
 
   const filteredAdminUsers = adminUsers.filter((item) => {
     const search = userSearch.toLowerCase();
@@ -405,7 +434,9 @@ function App() {
     );
   });
 
-  // ==================== FILTER STORES ====================
+  // =========================================================
+  // FILTER STORES
+  // =========================================================
 
   const filteredAdminStores = adminStores.filter((item) => {
     const search = storeSearch.toLowerCase();
@@ -417,7 +448,9 @@ function App() {
     );
   });
 
-  // ==================== RATINGS ====================
+  // =========================================================
+  // RATINGS
+  // =========================================================
 
   const handleRatingChange = (storeId, value) => {
     setRatingValues((previous) => ({
@@ -468,7 +501,9 @@ function App() {
     }
   };
 
-  // ==================== CHANGE PASSWORD ====================
+  // =========================================================
+  // CHANGE PASSWORD
+  // =========================================================
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -506,7 +541,10 @@ function App() {
     }
   };
 
-  // ==================== LOGIN / SIGNUP PAGE ====================
+  // =========================================================
+  // LOGIN / SIGNUP PAGE
+  // DO NOT CHANGE
+  // =========================================================
 
   if (!loggedIn) {
     return (
@@ -732,50 +770,81 @@ function App() {
     );
   }
 
-  // ==================== DASHBOARD ====================
+  // =========================================================
+  // DASHBOARD
+  // =========================================================
 
   return (
-    <div>
-      {/* ==================== TOP BAR ==================== */}
+    <div className="dashboard-app">
+
+      {/* =====================================================
+          TOP BAR
+      ===================================================== */}
 
       <header className="topbar">
-        <div>
+        <div className="brand-area">
           <h1>🏪 RateHub</h1>
           <p>Store Rating Platform</p>
         </div>
 
         <div className="topbar-right">
-          <span>{user?.name}</span>
+          <div className="user-profile">
+            <div className="profile-avatar">
+              {user?.name?.charAt(0)?.toUpperCase() || "U"}
+            </div>
 
-          {role !== "admin" && (
-            <>
-              <button
-                className="secondary-btn"
-                onClick={() =>
-                  setShowChangePassword(
-                    !showChangePassword
-                  )
-                }
-              >
-                Change Password
-              </button>
+            <div>
+              <strong>{user?.name}</strong>
+              <small>
+                {role === "admin"
+                  ? "System Administrator"
+                  : role === "owner"
+                  ? "Store Owner"
+                  : "Normal User"}
+              </small>
+            </div>
+          </div>
 
-              <button
-                className="logout-btn"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </>
-          )}
+          <button
+            className="secondary-btn"
+            onClick={() =>
+              setShowChangePassword(!showChangePassword)
+            }
+          >
+            🔐 Change Password
+          </button>
+
+          <button
+            className="logout-btn"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </div>
       </header>
 
-      {/* ==================== CHANGE PASSWORD ==================== */}
+      {/* =====================================================
+          CHANGE PASSWORD
+      ===================================================== */}
 
       {showChangePassword && (
         <div className="password-box">
-          <h2>Change Password</h2>
+          <div className="password-box-header">
+            <div>
+              <span className="section-icon">🔐</span>
+              <div>
+                <h2>Change Password</h2>
+                <p>Update your account password securely.</p>
+              </div>
+            </div>
+
+            <button
+              className="close-mini-btn"
+              onClick={() => setShowChangePassword(false)}
+            >
+              ×
+            </button>
+          </div>
 
           <form onSubmit={handleChangePassword}>
             <input
@@ -812,636 +881,712 @@ function App() {
         </div>
       )}
 
-      {message && role !== "user" && (
-        <div className="dashboard-message">
-          {message}
-        </div>
-      )}
-
-      {/* ==================== ADMIN ==================== */}
+      {/* =====================================================
+          ADMIN DASHBOARD
+      ===================================================== */}
 
       {role === "admin" && (
-        <div className="dashboard-content">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "20px",
-              marginBottom: "24px",
-              flexWrap: "wrap",
-            }}
-          >
-            <div>
-              <h2 style={{ marginBottom: "6px" }}>
-                System Administrator Dashboard
-              </h2>
+        <div className="admin-dashboard">
 
-              <p
-                style={{
-                  margin: 0,
-                  color: "#64748b",
-                }}
-              >
-                Manage users, stores and platform activity
+          {/* HERO */}
+
+          <div className="admin-hero">
+            <div className="admin-hero-content">
+              <div className="hero-icon">
+                🛡️
+              </div>
+
+              <div>
+                <span className="hero-label">
+                  ADMINISTRATION
+                </span>
+
+                <h2>
+                  System Administrator Dashboard
+                </h2>
+
+                <p>
+                  Manage users, stores and platform activity
+                  from one place.
+                </p>
+              </div>
+            </div>
+
+            <div className="hero-welcome">
+              <span>Welcome back</span>
+              <strong>{user?.name}</strong>
+            </div>
+          </div>
+
+          {/* STATS */}
+
+          <div className="admin-stats-grid">
+
+            <div className="admin-stat-card users-stat">
+              <div className="stat-top">
+                <div className="stat-icon">
+                  👥
+                </div>
+
+                <span className="stat-tag">
+                  USERS
+                </span>
+              </div>
+
+              <div className="stat-number">
+                {adminStats.totalUsers || 0}
+              </div>
+
+              <p>
+                Registered platform users
               </p>
             </div>
 
-            <div
-              style={{
-                fontSize: "14px",
-                color: "#64748b",
-              }}
-            >
-              Welcome, <strong>{user?.name}</strong>
+            <div className="admin-stat-card stores-stat">
+              <div className="stat-top">
+                <div className="stat-icon">
+                  🏪
+                </div>
+
+                <span className="stat-tag">
+                  STORES
+                </span>
+              </div>
+
+              <div className="stat-number">
+                {adminStats.totalStores || 0}
+              </div>
+
+              <p>
+                Stores available on platform
+              </p>
             </div>
+
+            <div className="admin-stat-card ratings-stat">
+              <div className="stat-top">
+                <div className="stat-icon">
+                  ⭐
+                </div>
+
+                <span className="stat-tag">
+                  RATINGS
+                </span>
+              </div>
+
+              <div className="stat-number">
+                {adminStats.totalRatings || 0}
+              </div>
+
+              <p>
+                Ratings submitted by users
+              </p>
+            </div>
+
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "230px minmax(0, 1fr)",
-              gap: "24px",
-              alignItems: "stretch",
-            }}
-          >
-            {/* ==================== LEFT SIDEBAR ==================== */}
+          {/* QUICK ACTIONS */}
 
-            <div
-              style={{
-                background: "#ffffff",
-                borderRadius: "18px",
-                padding: "20px",
-                boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
-                position: "sticky",
-                top: "20px",
-                height: "calc(100vh - 160px)",
-                minHeight: "500px",
-                display: "flex",
-                flexDirection: "column",
-                boxSizing: "border-box",
-              }}
-            >
+          <div className="quick-action-card">
+
+            <div className="quick-heading">
               <div>
-                <h2
-                  style={{
-                    margin: "0 0 6px",
-                    fontSize: "20px",
-                  }}
-                >
-                  ⚡ Quick Actions
+                <span className="section-label">
+                  MANAGEMENT
+                </span>
+
+                <h2>
+                  Quick Actions
                 </h2>
 
-                <p
-                  style={{
-                    margin: "0 0 20px",
-                    color: "#64748b",
-                    fontSize: "13px",
-                    lineHeight: "1.5",
-                  }}
-                >
-                  Choose an action to manage the platform
+                <p>
+                  Choose what you want to manage.
                 </p>
-
-                <button
-                  className="primary-btn"
-                  style={{
-                    width: "100%",
-                    marginBottom: "10px",
-                  }}
-                  onClick={handleAdminUsers}
-                >
-                  👥 Manage Users
-                </button>
-
-                <button
-                  className="primary-btn"
-                  style={{
-                    width: "100%",
-                    marginBottom: "10px",
-                  }}
-                  onClick={handleAdminStores}
-                >
-                  🏪 Manage Stores
-                </button>
-
-                <button
-                  className="secondary-btn"
-                  style={{
-                    width: "100%",
-                    marginBottom: "10px",
-                  }}
-                  onClick={async () => {
-                    setShowAddUser(!showAddUser);
-                    setShowAddStore(false);
-                    setUserCreateMessage("");
-                    setStoreCreateMessage("");
-                    await loadAdminUsers();
-                  }}
-                >
-                  ➕ Add User
-                </button>
-
-                <button
-                  className="secondary-btn"
-                  style={{
-                    width: "100%",
-                  }}
-                  onClick={async () => {
-                    setShowAddStore(!showAddStore);
-                    setShowAddUser(false);
-                    setUserCreateMessage("");
-                    setStoreCreateMessage("");
-                    await loadAdminUsers();
-                  }}
-                >
-                  🏪 Add Store
-                </button>
               </div>
+            </div>
 
-              {/* ==================== BOTTOM CONTROLS ==================== */}
+            <div className="quick-action-grid">
 
-              <div
-                style={{
-                  marginTop: "auto",
-                  paddingTop: "18px",
-                  borderTop: "1px solid #e5e7eb",
+              <button
+                className="quick-action blue-action"
+                onClick={handleAdminUsers}
+              >
+                <span className="quick-action-icon">
+                  👥
+                </span>
+
+                <span>
+                  <strong>Manage Users</strong>
+                  <small>
+                    View and search all users
+                  </small>
+                </span>
+
+                <b>→</b>
+              </button>
+
+              <button
+                className="quick-action purple-action"
+                onClick={handleAdminStores}
+              >
+                <span className="quick-action-icon">
+                  🏪
+                </span>
+
+                <span>
+                  <strong>Manage Stores</strong>
+                  <small>
+                    View stores and ratings
+                  </small>
+                </span>
+
+                <b>→</b>
+              </button>
+
+              <button
+                className="quick-action green-action"
+                onClick={async () => {
+                  setShowAddUser(!showAddUser);
+                  setShowAddStore(false);
+                  setUserCreateMessage("");
+                  setStoreCreateMessage("");
+                  await loadAdminUsers();
                 }}
               >
-                <button
-                  className="secondary-btn"
-                  style={{
-                    width: "100%",
-                    marginBottom: "10px",
-                  }}
-                  onClick={() =>
-                    setShowChangePassword(
-                      !showChangePassword
-                    )
-                  }
-                >
-                  🔐 Change Password
-                </button>
+                <span className="quick-action-icon">
+                  ➕
+                </span>
 
-                <button
-                  className="logout-btn"
-                  style={{
-                    width: "100%",
-                  }}
-                  onClick={handleLogout}
-                >
-                  🚪 Logout
-                </button>
-              </div>
-            </div>
+                <span>
+                  <strong>Add User</strong>
+                  <small>
+                    Create a new account
+                  </small>
+                </span>
 
-            {/* ==================== RIGHT ADMIN CONTENT ==================== */}
+                <b>→</b>
+              </button>
 
-            <div
-              style={{
-                minWidth: 0,
-                width: "100%",
-              }}
-            >
-              {/* ==================== STATISTICS ==================== */}
+              <button
+                className="quick-action orange-action"
+                onClick={async () => {
+                  setShowAddStore(!showAddStore);
+                  setShowAddUser(false);
+                  setUserCreateMessage("");
+                  setStoreCreateMessage("");
+                  await loadAdminUsers();
+                }}
+              >
+                <span className="quick-action-icon">
+                  🏬
+                </span>
 
-              <div className="stats-grid">
-                <div
-                  className="stat-card"
-                  style={{
-                    borderTop: "4px solid #2563eb",
-                  }}
-                >
-                  <h3>👥 Total Users</h3>
+                <span>
+                  <strong>Add Store</strong>
+                  <small>
+                    Register a new store
+                  </small>
+                </span>
 
-                  <strong>
-                    {adminStats.totalUsers || 0}
-                  </strong>
+                <b>→</b>
+              </button>
 
-                  <p
-                    style={{
-                      margin: "8px 0 0",
-                      color: "#64748b",
-                      fontSize: "13px",
-                    }}
-                  >
-                    Registered platform users
-                  </p>
-                </div>
-
-                <div
-                  className="stat-card"
-                  style={{
-                    borderTop: "4px solid #16a34a",
-                  }}
-                >
-                  <h3>🏪 Total Stores</h3>
-
-                  <strong>
-                    {adminStats.totalStores || 0}
-                  </strong>
-
-                  <p
-                    style={{
-                      margin: "8px 0 0",
-                      color: "#64748b",
-                      fontSize: "13px",
-                    }}
-                  >
-                    Stores on the platform
-                  </p>
-                </div>
-
-                <div
-                  className="stat-card"
-                  style={{
-                    borderTop: "4px solid #f59e0b",
-                  }}
-                >
-                  <h3>⭐ Total Ratings</h3>
-
-                  <strong>
-                    {adminStats.totalRatings || 0}
-                  </strong>
-
-                  <p
-                    style={{
-                      margin: "8px 0 0",
-                      color: "#64748b",
-                      fontSize: "13px",
-                    }}
-                  >
-                    Ratings submitted by users
-                  </p>
-                </div>
-              </div>
-
-              {/* ==================== ADD USER ==================== */}
-
-              {showAddUser && (
-                <div
-                  className="form-card"
-                  style={{
-                    marginTop: "24px",
-                    marginBottom: "24px",
-                  }}
-                >
-                  <h2>➕ Add New User</h2>
-
-                  <p
-                    style={{
-                      color: "#64748b",
-                      marginTop: "-8px",
-                    }}
-                  >
-                    Create a user, store owner or administrator account.
-                  </p>
-
-                  <form onSubmit={handleCreateUser}>
-                    <input
-                      type="text"
-                      placeholder="Full Name"
-                      value={newUserName}
-                      onChange={(e) =>
-                        setNewUserName(e.target.value)
-                      }
-                    />
-
-                    <input
-                      type="email"
-                      placeholder="Email Address"
-                      value={newUserEmail}
-                      onChange={(e) =>
-                        setNewUserEmail(e.target.value)
-                      }
-                    />
-
-                    <textarea
-                      placeholder="Address"
-                      value={newUserAddress}
-                      onChange={(e) =>
-                        setNewUserAddress(e.target.value)
-                      }
-                    />
-
-                    <input
-                      type="password"
-                      placeholder="Password"
-                      value={newUserPassword}
-                      onChange={(e) =>
-                        setNewUserPassword(e.target.value)
-                      }
-                    />
-
-                    <select
-                      value={newUserRole}
-                      onChange={(e) =>
-                        setNewUserRole(e.target.value)
-                      }
-                    >
-                      <option value="user">
-                        Normal User
-                      </option>
-
-                      <option value="owner">
-                        Store Owner
-                      </option>
-
-                      <option value="admin">
-                        System Administrator
-                      </option>
-                    </select>
-
-                    {userCreateMessage && (
-                      <p className="message">
-                        {userCreateMessage}
-                      </p>
-                    )}
-
-                    <button
-                      type="submit"
-                      className="primary-btn"
-                    >
-                      Create User
-                    </button>
-                  </form>
-                </div>
-              )}
-
-              {/* ==================== ADD STORE ==================== */}
-
-              {showAddStore && (
-                <div
-                  className="form-card"
-                  style={{
-                    marginTop: "24px",
-                    marginBottom: "24px",
-                  }}
-                >
-                  <h2>🏪 Add New Store</h2>
-
-                  <p
-                    style={{
-                      color: "#64748b",
-                      marginTop: "-8px",
-                    }}
-                  >
-                    Create a store and assign it to a store owner.
-                  </p>
-
-                  <form onSubmit={handleCreateStore}>
-                    <input
-                      type="text"
-                      placeholder="Store Name"
-                      value={newStoreName}
-                      onChange={(e) =>
-                        setNewStoreName(e.target.value)
-                      }
-                    />
-
-                    <textarea
-                      placeholder="Store Address"
-                      value={newStoreAddress}
-                      onChange={(e) =>
-                        setNewStoreAddress(e.target.value)
-                      }
-                    />
-
-                    <select
-                      value={newStoreOwnerId}
-                      onChange={(e) =>
-                        setNewStoreOwnerId(e.target.value)
-                      }
-                    >
-                      <option value="">
-                        Select Store Owner
-                      </option>
-
-                      {adminUsers
-                        .filter(
-                          (item) => item.role === "owner"
-                        )
-                        .map((item) => (
-                          <option
-                            key={item.id}
-                            value={item.id}
-                          >
-                            {item.name} - {item.email}
-                          </option>
-                        ))}
-                    </select>
-
-                    {adminUsers.filter(
-                      (item) => item.role === "owner"
-                    ).length === 0 && (
-                      <p
-                        style={{
-                          color: "#dc2626",
-                          fontSize: "14px",
-                        }}
-                      >
-                        No store owner found. Create a Store Owner account first.
-                      </p>
-                    )}
-
-                    {storeCreateMessage && (
-                      <p className="message">
-                        {storeCreateMessage}
-                      </p>
-                    )}
-
-                    <button
-                      type="submit"
-                      className="primary-btn"
-                    >
-                      Create Store
-                    </button>
-                  </form>
-                </div>
-              )}
-
-              {/* ==================== USERS TABLE ==================== */}
-
-              {adminUsers.length > 0 && (
-                <div
-                  className="table-card"
-                  style={{
-                    marginTop: "24px",
-                    marginBottom: "24px",
-                  }}
-                >
-                  <div className="section-header">
-                    <div>
-                      <h2>👥 All Users</h2>
-
-                      <p
-                        style={{
-                          margin: "4px 0 0",
-                          color: "#64748b",
-                        }}
-                      >
-                        View and search registered users
-                      </p>
-                    </div>
-
-                    <input
-                      type="text"
-                      placeholder="Search users..."
-                      value={userSearch}
-                      onChange={(e) =>
-                        setUserSearch(e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div className="table-wrapper">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Role</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {filteredAdminUsers.map((item) => (
-                          <tr key={item.id}>
-                            <td>{item.name}</td>
-                            <td>{item.email}</td>
-
-                            <td>
-                              <span
-                                style={{
-                                  textTransform: "capitalize",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                {item.role}
-                              </span>
-                            </td>
-
-                            <td>
-                              <button
-                                className="small-btn"
-                                onClick={() =>
-                                  handleViewUser(item.id)
-                                }
-                              >
-                                View
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {filteredAdminUsers.length === 0 && (
-                    <p className="empty-text">
-                      No matching users found.
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* ==================== STORES TABLE ==================== */}
-
-              {adminStores.length > 0 && (
-                <div className="table-card">
-                  <div className="section-header">
-                    <div>
-                      <h2>🏪 All Stores</h2>
-
-                      <p
-                        style={{
-                          margin: "4px 0 0",
-                          color: "#64748b",
-                        }}
-                      >
-                        View stores, owners and ratings
-                      </p>
-                    </div>
-
-                    <input
-                      type="text"
-                      placeholder="Search stores..."
-                      value={storeSearch}
-                      onChange={(e) =>
-                        setStoreSearch(e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div className="table-wrapper">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Store</th>
-                          <th>Address</th>
-                          <th>Owner</th>
-                          <th>Rating</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {filteredAdminStores.map((item) => (
-                          <tr key={item.id}>
-                            <td>{item.name}</td>
-                            <td>{item.address}</td>
-
-                            <td>
-                              {item.owner_name ||
-                                "Not assigned"}
-                            </td>
-
-                            <td>
-                              ⭐{" "}
-                              {Number(
-                                item.overall_rating || 0
-                              ).toFixed(2)}
-                            </td>
-
-                            <td>
-                              <button
-                                className="small-btn"
-                                onClick={() =>
-                                  handleViewStore(item.id)
-                                }
-                              >
-                                View
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {filteredAdminStores.length === 0 && (
-                    <p className="empty-text">
-                      No matching stores found.
-                    </p>
-                  )}
-                </div>
-              )}
             </div>
           </div>
+
+          {/* ADD USER */}
+
+          {showAddUser && (
+            <div className="admin-form-card">
+
+              <div className="admin-card-heading">
+                <div className="heading-icon blue-bg">
+                  👤
+                </div>
+
+                <div>
+                  <span className="section-label">
+                    NEW ACCOUNT
+                  </span>
+
+                  <h2>
+                    Add New User
+                  </h2>
+
+                  <p>
+                    Create a user, store owner or administrator account.
+                  </p>
+                </div>
+              </div>
+
+              <form onSubmit={handleCreateUser}>
+
+                <div className="form-grid">
+
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={newUserName}
+                    onChange={(e) =>
+                      setNewUserName(e.target.value)
+                    }
+                  />
+
+                  <input
+                    type="email"
+                    placeholder="Email Address"
+                    value={newUserEmail}
+                    onChange={(e) =>
+                      setNewUserEmail(e.target.value)
+                    }
+                  />
+
+                  <textarea
+                    placeholder="Address"
+                    value={newUserAddress}
+                    onChange={(e) =>
+                      setNewUserAddress(e.target.value)
+                    }
+                  />
+
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    value={newUserPassword}
+                    onChange={(e) =>
+                      setNewUserPassword(e.target.value)
+                    }
+                  />
+
+                  <select
+                    value={newUserRole}
+                    onChange={(e) =>
+                      setNewUserRole(e.target.value)
+                    }
+                  >
+                    <option value="user">
+                      Normal User
+                    </option>
+
+                    <option value="owner">
+                      Store Owner
+                    </option>
+
+                    <option value="admin">
+                      System Administrator
+                    </option>
+                  </select>
+
+                </div>
+
+                {userCreateMessage && (
+                  <p className="message">
+                    {userCreateMessage}
+                  </p>
+                )}
+
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={() => setShowAddUser(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="primary-btn"
+                  >
+                    Create User
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          )}
+
+          {/* ADD STORE */}
+
+          {showAddStore && (
+            <div className="admin-form-card">
+
+              <div className="admin-card-heading">
+                <div className="heading-icon orange-bg">
+                  🏪
+                </div>
+
+                <div>
+                  <span className="section-label">
+                    NEW STORE
+                  </span>
+
+                  <h2>
+                    Add New Store
+                  </h2>
+
+                  <p>
+                    Create a store and assign it to a store owner.
+                  </p>
+                </div>
+              </div>
+
+              <form onSubmit={handleCreateStore}>
+
+                <div className="form-grid">
+
+                  <input
+                    type="text"
+                    placeholder="Store Name"
+                    value={newStoreName}
+                    onChange={(e) =>
+                      setNewStoreName(e.target.value)
+                    }
+                  />
+
+                  <textarea
+                    placeholder="Store Address"
+                    value={newStoreAddress}
+                    onChange={(e) =>
+                      setNewStoreAddress(e.target.value)
+                    }
+                  />
+
+                  <select
+                    value={newStoreOwnerId}
+                    onChange={(e) =>
+                      setNewStoreOwnerId(e.target.value)
+                    }
+                  >
+                    <option value="">
+                      Select Store Owner
+                    </option>
+
+                    {adminUsers
+                      .filter(
+                        (item) => item.role === "owner"
+                      )
+                      .map((item) => (
+                        <option
+                          key={item.id}
+                          value={item.id}
+                        >
+                          {item.name} - {item.email}
+                        </option>
+                      ))}
+                  </select>
+
+                </div>
+
+                {adminUsers.filter(
+                  (item) => item.role === "owner"
+                ).length === 0 && (
+                  <p className="warning-message">
+                    No store owner found. Create a Store Owner account first.
+                  </p>
+                )}
+
+                {storeCreateMessage && (
+                  <p className="message">
+                    {storeCreateMessage}
+                  </p>
+                )}
+
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={() => setShowAddStore(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="primary-btn"
+                  >
+                    Create Store
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          )}
+
+          {/* USERS */}
+
+          {adminUsers.length > 0 && (
+            <div className="admin-table-card">
+
+              <div className="table-card-header">
+
+                <div className="table-title">
+                  <div className="heading-icon blue-bg">
+                    👥
+                  </div>
+
+                  <div>
+                    <span className="section-label">
+                      PLATFORM USERS
+                    </span>
+
+                    <h2>
+                      All Users
+                    </h2>
+
+                    <p>
+                      View and search registered users.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="table-search">
+                  🔍
+                  <input
+                    type="text"
+                    placeholder="Search users..."
+                    value={userSearch}
+                    onChange={(e) =>
+                      setUserSearch(e.target.value)
+                    }
+                  />
+                </div>
+
+              </div>
+
+              <div className="table-wrapper">
+                <table>
+
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+
+                    {filteredAdminUsers.map((item) => (
+                      <tr key={item.id}>
+
+                        <td>
+                          <div className="table-user">
+                            <div className="mini-avatar">
+                              {item.name
+                                ?.charAt(0)
+                                ?.toUpperCase()}
+                            </div>
+
+                            <strong>
+                              {item.name}
+                            </strong>
+                          </div>
+                        </td>
+
+                        <td>
+                          {item.email}
+                        </td>
+
+                        <td>
+                          <span
+                            className={`role-pill ${item.role}`}
+                          >
+                            {item.role}
+                          </span>
+                        </td>
+
+                        <td>
+                          <button
+                            className="view-btn"
+                            onClick={() =>
+                              handleViewUser(item.id)
+                            }
+                          >
+                            View →
+                          </button>
+                        </td>
+
+                      </tr>
+                    ))}
+
+                  </tbody>
+
+                </table>
+              </div>
+
+              {filteredAdminUsers.length === 0 && (
+                <div className="empty-table">
+                  <span>🔍</span>
+                  <strong>
+                    No matching users found
+                  </strong>
+                  <p>
+                    Try another search term.
+                  </p>
+                </div>
+              )}
+
+            </div>
+          )}
+
+          {/* STORES */}
+
+          {adminStores.length > 0 && (
+            <div className="admin-table-card">
+
+              <div className="table-card-header">
+
+                <div className="table-title">
+                  <div className="heading-icon orange-bg">
+                    🏪
+                  </div>
+
+                  <div>
+                    <span className="section-label">
+                      STORE DIRECTORY
+                    </span>
+
+                    <h2>
+                      All Stores
+                    </h2>
+
+                    <p>
+                      View stores, owners and ratings.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="table-search">
+                  🔍
+                  <input
+                    type="text"
+                    placeholder="Search stores..."
+                    value={storeSearch}
+                    onChange={(e) =>
+                      setStoreSearch(e.target.value)
+                    }
+                  />
+                </div>
+
+              </div>
+
+              <div className="table-wrapper">
+                <table>
+
+                  <thead>
+                    <tr>
+                      <th>Store</th>
+                      <th>Address</th>
+                      <th>Owner</th>
+                      <th>Rating</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+
+                    {filteredAdminStores.map((item) => (
+                      <tr key={item.id}>
+
+                        <td>
+                          <div className="table-store">
+                            <div className="store-mini-icon">
+                              🏪
+                            </div>
+
+                            <strong>
+                              {item.name}
+                            </strong>
+                          </div>
+                        </td>
+
+                        <td>
+                          <span className="address-text">
+                            {item.address}
+                          </span>
+                        </td>
+
+                        <td>
+                          {item.owner_name || (
+                            <span className="not-assigned">
+                              Not assigned
+                            </span>
+                          )}
+                        </td>
+
+                        <td>
+                          <span className="rating-pill">
+                            ⭐{" "}
+                            {Number(
+                              item.overall_rating || 0
+                            ).toFixed(2)}
+                          </span>
+                        </td>
+
+                        <td>
+                          <button
+                            className="view-btn"
+                            onClick={() =>
+                              handleViewStore(item.id)
+                            }
+                          >
+                            View →
+                          </button>
+                        </td>
+
+                      </tr>
+                    ))}
+
+                  </tbody>
+
+                </table>
+              </div>
+
+              {filteredAdminStores.length === 0 && (
+                <div className="empty-table">
+                  <span>🔍</span>
+                  <strong>
+                    No matching stores found
+                  </strong>
+                  <p>
+                    Try another search term.
+                  </p>
+                </div>
+              )}
+
+            </div>
+          )}
+
         </div>
       )}
 
-      {/* ==================== NORMAL USER ==================== */}
+      {/* =====================================================
+          NORMAL USER DASHBOARD
+      ===================================================== */}
 
       {role === "user" && (
-        <div className="dashboard-content">
-          <h2>Normal User Dashboard</h2>
+        <div className="dashboard-content user-dashboard">
+
+          <div className="dashboard-heading">
+            <div>
+              <span className="section-label">
+                STORE DISCOVERY
+              </span>
+
+              <h2>
+                Normal User Dashboard
+              </h2>
+
+              <p>
+                Search, explore and rate your favourite stores.
+              </p>
+            </div>
+          </div>
 
           <div className="section-header">
             <div>
               <h2>All Stores</h2>
-
               <p>
                 Search and rate your favourite stores.
               </p>
@@ -1460,10 +1605,13 @@ function App() {
           {stores.length === 0 ? (
             <div className="empty-card">
               <h3>No stores available</h3>
-              <p>Please check again later.</p>
+              <p>
+                Please check again later.
+              </p>
             </div>
           ) : (
             <div className="store-grid">
+
               {stores
                 .filter((store) => {
                   const search =
@@ -1479,12 +1627,16 @@ function App() {
                   );
                 })
                 .map((store) => (
+
                   <div
                     className="store-card"
                     key={store.id}
                   >
+
                     <div className="store-card-header">
-                      <h3>{store.name}</h3>
+                      <h3>
+                        {store.name}
+                      </h3>
 
                       <span>
                         ⭐{" "}
@@ -1555,7 +1707,9 @@ function App() {
                         ? "Update Rating"
                         : "Submit Rating"}
                     </button>
+
                   </div>
+
                 ))}
             </div>
           )}
@@ -1575,7 +1729,10 @@ function App() {
               );
             }).length === 0 && (
               <div className="empty-card">
-                <h3>No matching stores found</h3>
+                <h3>
+                  No matching stores found
+                </h3>
+
                 <p>
                   Try another store name or address.
                 </p>
@@ -1587,26 +1744,64 @@ function App() {
               {message}
             </div>
           )}
+
         </div>
       )}
 
-      {/* ==================== OWNER ==================== */}
+      {/* =====================================================
+          OWNER DASHBOARD
+      ===================================================== */}
 
       {role === "owner" && (
-        <div className="dashboard-content">
-          <h2>Store Owner Dashboard</h2>
+        <div className="dashboard-content owner-dashboard">
+
+          <div className="dashboard-heading">
+            <div>
+              <span className="section-label">
+                STORE MANAGEMENT
+              </span>
+
+              <h2>
+                Store Owner Dashboard
+              </h2>
+
+              <p>
+                Monitor your store performance and customer ratings.
+              </p>
+            </div>
+          </div>
 
           {ownerData?.store ? (
             <>
-              <div className="owner-store-card">
-                <h2>{ownerData.store.name}</h2>
 
-                <p>{ownerData.store.address}</p>
+              <div className="owner-store-card">
+
+                <div className="owner-store-icon">
+                  🏪
+                </div>
+
+                <div>
+                  <span>
+                    YOUR STORE
+                  </span>
+
+                  <h2>
+                    {ownerData.store.name}
+                  </h2>
+
+                  <p>
+                    📍 {ownerData.store.address}
+                  </p>
+                </div>
+
               </div>
 
               <div className="stats-grid">
+
                 <div className="stat-card">
-                  <h3>Average Rating</h3>
+                  <h3>
+                    ⭐ Average Rating
+                  </h3>
 
                   <strong>
                     {Number(
@@ -1616,7 +1811,9 @@ function App() {
                 </div>
 
                 <div className="stat-card">
-                  <h3>Total Ratings</h3>
+                  <h3>
+                    📝 Total Ratings
+                  </h3>
 
                   <strong>
                     {ownerData.store.total_ratings || 0}
@@ -1624,22 +1821,28 @@ function App() {
                 </div>
 
                 <div className="stat-card">
-                  <h3>Users Who Rated</h3>
+                  <h3>
+                    👥 Users Who Rated
+                  </h3>
 
                   <strong>
                     {ownerData.usersWhoRated?.length || 0}
                   </strong>
                 </div>
+
               </div>
 
               <div className="table-card">
+
                 <h2>
                   Users Who Rated Your Store
                 </h2>
 
                 {ownerData.usersWhoRated?.length > 0 ? (
                   <div className="table-wrapper">
+
                     <table>
+
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -1650,12 +1853,18 @@ function App() {
                       </thead>
 
                       <tbody>
+
                         {ownerData.usersWhoRated.map(
                           (item) => (
                             <tr key={item.id}>
-                              <td>{item.name}</td>
 
-                              <td>{item.email}</td>
+                              <td>
+                                {item.name}
+                              </td>
+
+                              <td>
+                                {item.email}
+                              </td>
 
                               <td>
                                 ⭐ {item.rating}
@@ -1668,42 +1877,55 @@ function App() {
                                     ).toLocaleDateString()
                                   : "-"}
                               </td>
+
                             </tr>
                           )
                         )}
+
                       </tbody>
+
                     </table>
+
                   </div>
                 ) : (
                   <p className="empty-text">
                     No users have rated your store yet.
                   </p>
                 )}
+
               </div>
+
             </>
           ) : (
             <div className="empty-card">
-              <h3>No store assigned</h3>
+              <h3>
+                No store assigned
+              </h3>
 
               <p>
                 Please contact the administrator.
               </p>
             </div>
           )}
+
         </div>
       )}
 
-      {/* ==================== USER DETAILS MODAL ==================== */}
+      {/* =====================================================
+          USER DETAILS MODAL
+      ===================================================== */}
 
       {selectedUser && (
         <div
           className="modal-overlay"
           onClick={() => setSelectedUser(null)}
         >
+
           <div
             className="user-details-modal"
             onClick={(e) => e.stopPropagation()}
           >
+
             <button
               className="modal-close"
               onClick={() =>
@@ -1717,7 +1939,9 @@ function App() {
               👤
             </div>
 
-            <h2>User Details</h2>
+            <h2>
+              User Details
+            </h2>
 
             <p className="modal-subtitle">
               Complete account information
@@ -1764,21 +1988,27 @@ function App() {
             >
               Close
             </button>
+
           </div>
+
         </div>
       )}
 
-      {/* ==================== STORE DETAILS MODAL ==================== */}
+      {/* =====================================================
+          STORE DETAILS MODAL
+      ===================================================== */}
 
       {selectedStore && (
         <div
           className="modal-overlay"
           onClick={() => setSelectedStore(null)}
         >
+
           <div
             className="user-details-modal"
             onClick={(e) => e.stopPropagation()}
           >
+
             <button
               className="modal-close"
               onClick={() =>
@@ -1792,7 +2022,9 @@ function App() {
               🏪
             </div>
 
-            <h2>Store Details</h2>
+            <h2>
+              Store Details
+            </h2>
 
             <p className="modal-subtitle">
               Complete store information
@@ -1842,9 +2074,12 @@ function App() {
             >
               Close
             </button>
+
           </div>
+
         </div>
       )}
+
     </div>
   );
 }
