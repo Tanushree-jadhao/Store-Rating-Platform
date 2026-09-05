@@ -10011,3 +10011,103 @@ tbody tr:hover {
 .dashboard-sidebar .sidebar-section-title {
   font-size: 15px !important;
 }
+/* =========================================================
+   FINAL ADMIN DASHBOARD - BIG NORMAL TEXT
+   ========================================================= */
+
+.reference-dashboard .reference-stat span {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+
+.reference-dashboard .reference-stat strong {
+  font-size: 36px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard .reference-stat small {
+  font-size: 14px !important;
+}
+
+/* MANAGEMENT */
+.reference-dashboard .section-label {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard .quick-actions-title {
+  font-size: 25px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard .quick-actions-subtitle {
+  font-size: 17px !important;
+}
+
+/* QUICK ACTION CARDS */
+.reference-dashboard .quick-action-card h3 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard .quick-action-card p {
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+}
+
+.reference-dashboard .quick-action-card {
+  font-size: 16px !important;
+}
+
+/* USERS / STORES HEADINGS */
+.reference-dashboard .reference-panel h2 {
+  font-size: 23px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard .reference-panel h3 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+}
+
+/* EMPTY MESSAGE */
+.reference-dashboard .reference-panel p {
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+}
+
+/* SEARCH BOX */
+.reference-dashboard input {
+  font-size: 15px !important;
+}
+
+/* TABLE */
+.reference-dashboard th {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard td {
+  font-size: 16px !important;
+}
+
+/* SIDEBAR */
+.dashboard-sidebar .sidebar-section-title {
+  font-size: 16px !important;
+}
+
+.dashboard-sidebar .sidebar-item {
+  font-size: 17px !important;
+  font-weight: 600 !important;
+}
+
+/* MAIN DASHBOARD HEADING */
+.reference-dashboard > h1,
+.reference-dashboard h1 {
+  font-size: 34px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard > p {
+  font-size: 18px !important;
+}
