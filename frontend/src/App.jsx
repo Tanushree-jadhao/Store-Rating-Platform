@@ -20,7 +20,6 @@ import {
 
 function App() {
   // ================= AUTH STATE =================
-
   const [loggedIn, setLoggedIn] = useState(() => {
     return Boolean(localStorage.getItem("token"));
   });
@@ -56,14 +55,12 @@ function App() {
   const [activePage, setActivePage] = useState("dashboard");
 
   // ================= LOGIN =================
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginRole, setLoginRole] = useState("user");
   const [loginMessage, setLoginMessage] = useState("");
 
   // ================= SIGNUP =================
-
   const [showSignup, setShowSignup] = useState(false);
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
@@ -73,7 +70,6 @@ function App() {
   const [signupMessage, setSignupMessage] = useState("");
 
   // ================= ADMIN =================
-
   const [adminStats, setAdminStats] = useState({
     totalUsers: 0,
     totalStores: 0,
@@ -107,23 +103,19 @@ function App() {
   });
 
   // ================= USER =================
-
   const [stores, setStores] = useState([]);
   const [ratingValue, setRatingValue] = useState(5);
   const [ratingMessage, setRatingMessage] = useState("");
 
   // ================= OWNER =================
-
   const [ownerData, setOwnerData] = useState(null);
 
   // ================= CHANGE PASSWORD =================
-
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
 
   // ================= ADMIN FUNCTIONS =================
-
   const loadAdminDashboard = async () => {
     try {
       const stats = await getAdminDashboardStats();
@@ -152,7 +144,6 @@ function App() {
   };
 
   // ================= USER FUNCTIONS =================
-
   const loadStores = async () => {
     try {
       const data = await getStores();
@@ -163,7 +154,6 @@ function App() {
   };
 
   // ================= LOAD DASHBOARD =================
-
   useEffect(() => {
     if (!loggedIn) {
       return;
@@ -194,7 +184,6 @@ function App() {
   }, [loggedIn, role]);
 
   // ================= LOGIN =================
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginMessage("");
@@ -231,7 +220,6 @@ function App() {
   };
 
   // ================= SIGNUP =================
-
   const handleSignup = async (e) => {
     e.preventDefault();
     setSignupMessage("");
@@ -307,7 +295,6 @@ function App() {
   };
 
   // ================= LOGOUT =================
-
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -326,7 +313,6 @@ function App() {
   };
 
   // ================= CREATE USER =================
-
   const handleCreateUser = async (e) => {
     e.preventDefault();
     setUserCreateMessage("");
@@ -358,7 +344,6 @@ function App() {
   };
 
   // ================= CREATE STORE =================
-
   const handleCreateStore = async (e) => {
     e.preventDefault();
     setStoreCreateMessage("");
@@ -388,7 +373,6 @@ function App() {
   };
 
   // ================= VIEW USER =================
-
   const handleViewUser = async (id) => {
     try {
       const data = await getUserDetails(id);
@@ -399,7 +383,6 @@ function App() {
   };
 
   // ================= VIEW STORE =================
-
   const handleViewStore = async (id) => {
     try {
       const data = await getStoreDetails(id);
@@ -410,7 +393,6 @@ function App() {
   };
 
   // ================= RATING =================
-
   const handleSubmitRating = async (storeId) => {
     setRatingMessage("");
 
@@ -446,7 +428,6 @@ function App() {
   };
 
   // ================= CHANGE PASSWORD =================
-
   const handleChangePassword = async (e) => {
     e.preventDefault();
     setPasswordMessage("");
@@ -491,7 +472,6 @@ function App() {
   };
 
   // ================= FILTERS =================
-
   const filteredUsers = adminUsers.filter((item) => {
     const search = userSearch.toLowerCase();
 
@@ -512,13 +492,11 @@ function App() {
   });
 
   // ================= LOGIN / SIGNUP PAGE =================
-
   if (!loggedIn) {
     if (showSignup) {
       return (
         <div className="auth-page">
           <div className="auth-card">
-
             <div className="brand-header">
               <div
                 style={{
@@ -662,7 +640,6 @@ function App() {
     return (
       <div className="auth-page">
         <div className="auth-card">
-
           <div className="brand-header">
             <div
               style={{
@@ -778,12 +755,9 @@ function App() {
   }
 
   // ================= MAIN APPLICATION =================
-
   return (
     <div className="app-container">
-
       {/* TOPBAR */}
-
       <header className="topbar">
         <div className="topbar-brand">
           🏪 Store Rating Platform
@@ -805,11 +779,8 @@ function App() {
       </header>
 
       <div className="layout">
-
         {/* SIDEBAR */}
-
         <aside className="sidebar">
-
           <button
             className={
               activePage === "dashboard"
@@ -824,7 +795,6 @@ function App() {
           </button>
 
           {/* ADMIN MENU */}
-
           {role === "admin" && (
             <>
               <button
@@ -886,7 +856,6 @@ function App() {
           )}
 
           {/* USER MENU */}
-
           {role === "user" && (
             <>
               <button
@@ -919,7 +888,6 @@ function App() {
           )}
 
           {/* OWNER MENU */}
-
           {role === "owner" && (
             <button
               className={
@@ -937,11 +905,8 @@ function App() {
         </aside>
 
         {/* MAIN CONTENT */}
-
         <main className="main-content">
-
           {/* ADMIN DASHBOARD */}
-
           {activePage === "dashboard" &&
             role === "admin" && (
               <>
@@ -956,7 +921,6 @@ function App() {
                 </div>
 
                 <div className="stats-grid">
-
                   <div className="stat-card">
                     <span>Total Users</span>
 
@@ -980,13 +944,11 @@ function App() {
                       {adminStats.totalRatings}
                     </strong>
                   </div>
-
                 </div>
               </>
             )}
 
           {/* USER DASHBOARD */}
-
           {activePage === "dashboard" &&
             role === "user" && (
               <>
@@ -1002,7 +964,6 @@ function App() {
                 </div>
 
                 <div className="section-card">
-
                   <div className="section-header">
                     <div>
                       <h3>Stores</h3>
@@ -1024,7 +985,6 @@ function App() {
                   </div>
 
                   <div className="store-grid">
-
                     {filteredStores.length === 0 ? (
                       <p className="empty-text">
                         {stores.length === 0
@@ -1042,7 +1002,6 @@ function App() {
                           <p>{store.address}</p>
 
                           <div className="rating-info">
-
                             <span>
                               Overall Rating:{" "}
                               {Number(
@@ -1055,11 +1014,9 @@ function App() {
                               {store.user_rating ||
                                 "Not rated"}
                             </span>
-
                           </div>
 
                           <div className="rating-actions">
-
                             <select
                               value={ratingValue}
                               onChange={(e) =>
@@ -1102,12 +1059,10 @@ function App() {
                                 ? "Update Rating"
                                 : "Rate Store"}
                             </button>
-
                           </div>
                         </div>
                       ))
                     )}
-
                   </div>
 
                   {ratingMessage && (
@@ -1115,13 +1070,11 @@ function App() {
                       {ratingMessage}
                     </div>
                   )}
-
                 </div>
               </>
             )}
 
           {/* OWNER DASHBOARD */}
-
           {activePage === "dashboard" &&
             role === "owner" &&
             ownerData && (
@@ -1138,7 +1091,6 @@ function App() {
                 </div>
 
                 <div className="stats-grid">
-
                   <div className="stat-card">
                     <span>Average Rating</span>
 
@@ -1158,11 +1110,9 @@ function App() {
                         ?.total_ratings || 0}
                     </strong>
                   </div>
-
                 </div>
 
                 <div className="section-card">
-
                   <h3>
                     {ownerData.store?.name}
                   </h3>
@@ -1183,7 +1133,6 @@ function App() {
                     </p>
                   ) : (
                     <div className="table-wrapper">
-
                       <table>
                         <thead>
                           <tr>
@@ -1213,16 +1162,13 @@ function App() {
                           )}
                         </tbody>
                       </table>
-
                     </div>
                   )}
-
                 </div>
               </>
             )}
 
           {/* ADMIN USERS */}
-
           {activePage === "users" &&
             role === "admin" && (
               <>
@@ -1236,9 +1182,7 @@ function App() {
                 </div>
 
                 <div className="section-card">
-
                   <div className="section-header">
-
                     <h3>All Users</h3>
 
                     <input
@@ -1250,11 +1194,9 @@ function App() {
                         setUserSearch(e.target.value)
                       }
                     />
-
                   </div>
 
                   <div className="table-wrapper">
-
                     <table>
                       <thead>
                         <tr>
@@ -1268,7 +1210,6 @@ function App() {
                       <tbody>
                         {filteredUsers.map((item) => (
                           <tr key={item.id}>
-
                             <td>
                               {item.name}
                             </td>
@@ -1298,20 +1239,16 @@ function App() {
                                 View
                               </button>
                             </td>
-
                           </tr>
                         ))}
                       </tbody>
                     </table>
-
                   </div>
-
                 </div>
               </>
             )}
 
           {/* ADMIN STORES */}
-
           {activePage === "stores" &&
             role === "admin" && (
               <>
@@ -1324,9 +1261,7 @@ function App() {
                 </div>
 
                 <div className="section-card">
-
                   <div className="table-wrapper">
-
                     <table>
                       <thead>
                         <tr>
@@ -1341,7 +1276,6 @@ function App() {
                       <tbody>
                         {adminStores.map((store) => (
                           <tr key={store.id}>
-
                             <td>
                               {store.name}
                             </td>
@@ -1375,20 +1309,16 @@ function App() {
                                 View
                               </button>
                             </td>
-
                           </tr>
                         ))}
                       </tbody>
                     </table>
-
                   </div>
-
                 </div>
               </>
             )}
 
           {/* ADD USER */}
-
           {activePage === "add-user" &&
             role === "admin" && (
               <>
@@ -1402,9 +1332,7 @@ function App() {
                 </div>
 
                 <div className="section-card form-card">
-
                   <form onSubmit={handleCreateUser}>
-
                     <label>Name</label>
 
                     <input
@@ -1496,15 +1424,12 @@ function App() {
                     >
                       Add User
                     </button>
-
                   </form>
-
                 </div>
               </>
             )}
 
           {/* ADD STORE */}
-
           {activePage === "add-store" &&
             role === "admin" && (
               <>
@@ -1518,9 +1443,7 @@ function App() {
                 </div>
 
                 <div className="section-card form-card">
-
                   <form onSubmit={handleCreateStore}>
-
                     <label>Store Name</label>
 
                     <input
@@ -1574,15 +1497,12 @@ function App() {
                     >
                       Add Store
                     </button>
-
                   </form>
-
                 </div>
               </>
             )}
 
           {/* ALL STORES */}
-
           {activePage === "all-stores" &&
             role === "user" && (
               <>
@@ -1596,9 +1516,7 @@ function App() {
                 </div>
 
                 <div className="section-card">
-
                   <div className="section-header">
-
                     <h3>Stores</h3>
 
                     <input
@@ -1610,11 +1528,9 @@ function App() {
                         setStoreSearch(e.target.value)
                       }
                     />
-
                   </div>
 
                   <div className="store-grid">
-
                     {filteredStores.length === 0 ? (
                       <p className="empty-text">
                         {stores.length === 0
@@ -1627,13 +1543,11 @@ function App() {
                           className="store-card"
                           key={store.id}
                         >
-
                           <h3>{store.name}</h3>
 
                           <p>{store.address}</p>
 
                           <div className="rating-info">
-
                             <span>
                               Overall Rating:{" "}
                               {Number(
@@ -1646,11 +1560,9 @@ function App() {
                               {store.user_rating ||
                                 "Not rated"}
                             </span>
-
                           </div>
 
                           <div className="rating-actions">
-
                             <select
                               value={ratingValue}
                               onChange={(e) =>
@@ -1693,21 +1605,16 @@ function App() {
                                 ? "Update Rating"
                                 : "Rate Store"}
                             </button>
-
                           </div>
-
                         </div>
                       ))
                     )}
-
                   </div>
-
                 </div>
               </>
             )}
 
           {/* CHANGE PASSWORD */}
-
           {activePage === "change-password" && (
             <>
               <div className="page-header">
@@ -1719,9 +1626,7 @@ function App() {
               </div>
 
               <div className="section-card form-card">
-
                 <form onSubmit={handleChangePassword}>
-
                   <label>
                     Current Password
                   </label>
@@ -1764,18 +1669,14 @@ function App() {
                   >
                     Change Password
                   </button>
-
                 </form>
-
               </div>
             </>
           )}
-
         </main>
       </div>
 
       {/* ================= USER DETAILS MODAL ================= */}
-
       {selectedUser && (
         <div
           className="modal-overlay"
@@ -1861,7 +1762,6 @@ function App() {
       )}
 
       {/* ================= STORE DETAILS MODAL ================= */}
-
       {selectedStore && (
         <div
           className="modal-overlay"
@@ -1944,7 +1844,6 @@ function App() {
           </div>
         </div>
       )}
-
     </div>
   );
 }
