@@ -91,6 +91,23 @@ function App() {
   const [passwordMessage, setPasswordMessage] = useState("");
 
   // =========================
+  // PAGE NAVIGATION
+  // =========================
+  const navigateTo = (page) => {
+    setActivePage(page);
+
+    // Clear messages when changing pages
+    setAdminMessage("");
+    setUserMessage("");
+    setPasswordMessage("");
+
+    // Clear selected user when leaving Users page
+    if (page !== "users") {
+      setSelectedUser(null);
+    }
+  };
+
+  // =========================
   // RESTORE LOGIN
   // =========================
   useEffect(() => {
@@ -252,7 +269,6 @@ function App() {
     const email = signupEmail.trim();
     const address = signupAddress.trim();
 
-    // NAME VALIDATION
     if (name.length < 20 || name.length > 60) {
       setSignupError(
         "Name must be between 20 and 60 characters"
@@ -260,7 +276,6 @@ function App() {
       return;
     }
 
-    // EMAIL VALIDATION
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
@@ -268,7 +283,6 @@ function App() {
       return;
     }
 
-    // ADDRESS VALIDATION
     if (!address) {
       setSignupError("Address is required");
       return;
@@ -281,7 +295,6 @@ function App() {
       return;
     }
 
-    // PASSWORD VALIDATION
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
@@ -347,6 +360,9 @@ function App() {
 
     setSignupError("");
     setStoreSearch("");
+    setAdminMessage("");
+    setUserMessage("");
+    setPasswordMessage("");
   };
 
   // =========================
@@ -751,7 +767,7 @@ function App() {
                 ? "nav-btn active"
                 : "nav-btn"
             }
-            onClick={() => setActivePage("dashboard")}
+            onClick={() => navigateTo("dashboard")}
           >
             Dashboard
           </button>
@@ -765,7 +781,7 @@ function App() {
                     ? "nav-btn active"
                     : "nav-btn"
                 }
-                onClick={() => setActivePage("users")}
+                onClick={() => navigateTo("users")}
               >
                 Users
               </button>
@@ -777,7 +793,7 @@ function App() {
                     ? "nav-btn active"
                     : "nav-btn"
                 }
-                onClick={() => setActivePage("stores")}
+                onClick={() => navigateTo("stores")}
               >
                 Stores
               </button>
@@ -789,7 +805,7 @@ function App() {
                     ? "nav-btn active"
                     : "nav-btn"
                 }
-                onClick={() => setActivePage("add-user")}
+                onClick={() => navigateTo("add-user")}
               >
                 Add User
               </button>
@@ -801,7 +817,7 @@ function App() {
                     ? "nav-btn active"
                     : "nav-btn"
                 }
-                onClick={() => setActivePage("add-store")}
+                onClick={() => navigateTo("add-store")}
               >
                 Add Store
               </button>
@@ -816,7 +832,7 @@ function App() {
                   ? "nav-btn active"
                   : "nav-btn"
               }
-              onClick={() => setActivePage("stores")}
+              onClick={() => navigateTo("stores")}
             >
               All Stores
             </button>
@@ -829,7 +845,7 @@ function App() {
                 ? "nav-btn active"
                 : "nav-btn"
             }
-            onClick={() => setActivePage("password")}
+            onClick={() => navigateTo("password")}
           >
             Change Password
           </button>
@@ -878,7 +894,6 @@ function App() {
                   </div>
                 )}
 
-                {/* SEARCH */}
                 <div className="search-box">
                   <input
                     type="text"
