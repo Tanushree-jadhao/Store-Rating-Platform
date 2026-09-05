@@ -9028,3 +9028,62 @@ tbody tr:hover {
     width: 100%;
   }
 }
+/* =========================================================
+   OWNER DASHBOARD - TEAL THEME
+   LOGIN PAGE UNTOUCHED
+   ========================================================= */
+
+.owner-sidebar {
+  background: linear-gradient(180deg, #0f766e 0%, #14b8a6 100%) !important;
+}
+
+.owner-reference-dashboard .reference-hero {
+  background: linear-gradient(135deg, #0f766e, #14b8a6 55%, #2dd4bf) !important;
+  box-shadow: 0 14px 35px rgba(13, 148, 136, 0.22);
+}
+
+.owner-reference-dashboard .reference-hero-icon.owner {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.owner-reference-dashboard .owner-store-strip {
+  background: linear-gradient(135deg, #0f766e, #14b8a6) !important;
+  box-shadow: 0 12px 30px rgba(13, 148, 136, 0.18);
+}
+
+.owner-reference-dashboard .reference-stat.green .reference-stat-icon {
+  background: #ccfbf1 !important;
+}
+
+.owner-reference-dashboard .reference-stat.green strong {
+  color: #0f766e !important;
+}
+
+.owner-reference-dashboard .reference-stat.purple .reference-stat-icon {
+  background: #e6fffb !important;
+}
+
+.owner-reference-dashboard .reference-stat.purple strong {
+  color: #0f766e !important;
+}
+
+.owner-reference-dashboard .mini-avatar.green {
+  background: #ccfbf1 !important;
+  color: #0f766e !important;
+}
+
+.owner-reference-dashboard .performance-card {
+  border-top: 4px solid #14b8a6;
+}
+
+.owner-reference-dashboard .rating-bar-fill {
+  background: #14b8a6 !important;
+}
+
+.owner-reference-dashboard .rating-donut {
+  border-color: #14b8a6 !important;
+}
+
+.owner-reference-dashboard .panel-icon {
+  color: #0f766e;
+}
