@@ -9835,3 +9835,98 @@ tbody tr:hover {
 .dashboard-topbar .menu-btn {
   display: none !important;
 }
+/* =========================================================
+   ADMIN DASHBOARD - NORMAL FONT SIZE
+   DASHBOARD ONLY
+   ========================================================= */
+
+.reference-dashboard {
+  font-size: 16px !important;
+}
+
+/* Section headings */
+.reference-dashboard .section-label,
+.reference-dashboard .panel-label {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Main headings */
+.reference-dashboard h1 {
+  font-size: 32px !important;
+}
+
+.reference-dashboard h2 {
+  font-size: 22px !important;
+}
+
+/* Stat labels */
+.reference-stat span {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+
+.reference-stat strong {
+  font-size: 30px !important;
+}
+
+/* Quick Actions heading */
+.reference-dashboard .quick-actions-title {
+  font-size: 22px !important;
+}
+
+.reference-dashboard .quick-actions-subtitle {
+  font-size: 15px !important;
+}
+
+/* Quick action cards */
+.reference-dashboard .quick-action-card {
+  font-size: 16px !important;
+}
+
+.reference-dashboard .quick-action-card h3 {
+  font-size: 17px !important;
+}
+
+.reference-dashboard .quick-action-card p {
+  font-size: 14px !important;
+}
+
+/* Recent Users / Stores */
+.reference-dashboard .reference-panel h2 {
+  font-size: 21px !important;
+}
+
+.reference-dashboard .reference-panel p {
+  font-size: 15px !important;
+}
+
+/* Table text */
+.reference-dashboard table {
+  font-size: 15px !important;
+}
+
+.reference-dashboard th {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.reference-dashboard td {
+  font-size: 15px !important;
+}
+
+/* Empty state */
+.reference-dashboard .empty-state,
+.reference-dashboard .empty-message {
+  font-size: 15px !important;
+}
+
+/* Sidebar text */
+.dashboard-sidebar .sidebar-item {
+  font-size: 15px !important;
+}
+
+.dashboard-sidebar .sidebar-section-title {
+  font-size: 14px !important;
+}
