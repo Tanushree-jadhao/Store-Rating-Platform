@@ -972,18 +972,6 @@ function App() {
                 <span>★</span>
                 Ratings & Reviews
               </button>
-              <button className="sidebar-item" type="button">
-                <span>▥</span>
-                Reports
-              </button>
-              <button className="sidebar-item" type="button">
-                <span>👤</span>
-                Profile
-              </button>
-              <button className="sidebar-item" type="button">
-                <span>⚙</span>
-                Settings
-              </button>
             </>
           )}
 
@@ -996,10 +984,12 @@ function App() {
             </>
           )}
 
-          <div className="sidebar-help">
-            <span>?</span>
-            Help & Support
-          </div>
+          {role !== "owner" && (
+            <div className="sidebar-help">
+              <span>?</span>
+              Help & Support
+            </div>
+          )}
 
         </aside>
 
