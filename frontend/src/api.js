@@ -22,55 +22,55 @@ const handleResponse = async (response) => {
 
 // ==================== AUTH ====================
 
-export const loginUser = async (email, password, role) => {
-  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email,
-      password,
-      role,
-    }),
-  });
+export const loginUser = async (data) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/auth/login`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+        role: data.role,
+      }),
+    }
+  );
 
   return handleResponse(response);
 };
 
-export const signupUser = async (
-  name,
-  email,
-  address,
-  password,
-  role = "user"
-) => {
-  const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name,
-      email,
-      address,
-      password,
-      role,
-    }),
-  });
+export const signupUser = async (data) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/auth/signup`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+        address: data.address,
+        password: data.password,
+        role: data.role || "user",
+      }),
+    }
+  );
 
   return handleResponse(response);
 };
 
-export const changePassword = async (currentPassword, newPassword) => {
+export const changePassword = async (data) => {
   const response = await fetch(
     `${API_BASE_URL}/api/auth/change-password`,
     {
       method: "PUT",
       headers: authHeaders(),
       body: JSON.stringify({
-        currentPassword,
-        newPassword,
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
       }),
     }
   );
@@ -220,15 +220,15 @@ export const getStores = async () => {
 
 // ==================== RATINGS ====================
 
-export const submitRating = async (storeId, rating) => {
+export const submitRating = async (data) => {
   const response = await fetch(
     `${API_BASE_URL}/api/ratings`,
     {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify({
-        store_id: storeId,
-        rating: Number(rating),
+        store_id: data.store_id,
+        rating: Number(data.rating),
       }),
     }
   );
@@ -236,15 +236,15 @@ export const submitRating = async (storeId, rating) => {
   return handleResponse(response);
 };
 
-export const updateRating = async (storeId, rating) => {
+export const updateRating = async (data) => {
   const response = await fetch(
     `${API_BASE_URL}/api/ratings`,
     {
       method: "PUT",
       headers: authHeaders(),
       body: JSON.stringify({
-        store_id: storeId,
-        rating: Number(rating),
+        store_id: data.store_id,
+        rating: Number(data.rating),
       }),
     }
   );
@@ -263,5 +263,5 @@ export const getOwnerDashboard = async () => {
     }
   );
 
-  return handleResponse(response)
+  return handleResponse(response);
 };
