@@ -94,7 +94,6 @@ function App() {
   // =========================
   const navigateTo = (page) => {
     setActivePage(page);
-
     setAdminMessage("");
     setUserMessage("");
     setPasswordMessage("");
@@ -125,7 +124,6 @@ function App() {
       });
     } catch (error) {
       console.error("Saved user error:", error);
-
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     }
@@ -238,7 +236,6 @@ function App() {
   // =========================
   const handleLogin = async (e) => {
     e.preventDefault();
-
     setLoginError("");
 
     try {
@@ -267,7 +264,6 @@ function App() {
   // =========================
   const handleSignup = async (e) => {
     e.preventDefault();
-
     setSignupError("");
 
     const name = signupName.trim();
@@ -352,7 +348,6 @@ function App() {
     setLoggedIn(false);
     setRole("");
     setActivePage("dashboard");
-
     setShowSignup(false);
 
     setLoginEmail("");
@@ -360,7 +355,6 @@ function App() {
     setLoginError("");
 
     setSignupError("");
-
     setStoreSearch("");
 
     setAdminMessage("");
@@ -375,7 +369,6 @@ function App() {
   // =========================
   const handleChangePassword = async (e) => {
     e.preventDefault();
-
     setPasswordMessage("");
 
     try {
@@ -385,7 +378,6 @@ function App() {
       );
 
       setPasswordMessage(data.message);
-
       setCurrentPassword("");
       setNewPassword("");
     } catch (error) {
@@ -398,7 +390,6 @@ function App() {
   // =========================
   const handleCreateUser = async (e) => {
     e.preventDefault();
-
     setAdminMessage("");
 
     try {
@@ -435,7 +426,6 @@ function App() {
   // =========================
   const handleCreateStore = async (e) => {
     e.preventDefault();
-
     setAdminMessage("");
 
     try {
@@ -471,7 +461,6 @@ function App() {
   const handleUserDetails = async (userId) => {
     try {
       const data = await getAdminUserDetails(userId);
-
       setSelectedUser(data.user);
     } catch (error) {
       setAdminMessage(error.message);
@@ -530,12 +519,22 @@ function App() {
     return (
       <div className="auth-page">
         <div className="auth-card">
-          <div className="brand">⭐ RateHub</div>
+
+          {/* PREMIUM BRANDING */}
+          <div className="brand-header">
+            <div className="brand-icon">🏪</div>
+
+            <h1>Store Rating Platform</h1>
+
+            <p>
+              Rate stores. Share experiences. Make better choices.
+            </p>
+          </div>
 
           {!showSignup ? (
             <>
               <p className="auth-subtitle">
-                Login to your RateHub account
+                Login to your account
               </p>
 
               <form onSubmit={handleLogin}>
@@ -621,7 +620,7 @@ function App() {
               <h1>Create Account</h1>
 
               <p className="auth-subtitle">
-                Create your RateHub account
+                Create your account
               </p>
 
               <form onSubmit={handleSignup}>
@@ -746,7 +745,9 @@ function App() {
 
       {/* TOP BAR */}
       <header className="topbar">
-        <div className="brand">⭐ RateHub</div>
+        <div className="brand">
+          🏪 Store Rating Platform
+        </div>
 
         <div className="topbar-right">
           <span>
@@ -866,7 +867,7 @@ function App() {
         {/* CONTENT */}
         <main className="content">
 
-          {/* ================= ADMIN DASHBOARD ================= */}
+          {/* ADMIN DASHBOARD */}
           {activePage === "dashboard" &&
             role === "admin" && (
               <>
@@ -891,7 +892,7 @@ function App() {
               </>
             )}
 
-          {/* ================= USER DASHBOARD ================= */}
+          {/* USER DASHBOARD */}
           {activePage === "dashboard" &&
             role === "user" && (
               <>
@@ -1012,7 +1013,7 @@ function App() {
               </>
             )}
 
-          {/* ================= OWNER DASHBOARD ================= */}
+          {/* OWNER DASHBOARD */}
           {activePage === "dashboard" &&
             role === "owner" && (
               <>
@@ -1059,9 +1060,7 @@ function App() {
                             (user) => (
                               <tr key={user.id}>
                                 <td>{user.name}</td>
-
                                 <td>{user.email}</td>
-
                                 <td>
                                   {user.rating}/5
                                 </td>
@@ -1080,7 +1079,7 @@ function App() {
               </>
             )}
 
-          {/* ================= ADMIN USERS ================= */}
+          {/* ADMIN USERS */}
           {activePage === "users" &&
             role === "admin" && (
               <>
@@ -1102,11 +1101,8 @@ function App() {
                       {adminUsers.map((user) => (
                         <tr key={user.id}>
                           <td>{user.id}</td>
-
                           <td>{user.name}</td>
-
                           <td>{user.email}</td>
-
                           <td>{user.role}</td>
 
                           <td>
@@ -1128,7 +1124,7 @@ function App() {
                   </table>
                 </div>
 
-                {/* ================= USER DETAILS POPUP ================= */}
+                {/* USER DETAILS POPUP */}
                 {selectedUser && (
                   <div
                     className="modal-overlay"
@@ -1192,11 +1188,9 @@ function App() {
                         <span>Role</span>
 
                         <strong>
-                          {selectedUser.role ===
-                          "admin"
+                          {selectedUser.role === "admin"
                             ? "System Administrator"
-                            : selectedUser.role ===
-                              "owner"
+                            : selectedUser.role === "owner"
                             ? "Store Owner"
                             : "Normal User"}
                         </strong>
@@ -1217,7 +1211,7 @@ function App() {
               </>
             )}
 
-          {/* ================= ADMIN STORES ================= */}
+          {/* ADMIN STORES */}
           {activePage === "stores" &&
             role === "admin" && (
               <>
@@ -1239,9 +1233,7 @@ function App() {
                       {adminStores.map((store) => (
                         <tr key={store.id}>
                           <td>{store.id}</td>
-
                           <td>{store.name}</td>
-
                           <td>{store.address}</td>
 
                           <td>
@@ -1262,7 +1254,7 @@ function App() {
               </>
             )}
 
-          {/* ================= USER STORES ================= */}
+          {/* USER STORES */}
           {activePage === "stores" &&
             role === "user" && (
               <>
@@ -1283,7 +1275,6 @@ function App() {
                   {stores.length === 0 ? (
                     <div className="details-card">
                       <h2>No stores available</h2>
-
                       <p>
                         No stores have been added yet.
                       </p>
@@ -1291,7 +1282,6 @@ function App() {
                   ) : filteredStores.length === 0 ? (
                     <div className="details-card">
                       <h2>No matching stores</h2>
-
                       <p>
                         Try searching with another store name
                         or address.
@@ -1371,7 +1361,7 @@ function App() {
               </>
             )}
 
-          {/* ================= ADD USER ================= */}
+          {/* ADD USER */}
           {activePage === "add-user" &&
             role === "admin" && (
               <>
@@ -1458,7 +1448,7 @@ function App() {
               </>
             )}
 
-          {/* ================= ADD STORE ================= */}
+          {/* ADD STORE */}
           {activePage === "add-store" &&
             role === "admin" && (
               <>
@@ -1543,7 +1533,7 @@ function App() {
               </>
             )}
 
-          {/* ================= CHANGE PASSWORD ================= */}
+          {/* CHANGE PASSWORD */}
           {activePage === "password" && (
             <>
               <h1>Change Password</h1>
@@ -1594,6 +1584,7 @@ function App() {
               </form>
             </>
           )}
+
         </main>
       </div>
     </div>
