@@ -996,3 +996,47 @@ max-width: 340px;
   color: #1d4ed8;
   text-decoration: underline;
 }
+/* ===== FINAL LOGIN PAGE ALIGNMENT FIX ===== */
+
+.app-container {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 20px !important;
+  box-sizing: border-box;
+}
+
+.auth-card {
+  width: 100% !important;
+  max-width: 440px !important;
+  margin: 0 auto !important;
+}
+
+/* Create Account - BLUE */
+.login-footer {
+  width: 100%;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 5px;
+  margin-top: 22px;
+  text-align: center;
+}
+
+.login-footer .text-btn {
+  color: #2563eb !important;
+  background: transparent !important;
+  border: none !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.login-footer .text-btn:hover {
+  color: #1d4ed8 !important;
+  text-decoration: underline;
+}
