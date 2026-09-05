@@ -1099,3 +1099,98 @@ textarea:focus {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
   outline: none !important;
 }
+/* ===== PREMIUM LEFT SIDEBAR ===== */
+
+.sidebar {
+  background: linear-gradient(180deg, #0f172a 0%, #1e3a8a 55%, #2563eb 100%) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 8px 0 30px rgba(15, 23, 42, 0.15) !important;
+}
+
+/* Sidebar headings / text */
+.sidebar h2,
+.sidebar h3,
+.sidebar p,
+.sidebar span {
+  color: white !important;
+}
+
+/* Sidebar menu buttons */
+.sidebar button {
+  color: #e2e8f0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 10px !important;
+  margin: 5px 10px !important;
+  padding: 12px 15px !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Hover */
+.sidebar button:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: white !important;
+  transform: translateX(3px);
+}
+
+/* Active menu */
+.sidebar button.active,
+.sidebar .active {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: white !important;
+  box-shadow: inset 3px 0 0 white !important;
+}
+
+/* Bottom buttons */
+.sidebar button:last-child {
+  color: #f8fafc !important;
+}
+
+/* Sidebar scrollbar */
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+}
+/* ===== DASHBOARD SIDEBAR PREMIUM ONLY ===== */
+
+.sidebar {
+  background: linear-gradient(180deg, #0f172a 0%, #172554 55%, #1d4ed8 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 8px 0 30px rgba(15, 23, 42, 0.18) !important;
+}
+
+/* Sidebar menu */
+.sidebar button {
+  color: #e2e8f0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 12px !important;
+  transition: 0.2s ease !important;
+}
+
+/* Hover */
+.sidebar button:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  transform: translateX(3px);
+}
+
+/* Active menu */
+.sidebar button.active {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+  box-shadow: inset 3px 0 0 #ffffff !important;
+}
+
+/* Sidebar text */
+.sidebar h2,
+.sidebar h3,
+.sidebar p,
+.sidebar span {
+  color: #ffffff !important;
+}
