@@ -10360,3 +10360,8 @@ tbody tr:hover {
   line-height: 1.3 !important;
   margin: 4px 0 6px !important;
 }
+/* Add New User / Add New Store - font size */
+.reference-dashboard .reference-panel h3 {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+}
