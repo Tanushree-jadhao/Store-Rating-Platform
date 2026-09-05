@@ -10111,3 +10111,38 @@ tbody tr:hover {
 .reference-dashboard > p {
   font-size: 18px !important;
 }
+/* =========================================================
+   TABLE CONTENT - SAME SIZE AS EMAIL & OWNER
+   ========================================================= */
+
+.reference-dashboard table td {
+  font-size: 16px !important;
+  line-height: 1.4 !important;
+}
+
+/* Names */
+.reference-dashboard table td strong,
+.reference-dashboard table td span {
+  font-size: 16px !important;
+}
+
+/* Email */
+.reference-dashboard table td {
+  font-size: 16px !important;
+}
+
+/* Role & Status */
+.reference-dashboard table td .badge,
+.reference-dashboard table td .role-badge {
+  font-size: 14px !important;
+}
+
+/* Rating */
+.reference-dashboard table td [class*="rating"] {
+  font-size: 14px !important;
+}
+
+/* View button */
+.reference-dashboard table td button {
+  font-size: 16px !important;
+}
