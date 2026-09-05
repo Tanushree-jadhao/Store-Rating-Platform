@@ -809,6 +809,16 @@ function App() {
             </div>
           </div>
 
+          <button
+            className="secondary-btn"
+            onClick={() => setShowChangePassword(!showChangePassword)}
+          >
+            🔐 Change Password
+          </button>
+
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </header>
 
@@ -991,23 +1001,6 @@ function App() {
             Help & Support
           </div>
 
-          <div className="sidebar-bottom-actions">
-            <button
-              className="sidebar-change-password"
-              type="button"
-              onClick={() => setShowChangePassword(!showChangePassword)}
-            >
-              🔐 Change Password
-            </button>
-
-            <button
-              className="sidebar-logout"
-              type="button"
-              onClick={handleLogout}
-            >
-              🚪 Logout
-            </button>
-          </div>
         </aside>
 
         {/* MAIN CONTENT */}
@@ -1741,19 +1734,41 @@ function App() {
                             </strong>
                           </div>
 
-                          <select
-                            value={ratingValues[store.id] || ""}
-                            onChange={(e) =>
-                              handleRatingChange(store.id, e.target.value)
-                            }
-                          >
-                            <option value="">Select Rating</option>
-                            <option value="1">⭐ 1</option>
-                            <option value="2">⭐ 2</option>
-                            <option value="3">⭐ 3</option>
-                            <option value="4">⭐ 4</option>
-                            <option value="5">⭐ 5</option>
-                          </select>
+                          <div className="star-rating-selector">
+                            <span className="rating-label">Rate this store</span>
+
+                            <div className="rating-stars-input">
+                              {[1, 2, 3, 4, 5].map((star) => {
+                                const selectedRating = Number(
+                                  ratingValues[store.id] || store.user_rating || 0
+                                );
+
+                                return (
+                                  <button
+                                    key={star}
+                                    type="button"
+                                    className={
+                                      star <= selectedRating
+                                        ? "star-button selected"
+                                        : "star-button"
+                                    }
+                                    onClick={() =>
+                                      handleRatingChange(store.id, star)
+                                    }
+                                    aria-label={`Rate ${star} out of 5`}
+                                  >
+                                    ★
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                            <small className="rating-help">
+                              {ratingValues[store.id] || store.user_rating
+                                ? `${ratingValues[store.id] || store.user_rating} out of 5`
+                                : "Select stars"}
+                            </small>
+                          </div>
 
                           <button
                             className="primary-btn reference-rate-btn"
