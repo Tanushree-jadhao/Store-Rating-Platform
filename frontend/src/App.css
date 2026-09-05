@@ -1194,3 +1194,190 @@ textarea:focus {
 .sidebar span {
   color: #ffffff !important;
 }
+/* =====================================================
+   ADMIN DASHBOARD - PROFESSIONAL PREMIUM UI
+   LOGIN PAGE IS NOT TOUCHED
+   ===================================================== */
+
+/* Dashboard overall */
+.dashboard-container,
+.admin-dashboard {
+  background: #f5f7fb !important;
+  min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+
+.sidebar {
+  background: linear-gradient(180deg, #0f172a 0%, #172554 100%) !important;
+  color: #fff !important;
+  border-right: 1px solid rgba(255,255,255,0.08) !important;
+  box-shadow: 8px 0 25px rgba(15,23,42,0.12) !important;
+}
+
+.sidebar h2,
+.sidebar h3,
+.sidebar p,
+.sidebar span {
+  color: #fff !important;
+}
+
+.sidebar button {
+  color: #cbd5e1 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 10px !important;
+  transition: all .2s ease !important;
+}
+
+.sidebar button:hover {
+  background: rgba(255,255,255,.10) !important;
+  color: #fff !important;
+  transform: translateX(3px);
+}
+
+.sidebar button.active {
+  background: rgba(255,255,255,.16) !important;
+  color: #fff !important;
+  box-shadow: inset 3px 0 0 #60a5fa !important;
+}
+
+/* ===== DASHBOARD CONTENT ===== */
+
+.dashboard-content,
+.main-content {
+  background: #f5f7fb !important;
+}
+
+/* Page headings */
+.dashboard-content h1,
+.dashboard-content h2,
+.main-content h1,
+.main-content h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* ===== STAT CARDS ===== */
+
+.stat-card,
+.stats-card,
+.dashboard-card {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 24px rgba(15,23,42,.06) !important;
+  transition: all .25s ease !important;
+}
+
+.stat-card:hover,
+.stats-card:hover,
+.dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(15,23,42,.10) !important;
+}
+
+/* Numbers inside cards */
+.stat-card h2,
+.stat-card h3,
+.stats-card h2,
+.stats-card h3 {
+  color: #0f172a !important;
+}
+
+/* ===== TABLES ===== */
+
+table {
+  background: #ffffff !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 6px 20px rgba(15,23,42,.05) !important;
+}
+
+thead {
+  background: #f8fafc !important;
+}
+
+th {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+td {
+  color: #334155 !important;
+  border-color: #eef2f7 !important;
+}
+
+tbody tr:hover {
+  background: #f8fafc !important;
+}
+
+/* ===== PRIMARY BUTTONS ===== */
+
+.dashboard-content button:not(.sidebar button),
+.main-content button:not(.sidebar button) {
+  border-radius: 9px !important;
+  font-weight: 600 !important;
+  transition: all .2s ease !important;
+}
+
+.dashboard-content button:not(.sidebar button):hover,
+.main-content button:not(.sidebar button):hover {
+  transform: translateY(-1px);
+}
+
+/* ===== SEARCH / INPUTS ON DASHBOARD ===== */
+
+.dashboard-content input,
+.dashboard-content select,
+.main-content input,
+.main-content select {
+  background: #ffffff !important;
+  border: 1px solid #dbe1ea !important;
+  border-radius: 9px !important;
+  color: #1e293b !important;
+}
+
+.dashboard-content input:focus,
+.dashboard-content select:focus,
+.main-content input:focus,
+.main-content select:focus {
+  border-color: #2563eb !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.10) !important;
+}
+
+/* ===== MODALS ===== */
+
+.modal,
+.modal-content {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 25px 60px rgba(15,23,42,.20) !important;
+}
+
+/* ===== LOGOUT BUTTON ===== */
+
+.sidebar .logout-btn {
+  color: #fecaca !important;
+}
+
+.sidebar .logout-btn:hover {
+  background: rgba(239,68,68,.12) !important;
+  color: #fff !important;
+}
+
+/* ===== DASHBOARD RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .sidebar {
+    box-shadow: none !important;
+  }
+
+  .stat-card,
+  .stats-card,
+  .dashboard-card {
+    border-radius: 12px !important;
+  }
+}
