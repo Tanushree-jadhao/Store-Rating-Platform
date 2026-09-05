@@ -9831,3 +9831,7 @@ tbody tr:hover {
 .dashboard-topbar .menu-btn {
   display: none !important;
 }
+/* REMOVE ONLY TOP RATEHUB HAMBURGER */
+.dashboard-topbar .menu-btn {
+  display: none !important;
+}
