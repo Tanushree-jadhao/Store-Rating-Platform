@@ -64,9 +64,6 @@ const signup = async (req, res) => {
     }
 
     // Password validation
-    // 8-16 characters
-    // At least one uppercase letter
-    // At least one special character
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
@@ -92,24 +89,14 @@ const signup = async (req, res) => {
     // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Create user
+    // Insert user
     const result = await pool.query(
       `INSERT INTO users
-        (
-          name,
-          email,
-          password_hash,
-          address,
-          role
-        )
+        (name, email, password_hash, address, role)
        VALUES
         ($1, $2, $3, $4, $5)
        RETURNING
-        id,
-        name,
-        email,
-        address,
-        role`,
+        id, name, email, address, role`,
       [
         trimmedName,
         trimmedEmail,
@@ -132,7 +119,7 @@ const signup = async (req, res) => {
     console.error("Signup error:", error);
 
     res.status(500).json({
-      message: "Signup failed",
+      message: error.message || "Signup failed",
     });
   }
 };
@@ -166,6 +153,7 @@ const login = async (req, res) => {
       });
     }
 
+    // Find user
     const result = await pool.query(
       "SELECT * FROM users WHERE email = $1",
       [email.trim().toLowerCase()]
@@ -179,6 +167,7 @@ const login = async (req, res) => {
 
     const user = result.rows[0];
 
+    // Check password
     const passwordMatch = await bcrypt.compare(
       password,
       user.password_hash
@@ -190,12 +179,14 @@ const login = async (req, res) => {
       });
     }
 
+    // Check role
     if (user.role !== role) {
       return res.status(403).json({
         message: `This account is not registered as ${role}`,
       });
     }
 
+    // Generate JWT
     const token = jwt.sign(
       {
         id: user.id,
@@ -222,7 +213,7 @@ const login = async (req, res) => {
     console.error("Login error:", error);
 
     res.status(500).json({
-      message: "Login failed",
+      message: error.message || "Login failed",
     });
   }
 };
@@ -245,6 +236,7 @@ const changePassword = async (req, res) => {
       });
     }
 
+    // Password validation
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
@@ -255,6 +247,7 @@ const changePassword = async (req, res) => {
       });
     }
 
+    // Get current password
     const result = await pool.query(
       "SELECT password_hash FROM users WHERE id = $1",
       [userId]
@@ -266,6 +259,7 @@ const changePassword = async (req, res) => {
       });
     }
 
+    // Verify current password
     const passwordMatch = await bcrypt.compare(
       currentPassword,
       result.rows[0].password_hash
@@ -277,9 +271,11 @@ const changePassword = async (req, res) => {
       });
     }
 
+    // Hash new password
     const newPasswordHash =
       await bcrypt.hash(newPassword, 10);
 
+    // Update password
     await pool.query(
       `UPDATE users
        SET
@@ -302,7 +298,7 @@ const changePassword = async (req, res) => {
     );
 
     res.status(500).json({
-      message: "Failed to change password",
+      message: error.message || "Failed to change password",
     });
   }
 };
