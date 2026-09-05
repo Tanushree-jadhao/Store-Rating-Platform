@@ -1,134 +1,103 @@
-const API_URL =
-  "https://store-rating-platform-mtuu.onrender.com/api";
+const API_URL = "https://store-rating-platform-mtuu.onrender.com/api";
 
 const getToken = () => localStorage.getItem("token");
 
-// =========================
 // LOGIN
-// =========================
-export const loginUser = async (
-  email,
-  password,
-  role
-) => {
-  const response = await fetch(
-    `${API_URL}/auth/login`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        role,
-      }),
-    }
-  );
+export const loginUser = async (email, password, role) => {
+  const response = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email.trim().toLowerCase(),
+      password,
+      role,
+    }),
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Login failed"
-    );
+    throw new Error(data.message || "Login failed");
   }
 
   return data;
 };
 
-// =========================
 // SIGNUP
-// =========================
 export const signupUser = async (
   name,
   email,
   address,
-  password
+  password,
+  role = "user"
 ) => {
-  const response = await fetch(
-    `${API_URL}/auth/signup`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        address,
-        password,
-      }),
-    }
-  );
+  const selectedRole = role || "user";
+
+  const response = await fetch(`${API_URL}/auth/signup`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      address: address.trim(),
+      password,
+      role: selectedRole,
+    }),
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Signup failed"
-    );
+    throw new Error(data.message || "Signup failed");
   }
 
   return data;
 };
 
-// =========================
 // ADMIN DASHBOARD
-// =========================
 export const getAdminDashboard = async () => {
-  const response = await fetch(
-    `${API_URL}/admin/dashboard`,
-    {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    }
-  );
+  const response = await fetch(`${API_URL}/admin/dashboard`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Failed to load admin dashboard"
+      data.message || "Failed to load admin dashboard"
     );
   }
 
   return data;
 };
 
-// =========================
-// ADMIN - GET ALL USERS
-// =========================
+// ADMIN USERS
 export const getAdminUsers = async () => {
-  const response = await fetch(
-    `${API_URL}/admin/users`,
-    {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    }
-  );
+  const response = await fetch(`${API_URL}/admin/users`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to load users"
-    );
+    throw new Error(data.message || "Failed to load users");
   }
 
-  return data;
+  return Array.isArray(data)
+    ? data
+    : data.users || [];
 };
 
-// =========================
-// ADMIN - GET USER DETAILS
-// =========================
-export const getAdminUserDetails = async (
-  userId
-) => {
+// ADMIN USER DETAILS
+export const getAdminUserDetails = async (userId) => {
   const response = await fetch(
     `${API_URL}/admin/users/${userId}`,
     {
@@ -142,209 +111,168 @@ export const getAdminUserDetails = async (
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Failed to load user details"
+      data.message || "Failed to load user details"
     );
   }
 
   return data;
 };
 
-// =========================
-// GET STORES
-// =========================
+// GET STORES FOR NORMAL USER
 export const getStores = async () => {
-  const response = await fetch(
-    `${API_URL}/stores`,
-    {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    }
-  );
+  const response = await fetch(`${API_URL}/stores`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Failed to load stores"
+      data.message || "Failed to load stores"
+    );
+  }
+
+  return Array.isArray(data)
+    ? data
+    : data.stores || [];
+};
+
+// SUBMIT RATING
+export const submitRating = async (store_id, rating) => {
+  const response = await fetch(`${API_URL}/ratings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify({
+      store_id,
+      rating,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to submit rating"
     );
   }
 
   return data;
 };
 
-// =========================
-// SUBMIT NEW RATING
-// =========================
-export const submitRating = async (
-  store_id,
-  rating
-) => {
-  const response = await fetch(
-    `${API_URL}/ratings`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({
-        store_id,
-        rating,
-      }),
-    }
-  );
+// UPDATE RATING
+export const updateRating = async (store_id, rating) => {
+  const response = await fetch(`${API_URL}/ratings`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify({
+      store_id,
+      rating,
+    }),
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Failed to submit rating"
+      data.message || "Failed to update rating"
     );
   }
 
   return data;
 };
 
-// =========================
-// UPDATE EXISTING RATING
-// =========================
-export const updateRating = async (
-  store_id,
-  rating
-) => {
-  const response = await fetch(
-    `${API_URL}/ratings`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({
-        store_id,
-        rating,
-      }),
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to update rating"
-    );
-  }
-
-  return data;
-};
-
-// =========================
-// ADMIN - GET ALL STORES
-// =========================
+// ADMIN STORES
 export const getAdminStores = async () => {
-  const response = await fetch(
-    `${API_URL}/admin/stores`,
-    {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    }
-  );
+  const response = await fetch(`${API_URL}/admin/stores`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Failed to load admin stores"
+      data.message || "Failed to load admin stores"
     );
   }
 
-  return data;
+  return Array.isArray(data)
+    ? data
+    : data.stores || [];
 };
 
-// =========================
-// ADMIN - CREATE USER
-// =========================
+// CREATE ADMIN USER
 export const createAdminUser = async (
   name,
   email,
   password,
   role
 ) => {
-  const response = await fetch(
-    `${API_URL}/admin/users`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-        role,
-      }),
-    }
-  );
+  const response = await fetch(`${API_URL}/admin/users`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify({
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      password,
+      role,
+    }),
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Failed to create user"
+      data.message || "Failed to create user"
     );
   }
 
   return data;
 };
 
-// =========================
-// ADMIN - CREATE STORE
-// =========================
+// CREATE ADMIN STORE
 export const createAdminStore = async (
   name,
   address,
   owner_id
 ) => {
-  const response = await fetch(
-    `${API_URL}/admin/stores`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({
-        name,
-        address,
-        owner_id,
-      }),
-    }
-  );
+  const response = await fetch(`${API_URL}/admin/stores`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify({
+      name: name.trim(),
+      address: address.trim(),
+      owner_id,
+    }),
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Failed to create store"
+      data.message || "Failed to create store"
     );
   }
 
   return data;
 };
 
-// =========================
-// OWNER - GET DASHBOARD
-// =========================
+// OWNER DASHBOARD
 export const getOwnerDashboard = async () => {
   const response = await fetch(
     `${API_URL}/owner/dashboard`,
@@ -359,17 +287,14 @@ export const getOwnerDashboard = async () => {
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Failed to load owner dashboard"
+      data.message || "Failed to load owner dashboard"
     );
   }
 
   return data;
 };
 
-// =========================
 // CHANGE PASSWORD
-// =========================
 export const changePassword = async (
   currentPassword,
   newPassword
@@ -393,8 +318,7 @@ export const changePassword = async (
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Failed to change password"
+      data.message || "Failed to change password"
     );
   }
 
