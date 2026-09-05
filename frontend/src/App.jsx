@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 
 import {
@@ -45,6 +46,7 @@ function App() {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupAddress, setSignupAddress] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
+  const [signupRole, setSignupRole] = useState("user");
   const [signupError, setSignupError] = useState("");
 
   // =========================
@@ -65,11 +67,12 @@ function App() {
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserPassword, setNewUserPassword] = useState("");
   const [newUserRole, setNewUserRole] = useState("user");
-  const [adminMessage, setAdminMessage] = useState("");
 
   const [newStoreName, setNewStoreName] = useState("");
   const [newStoreAddress, setNewStoreAddress] = useState("");
   const [newStoreOwner, setNewStoreOwner] = useState("");
+
+  const [adminMessage, setAdminMessage] = useState("");
 
   // =========================
   // USER STATE
@@ -115,6 +118,7 @@ function App() {
       });
     } catch (error) {
       console.error("Saved user error:", error);
+
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     }
@@ -191,6 +195,10 @@ function App() {
           setAdminUsers([]);
           setAdminStores([]);
         }
+
+        if (role === "owner") {
+          setOwnerData(null);
+        }
       }
     };
 
@@ -215,8 +223,8 @@ function App() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      setLoggedIn(true);
       setRole(data.user.role);
+      setLoggedIn(true);
       setActivePage("dashboard");
 
       setLoginEmail("");
@@ -238,11 +246,15 @@ function App() {
     const email = signupEmail.trim();
     const address = signupAddress.trim();
 
+    // NAME VALIDATION
     if (name.length < 20 || name.length > 60) {
-      setSignupError("Name must be between 20 and 60 characters");
+      setSignupError(
+        "Name must be between 20 and 60 characters"
+      );
       return;
     }
 
+    // EMAIL VALIDATION
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
@@ -250,16 +262,20 @@ function App() {
       return;
     }
 
+    // ADDRESS VALIDATION
     if (!address) {
       setSignupError("Address is required");
       return;
     }
 
     if (address.length > 400) {
-      setSignupError("Address cannot exceed 400 characters");
+      setSignupError(
+        "Address cannot exceed 400 characters"
+      );
       return;
     }
 
+    // PASSWORD VALIDATION
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
@@ -271,33 +287,40 @@ function App() {
     }
 
     try {
+      // CREATE ACCOUNT WITH SELECTED ROLE
       await signupUser(
         name,
         email,
         address,
-        signupPassword
+        signupPassword,
+        signupRole
       );
 
+      // AUTOMATIC LOGIN WITH SELECTED ROLE
       const loginData = await loginUser(
         email,
         signupPassword,
-        "user"
+        signupRole
       );
 
       localStorage.setItem("token", loginData.token);
+
       localStorage.setItem(
         "user",
         JSON.stringify(loginData.user)
       );
 
-      setRole("user");
+      // OPEN CORRECT DASHBOARD
+      setRole(loginData.user.role);
       setLoggedIn(true);
       setActivePage("dashboard");
 
+      // RESET FORM
       setSignupName("");
       setSignupEmail("");
       setSignupAddress("");
       setSignupPassword("");
+      setSignupRole("user");
       setSignupError("");
     } catch (error) {
       setSignupError(error.message);
@@ -315,13 +338,11 @@ function App() {
     setLoggedIn(false);
     setRole("");
     setActivePage("dashboard");
-
     setShowSignup(false);
 
     setLoginEmail("");
     setLoginPassword("");
     setLoginError("");
-
     setSignupError("");
   };
 
@@ -479,14 +500,13 @@ function App() {
   };
 
   // =========================
-  // AUTH SCREEN
+  // LOGIN / SIGNUP SCREEN
   // =========================
 
   if (!loggedIn) {
     return (
       <div className="auth-page">
         <div className="auth-card">
-
           <div className="brand">⭐ RateHub</div>
 
           {!showSignup ? (
@@ -496,7 +516,6 @@ function App() {
               </p>
 
               <form onSubmit={handleLogin}>
-
                 <div className="form-group">
                   <label>Email</label>
 
@@ -558,12 +577,10 @@ function App() {
                 >
                   Login
                 </button>
-
               </form>
 
               <p className="auth-switch">
                 Don't have an account?{" "}
-
                 <button
                   type="button"
                   className="link-btn"
@@ -581,11 +598,10 @@ function App() {
               <h1>Create Account</h1>
 
               <p className="auth-subtitle">
-                Create your Normal User account
+                Create your RateHub account
               </p>
 
               <form onSubmit={handleSignup}>
-
                 <div className="form-group">
                   <label>Full Name</label>
 
@@ -638,15 +654,32 @@ function App() {
                   />
                 </div>
 
+                {/* ROLE SELECT */}
                 <div className="form-group">
-                  <label>Account Type</label>
+                  <label htmlFor="signup-role">
+                    Account Type
+                  </label>
 
-                  <input
-                    type="text"
-                    value="Normal User"
-                    disabled
-                    readOnly
-                  />
+                  <select
+                    id="signup-role"
+                    value={signupRole}
+                    onChange={(e) => {
+                      setSignupRole(e.target.value);
+                      setSignupError("");
+                    }}
+                  >
+                    <option value="user">
+                      Normal User
+                    </option>
+
+                    <option value="owner">
+                      Store Owner
+                    </option>
+
+                    <option value="admin">
+                      System Administrator
+                    </option>
+                  </select>
                 </div>
 
                 {signupError && (
@@ -661,12 +694,10 @@ function App() {
                 >
                   Create Account
                 </button>
-
               </form>
 
               <p className="auth-switch">
                 Already have an account?{" "}
-
                 <button
                   type="button"
                   className="link-btn"
@@ -680,25 +711,23 @@ function App() {
               </p>
             </>
           )}
-
         </div>
       </div>
     );
   }
 
   // =========================
-  // MAIN DASHBOARD
+  // MAIN APPLICATION
   // =========================
 
   return (
     <div className="app">
 
+      {/* TOP BAR */}
       <header className="topbar">
-
         <div className="brand">⭐ RateHub</div>
 
         <div className="topbar-right">
-
           <span>
             {role === "admin"
               ? "System Administrator"
@@ -708,20 +737,19 @@ function App() {
           </span>
 
           <button
+            type="button"
             onClick={handleLogout}
             className="logout-btn"
           >
             Logout
           </button>
-
         </div>
-
       </header>
 
       <div className="layout">
 
+        {/* SIDEBAR */}
         <aside className="sidebar">
-
           <button
             type="button"
             className={
@@ -729,9 +757,7 @@ function App() {
                 ? "nav-btn active"
                 : "nav-btn"
             }
-            onClick={() => {
-              setActivePage("dashboard");
-            }}
+            onClick={() => setActivePage("dashboard")}
           >
             Dashboard
           </button>
@@ -745,9 +771,7 @@ function App() {
                     ? "nav-btn active"
                     : "nav-btn"
                 }
-                onClick={() => {
-                  setActivePage("users");
-                }}
+                onClick={() => setActivePage("users")}
               >
                 Users
               </button>
@@ -759,9 +783,7 @@ function App() {
                     ? "nav-btn active"
                     : "nav-btn"
                 }
-                onClick={() => {
-                  setActivePage("stores");
-                }}
+                onClick={() => setActivePage("stores")}
               >
                 Stores
               </button>
@@ -773,9 +795,7 @@ function App() {
                     ? "nav-btn active"
                     : "nav-btn"
                 }
-                onClick={() => {
-                  setActivePage("add-user");
-                }}
+                onClick={() => setActivePage("add-user")}
               >
                 Add User
               </button>
@@ -787,9 +807,7 @@ function App() {
                     ? "nav-btn active"
                     : "nav-btn"
                 }
-                onClick={() => {
-                  setActivePage("add-store");
-                }}
+                onClick={() => setActivePage("add-store")}
               >
                 Add Store
               </button>
@@ -804,9 +822,7 @@ function App() {
                   ? "nav-btn active"
                   : "nav-btn"
               }
-              onClick={() => {
-                setActivePage("stores");
-              }}
+              onClick={() => setActivePage("stores")}
             >
               All Stores
             </button>
@@ -819,18 +835,16 @@ function App() {
                 ? "nav-btn active"
                 : "nav-btn"
             }
-            onClick={() => {
-              setActivePage("password");
-            }}
+            onClick={() => setActivePage("password")}
           >
             Change Password
           </button>
-
         </aside>
 
+        {/* CONTENT */}
         <main className="content">
 
-          {/* ADMIN DASHBOARD */}
+          {/* ================= ADMIN DASHBOARD ================= */}
 
           {activePage === "dashboard" &&
             role === "admin" && (
@@ -838,7 +852,6 @@ function App() {
                 <h1>Admin Dashboard</h1>
 
                 <div className="stats-grid">
-
                   <div className="stat-card">
                     <h3>Total Users</h3>
                     <p>{adminStats.totalUsers}</p>
@@ -853,12 +866,11 @@ function App() {
                     <h3>Total Ratings</h3>
                     <p>{adminStats.totalRatings}</p>
                   </div>
-
                 </div>
               </>
             )}
 
-          {/* USER DASHBOARD */}
+          {/* ================= USER DASHBOARD ================= */}
 
           {activePage === "dashboard" &&
             role === "user" && (
@@ -876,11 +888,9 @@ function App() {
                 )}
 
                 <div className="store-grid">
-
                   {stores.length === 0 ? (
                     <div className="details-card">
                       <h2>No stores available</h2>
-
                       <p>
                         No stores have been added yet.
                       </p>
@@ -905,13 +915,11 @@ function App() {
                         </div>
 
                         <div className="rating-section">
-
                           <span className="rating-label">
                             Your Rating
                           </span>
 
                           <div className="star-rating">
-
                             {[1, 2, 3, 4, 5].map(
                               (star) => (
                                 <button
@@ -935,7 +943,6 @@ function App() {
                                 </button>
                               )
                             )}
-
                           </div>
 
                           <span className="rating-value">
@@ -946,7 +953,6 @@ function App() {
                               0}
                             /5
                           </span>
-
                         </div>
 
                         <button
@@ -962,16 +968,14 @@ function App() {
                             ? "Update Rating"
                             : "Submit Rating"}
                         </button>
-
                       </div>
                     ))
                   )}
-
                 </div>
               </>
             )}
 
-          {/* OWNER DASHBOARD */}
+          {/* ================= OWNER DASHBOARD ================= */}
 
           {activePage === "dashboard" &&
             role === "owner" && (
@@ -981,7 +985,6 @@ function App() {
                 {ownerData ? (
                   <>
                     <div className="stats-grid">
-
                       <div className="stat-card">
                         <h3>Average Rating</h3>
 
@@ -1001,15 +1004,12 @@ function App() {
                             ?.total_ratings || 0}
                         </p>
                       </div>
-
                     </div>
 
                     <h2>Users Who Rated</h2>
 
                     <div className="table-container">
-
                       <table>
-
                         <thead>
                           <tr>
                             <th>Name</th>
@@ -1031,9 +1031,7 @@ function App() {
                             )
                           )}
                         </tbody>
-
                       </table>
-
                     </div>
                   </>
                 ) : (
@@ -1044,7 +1042,7 @@ function App() {
               </>
             )}
 
-          {/* ADMIN USERS */}
+          {/* ================= ADMIN USERS ================= */}
 
           {activePage === "users" &&
             role === "admin" && (
@@ -1052,9 +1050,7 @@ function App() {
                 <h1>Users</h1>
 
                 <div className="table-container">
-
                   <table>
-
                     <thead>
                       <tr>
                         <th>ID</th>
@@ -1068,7 +1064,6 @@ function App() {
                     <tbody>
                       {adminUsers.map((user) => (
                         <tr key={user.id}>
-
                           <td>{user.id}</td>
                           <td>{user.name}</td>
                           <td>{user.email}</td>
@@ -1087,18 +1082,14 @@ function App() {
                               View
                             </button>
                           </td>
-
                         </tr>
                       ))}
                     </tbody>
-
                   </table>
-
                 </div>
 
                 {selectedUser && (
                   <div className="details-card">
-
                     <h2>User Details</h2>
 
                     <p>
@@ -1120,13 +1111,12 @@ function App() {
                       <strong>Role:</strong>{" "}
                       {selectedUser.role}
                     </p>
-
                   </div>
                 )}
               </>
             )}
 
-          {/* ADMIN STORES */}
+          {/* ================= ADMIN STORES ================= */}
 
           {activePage === "stores" &&
             role === "admin" && (
@@ -1134,9 +1124,7 @@ function App() {
                 <h1>Stores</h1>
 
                 <div className="table-container">
-
                   <table>
-
                     <thead>
                       <tr>
                         <th>ID</th>
@@ -1150,11 +1138,8 @@ function App() {
                     <tbody>
                       {adminStores.map((store) => (
                         <tr key={store.id}>
-
                           <td>{store.id}</td>
-
                           <td>{store.name}</td>
-
                           <td>{store.address}</td>
 
                           <td>
@@ -1167,18 +1152,15 @@ function App() {
                               store.overall_rating || 0
                             ).toFixed(2)}
                           </td>
-
                         </tr>
                       ))}
                     </tbody>
-
                   </table>
-
                 </div>
               </>
             )}
 
-          {/* USER STORES */}
+          {/* ================= USER STORES ================= */}
 
           {activePage === "stores" &&
             role === "user" && (
@@ -1186,16 +1168,12 @@ function App() {
                 <h1>All Stores</h1>
 
                 <div className="store-grid">
-
                   {stores.length === 0 ? (
                     <div className="details-card">
-
                       <h2>No stores available</h2>
-
                       <p>
                         No stores have been added yet.
                       </p>
-
                     </div>
                   ) : (
                     stores.map((store) => (
@@ -1203,7 +1181,6 @@ function App() {
                         className="store-card"
                         key={store.id}
                       >
-
                         <h2>{store.name}</h2>
 
                         <p>{store.address}</p>
@@ -1218,9 +1195,7 @@ function App() {
                         </p>
 
                         <div className="rating-section">
-
                           <div className="star-rating">
-
                             {[1, 2, 3, 4, 5].map(
                               (star) => (
                                 <button
@@ -1244,7 +1219,6 @@ function App() {
                                 </button>
                               )
                             )}
-
                           </div>
 
                           <span className="rating-value">
@@ -1255,7 +1229,6 @@ function App() {
                               0}
                             /5
                           </span>
-
                         </div>
 
                         <button
@@ -1271,16 +1244,14 @@ function App() {
                             ? "Update Rating"
                             : "Submit Rating"}
                         </button>
-
                       </div>
                     ))
                   )}
-
                 </div>
               </>
             )}
 
-          {/* ADD USER */}
+          {/* ================= ADD USER ================= */}
 
           {activePage === "add-user" &&
             role === "admin" && (
@@ -1291,16 +1262,13 @@ function App() {
                   className="form-card"
                   onSubmit={handleCreateUser}
                 >
-
                   <div className="form-group">
                     <label>Name</label>
 
                     <input
                       value={newUserName}
                       onChange={(e) =>
-                        setNewUserName(
-                          e.target.value
-                        )
+                        setNewUserName(e.target.value)
                       }
                       placeholder="20-60 characters"
                     />
@@ -1313,9 +1281,7 @@ function App() {
                       type="email"
                       value={newUserEmail}
                       onChange={(e) =>
-                        setNewUserEmail(
-                          e.target.value
-                        )
+                        setNewUserEmail(e.target.value)
                       }
                     />
                   </div>
@@ -1340,9 +1306,7 @@ function App() {
                     <select
                       value={newUserRole}
                       onChange={(e) =>
-                        setNewUserRole(
-                          e.target.value
-                        )
+                        setNewUserRole(e.target.value)
                       }
                     >
                       <option value="user">
@@ -1371,12 +1335,11 @@ function App() {
                   >
                     Add User
                   </button>
-
                 </form>
               </>
             )}
 
-          {/* ADD STORE */}
+          {/* ================= ADD STORE ================= */}
 
           {activePage === "add-store" &&
             role === "admin" && (
@@ -1387,16 +1350,13 @@ function App() {
                   className="form-card"
                   onSubmit={handleCreateStore}
                 >
-
                   <div className="form-group">
                     <label>Store Name</label>
 
                     <input
                       value={newStoreName}
                       onChange={(e) =>
-                        setNewStoreName(
-                          e.target.value
-                        )
+                        setNewStoreName(e.target.value)
                       }
                       placeholder="20-60 characters"
                     />
@@ -1461,12 +1421,11 @@ function App() {
                   >
                     Add Store
                   </button>
-
                 </form>
               </>
             )}
 
-          {/* CHANGE PASSWORD */}
+          {/* ================= CHANGE PASSWORD ================= */}
 
           {activePage === "password" && (
             <>
@@ -1476,7 +1435,6 @@ function App() {
                 className="form-card"
                 onSubmit={handleChangePassword}
               >
-
                 <div className="form-group">
                   <label>Current Password</label>
 
@@ -1498,9 +1456,7 @@ function App() {
                     type="password"
                     value={newPassword}
                     onChange={(e) =>
-                      setNewPassword(
-                        e.target.value
-                      )
+                      setNewPassword(e.target.value)
                     }
                     placeholder="8-16 characters"
                   />
@@ -1518,7 +1474,6 @@ function App() {
                 >
                   Change Password
                 </button>
-
               </form>
             </>
           )}

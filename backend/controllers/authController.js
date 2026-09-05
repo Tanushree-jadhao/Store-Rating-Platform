@@ -1,9 +1,9 @@
+
 const bcrypt = require("bcrypt");
 const pool = require("../db/db");
 const jwt = require("jsonwebtoken");
 
 // ==================== SIGNUP ====================
-// Public signup creates only a Normal User
 
 const signup = async (req, res) => {
   try {
@@ -11,19 +11,22 @@ const signup = async (req, res) => {
       name,
       email,
       address,
-      password
+      password,
+      role = "user"
     } = req.body;
 
     // Required fields
-    if (
-      !name ||
-      !email ||
-      !address ||
-      !password
-    ) {
+    if (!name || !email || !address || !password) {
       return res.status(400).json({
         message:
           "Name, email, address and password are required"
+      });
+    }
+
+    // Allow all three account types
+    if (!["user", "owner", "admin"].includes(role)) {
+      return res.status(400).json({
+        message: "Invalid account type"
       });
     }
 
@@ -55,21 +58,15 @@ const signup = async (req, res) => {
     }
 
     // Address validation
-    const trimmedAddress =
-      address.trim();
+    const trimmedAddress = address.trim();
 
-    if (
-      trimmedAddress.length === 0
-    ) {
+    if (trimmedAddress.length === 0) {
       return res.status(400).json({
-        message:
-          "Address is required"
+        message: "Address is required"
       });
     }
 
-    if (
-      trimmedAddress.length > 400
-    ) {
+    if (trimmedAddress.length > 400) {
       return res.status(400).json({
         message:
           "Address cannot exceed 400 characters"
@@ -80,6 +77,7 @@ const signup = async (req, res) => {
     // 8-16 characters
     // At least one uppercase letter
     // At least one special character
+
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
@@ -91,18 +89,14 @@ const signup = async (req, res) => {
     }
 
     // Check existing email
-    const existingUser =
-      await pool.query(
-        "SELECT id FROM users WHERE email = $1",
-        [trimmedEmail]
-      );
+    const existingUser = await pool.query(
+      "SELECT id FROM users WHERE email = $1",
+      [trimmedEmail]
+    );
 
-    if (
-      existingUser.rows.length > 0
-    ) {
+    if (existingUser.rows.length > 0) {
       return res.status(400).json({
-        message:
-          "Email already registered"
+        message: "Email already registered"
       });
     }
 
@@ -110,54 +104,53 @@ const signup = async (req, res) => {
     const passwordHash =
       await bcrypt.hash(password, 10);
 
-    // Public signup is ALWAYS a Normal User
-    const result =
-      await pool.query(
-        `
-        INSERT INTO users
-          (
-            name,
-            email,
-            password_hash,
-            address,
-            role
-          )
-        VALUES
-          ($1, $2, $3, $4, 'user')
-        RETURNING
-          id,
+    // Create user
+    const result = await pool.query(
+      `
+      INSERT INTO users
+        (
           name,
           email,
+          password_hash,
           address,
           role
-        `,
-        [
-          trimmedName,
-          trimmedEmail,
-          passwordHash,
-          trimmedAddress
-        ]
-      );
+        )
+      VALUES
+        ($1, $2, $3, $4, $5)
+      RETURNING
+        id,
+        name,
+        email,
+        address,
+        role
+      `,
+      [
+        trimmedName,
+        trimmedEmail,
+        passwordHash,
+        trimmedAddress,
+        role
+      ]
+    );
 
     res.status(201).json({
       message:
-        "User registered successfully",
+        role === "admin"
+          ? "System Administrator registered successfully"
+          : role === "owner"
+          ? "Store Owner registered successfully"
+          : "User registered successfully",
+
       user: result.rows[0]
     });
-
   } catch (error) {
-    console.error(
-      "Signup error:",
-      error
-    );
+    console.error("Signup error:", error);
 
     res.status(500).json({
-      message:
-        "Signup failed"
+      message: "Signup failed"
     });
   }
 };
-
 
 // ==================== LOGIN ====================
 
@@ -169,11 +162,7 @@ const login = async (req, res) => {
       role
     } = req.body;
 
-    if (
-      !email ||
-      !password ||
-      !role
-    ) {
+    if (!email || !password || !role) {
       return res.status(400).json({
         message:
           "Email, password and login role are required"
@@ -187,33 +176,26 @@ const login = async (req, res) => {
       "owner"
     ];
 
-    if (
-      !allowedRoles.includes(role)
-    ) {
+    if (!allowedRoles.includes(role)) {
       return res.status(400).json({
-        message:
-          "Invalid login role"
+        message: "Invalid login role"
       });
     }
 
     // Find user by email
-    const result =
-      await pool.query(
-        "SELECT * FROM users WHERE email = $1",
-        [email.trim().toLowerCase()]
-      );
+    const result = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email.trim().toLowerCase()]
+    );
 
-    if (
-      result.rows.length === 0
-    ) {
+    if (result.rows.length === 0) {
       return res.status(401).json({
         message:
           "Invalid email or password"
       });
     }
 
-    const user =
-      result.rows[0];
+    const user = result.rows[0];
 
     // Check password
     const passwordMatch =
@@ -230,9 +212,7 @@ const login = async (req, res) => {
     }
 
     // Check selected role
-    if (
-      user.role !== role
-    ) {
+    if (user.role !== role) {
       return res.status(403).json({
         message:
           `This account is not registered as ${role}`
@@ -240,21 +220,19 @@ const login = async (req, res) => {
     }
 
     // Generate JWT
-    const token =
-      jwt.sign(
-        {
-          id: user.id,
-          role: user.role
-        },
-        "ratehub_secret_key",
-        {
-          expiresIn: "1d"
-        }
-      );
+    const token = jwt.sign(
+      {
+        id: user.id,
+        role: user.role
+      },
+      "ratehub_secret_key",
+      {
+        expiresIn: "1d"
+      }
+    );
 
     res.json({
-      message:
-        "Login successful",
+      message: "Login successful",
 
       token,
 
@@ -266,40 +244,27 @@ const login = async (req, res) => {
         role: user.role
       }
     });
-
   } catch (error) {
-    console.error(
-      "Login error:",
-      error
-    );
+    console.error("Login error:", error);
 
     res.status(500).json({
-      message:
-        "Login failed"
+      message: "Login failed"
     });
   }
 };
 
-
 // ==================== CHANGE PASSWORD ====================
 
-const changePassword = async (
-  req,
-  res
-) => {
+const changePassword = async (req, res) => {
   try {
     const {
       currentPassword,
       newPassword
     } = req.body;
 
-    const userId =
-      req.user.id;
+    const userId = req.user.id;
 
-    if (
-      !currentPassword ||
-      !newPassword
-    ) {
+    if (!currentPassword || !newPassword) {
       return res.status(400).json({
         message:
           "Current password and new password are required"
@@ -310,11 +275,7 @@ const changePassword = async (
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
-    if (
-      !passwordRegex.test(
-        newPassword
-      )
-    ) {
+    if (!passwordRegex.test(newPassword)) {
       return res.status(400).json({
         message:
           "New password must be 8-16 characters with at least one uppercase letter and one special character"
@@ -322,18 +283,14 @@ const changePassword = async (
     }
 
     // Get current password hash
-    const result =
-      await pool.query(
-        "SELECT password_hash FROM users WHERE id = $1",
-        [userId]
-      );
+    const result = await pool.query(
+      "SELECT password_hash FROM users WHERE id = $1",
+      [userId]
+    );
 
-    if (
-      result.rows.length === 0
-    ) {
+    if (result.rows.length === 0) {
       return res.status(404).json({
-        message:
-          "User not found"
+        message: "User not found"
       });
     }
 
@@ -353,10 +310,7 @@ const changePassword = async (
 
     // Hash new password
     const newPasswordHash =
-      await bcrypt.hash(
-        newPassword,
-        10
-      );
+      await bcrypt.hash(newPassword, 10);
 
     // Update password
     await pool.query(
@@ -377,7 +331,6 @@ const changePassword = async (
       message:
         "Password changed successfully"
     });
-
   } catch (error) {
     console.error(
       "Change password error:",
@@ -390,7 +343,6 @@ const changePassword = async (
     });
   }
 };
-
 
 // ==================== EXPORTS ====================
 
