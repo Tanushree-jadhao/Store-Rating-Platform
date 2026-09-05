@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 import {
@@ -96,12 +95,10 @@ function App() {
   const navigateTo = (page) => {
     setActivePage(page);
 
-    // Clear messages when changing pages
     setAdminMessage("");
     setUserMessage("");
     setPasswordMessage("");
 
-    // Clear selected user when leaving Users page
     if (page !== "users") {
       setSelectedUser(null);
     }
@@ -160,7 +157,9 @@ function App() {
 
     const loadData = async () => {
       try {
+        // =========================
         // ADMIN
+        // =========================
         if (role === "admin") {
           const stats = await getAdminDashboard();
 
@@ -191,7 +190,9 @@ function App() {
           );
         }
 
+        // =========================
         // NORMAL USER
+        // =========================
         if (role === "user") {
           const storesData = await getStores();
 
@@ -204,7 +205,9 @@ function App() {
           }
         }
 
+        // =========================
         // STORE OWNER
+        // =========================
         if (role === "owner") {
           const owner = await getOwnerDashboard();
           setOwnerData(owner);
@@ -235,6 +238,7 @@ function App() {
   // =========================
   const handleLogin = async (e) => {
     e.preventDefault();
+
     setLoginError("");
 
     try {
@@ -263,6 +267,7 @@ function App() {
   // =========================
   const handleSignup = async (e) => {
     e.preventDefault();
+
     setSignupError("");
 
     const name = signupName.trim();
@@ -270,9 +275,7 @@ function App() {
     const address = signupAddress.trim();
 
     if (name.length < 20 || name.length > 60) {
-      setSignupError(
-        "Name must be between 20 and 60 characters"
-      );
+      setSignupError("Name must be between 20 and 60 characters");
       return;
     }
 
@@ -289,9 +292,7 @@ function App() {
     }
 
     if (address.length > 400) {
-      setSignupError(
-        "Address cannot exceed 400 characters"
-      );
+      setSignupError("Address cannot exceed 400 characters");
       return;
     }
 
@@ -359,10 +360,14 @@ function App() {
     setLoginError("");
 
     setSignupError("");
+
     setStoreSearch("");
+
     setAdminMessage("");
     setUserMessage("");
     setPasswordMessage("");
+
+    setSelectedUser(null);
   };
 
   // =========================
@@ -370,6 +375,7 @@ function App() {
   // =========================
   const handleChangePassword = async (e) => {
     e.preventDefault();
+
     setPasswordMessage("");
 
     try {
@@ -392,6 +398,7 @@ function App() {
   // =========================
   const handleCreateUser = async (e) => {
     e.preventDefault();
+
     setAdminMessage("");
 
     try {
@@ -428,6 +435,7 @@ function App() {
   // =========================
   const handleCreateStore = async (e) => {
     e.preventDefault();
+
     setAdminMessage("");
 
     try {
@@ -463,6 +471,7 @@ function App() {
   const handleUserDetails = async (userId) => {
     try {
       const data = await getAdminUserDetails(userId);
+
       setSelectedUser(data.user);
     } catch (error) {
       setAdminMessage(error.message);
@@ -734,6 +743,7 @@ function App() {
   // =========================
   return (
     <div className="app">
+
       {/* TOP BAR */}
       <header className="topbar">
         <div className="brand">⭐ RateHub</div>
@@ -758,8 +768,10 @@ function App() {
       </header>
 
       <div className="layout">
+
         {/* SIDEBAR */}
         <aside className="sidebar">
+
           <button
             type="button"
             className={
@@ -853,6 +865,7 @@ function App() {
 
         {/* CONTENT */}
         <main className="content">
+
           {/* ================= ADMIN DASHBOARD ================= */}
           {activePage === "dashboard" &&
             role === "admin" && (
@@ -1046,7 +1059,9 @@ function App() {
                             (user) => (
                               <tr key={user.id}>
                                 <td>{user.name}</td>
+
                                 <td>{user.email}</td>
+
                                 <td>
                                   {user.rating}/5
                                 </td>
@@ -1087,8 +1102,11 @@ function App() {
                       {adminUsers.map((user) => (
                         <tr key={user.id}>
                           <td>{user.id}</td>
+
                           <td>{user.name}</td>
+
                           <td>{user.email}</td>
+
                           <td>{user.role}</td>
 
                           <td>
@@ -1110,29 +1128,90 @@ function App() {
                   </table>
                 </div>
 
+                {/* ================= USER DETAILS POPUP ================= */}
                 {selectedUser && (
-                  <div className="details-card">
-                    <h2>User Details</h2>
+                  <div
+                    className="modal-overlay"
+                    onClick={() =>
+                      setSelectedUser(null)
+                    }
+                  >
+                    <div
+                      className="user-details-modal"
+                      onClick={(e) =>
+                        e.stopPropagation()
+                      }
+                    >
+                      <button
+                        type="button"
+                        className="modal-close"
+                        onClick={() =>
+                          setSelectedUser(null)
+                        }
+                        aria-label="Close"
+                      >
+                        ×
+                      </button>
 
-                    <p>
-                      <strong>Name:</strong>{" "}
-                      {selectedUser.name}
-                    </p>
+                      <div className="modal-icon">
+                        👤
+                      </div>
 
-                    <p>
-                      <strong>Email:</strong>{" "}
-                      {selectedUser.email}
-                    </p>
+                      <h2>User Details</h2>
 
-                    <p>
-                      <strong>Address:</strong>{" "}
-                      {selectedUser.address}
-                    </p>
+                      <p className="modal-subtitle">
+                        Account information
+                      </p>
 
-                    <p>
-                      <strong>Role:</strong>{" "}
-                      {selectedUser.role}
-                    </p>
+                      <div className="user-detail-row">
+                        <span>Name</span>
+
+                        <strong>
+                          {selectedUser.name}
+                        </strong>
+                      </div>
+
+                      <div className="user-detail-row">
+                        <span>Email</span>
+
+                        <strong>
+                          {selectedUser.email}
+                        </strong>
+                      </div>
+
+                      <div className="user-detail-row">
+                        <span>Address</span>
+
+                        <strong>
+                          {selectedUser.address ||
+                            "Not provided"}
+                        </strong>
+                      </div>
+
+                      <div className="user-detail-row">
+                        <span>Role</span>
+
+                        <strong>
+                          {selectedUser.role ===
+                          "admin"
+                            ? "System Administrator"
+                            : selectedUser.role ===
+                              "owner"
+                            ? "Store Owner"
+                            : "Normal User"}
+                        </strong>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="modal-close-btn"
+                        onClick={() =>
+                          setSelectedUser(null)
+                        }
+                      >
+                        Close
+                      </button>
+                    </div>
                   </div>
                 )}
               </>
@@ -1160,7 +1239,9 @@ function App() {
                       {adminStores.map((store) => (
                         <tr key={store.id}>
                           <td>{store.id}</td>
+
                           <td>{store.name}</td>
+
                           <td>{store.address}</td>
 
                           <td>
