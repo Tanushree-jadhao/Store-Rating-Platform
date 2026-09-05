@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import "./App.css";
 
@@ -521,12 +520,42 @@ function App() {
           <div className="auth-card">
 
             <div className="brand-header">
-              <h1>
-                <span className="brand-icon">🏪</span>
-                Store Rating Platform
-              </h1>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "9px",
+                  marginBottom: "5px",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "26px",
+                    lineHeight: 1,
+                  }}
+                >
+                  🏪
+                </span>
 
-              <p>
+                <h1
+                  style={{
+                    margin: 0,
+                    fontSize: "27px",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  Store Rating Platform
+                </h1>
+              </div>
+
+              <p
+                style={{
+                  fontSize: "11px",
+                  textAlign: "center",
+                  margin: "7px 0 0",
+                }}
+              >
                 Rate stores. Share experiences. Make better choices.
               </p>
             </div>
@@ -635,12 +664,42 @@ function App() {
         <div className="auth-card">
 
           <div className="brand-header">
-            <h1>
-              <span className="brand-icon">🏪</span>
-              Store Rating Platform
-            </h1>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "9px",
+                marginBottom: "5px",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "26px",
+                  lineHeight: 1,
+                }}
+              >
+                🏪
+              </span>
 
-            <p>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: "27px",
+                  lineHeight: 1.2,
+                }}
+              >
+                Store Rating Platform
+              </h1>
+            </div>
+
+            <p
+              style={{
+                fontSize: "11px",
+                textAlign: "center",
+                margin: "7px 0 0",
+              }}
+            >
               Rate stores. Share experiences. Make better choices.
             </p>
           </div>
@@ -897,6 +956,7 @@ function App() {
                 </div>
 
                 <div className="stats-grid">
+
                   <div className="stat-card">
                     <span>Total Users</span>
 
@@ -920,6 +980,7 @@ function App() {
                       {adminStats.totalRatings}
                     </strong>
                   </div>
+
                 </div>
               </>
             )}
@@ -941,6 +1002,7 @@ function App() {
                 </div>
 
                 <div className="section-card">
+
                   <div className="section-header">
                     <div>
                       <h3>Stores</h3>
@@ -962,6 +1024,7 @@ function App() {
                   </div>
 
                   <div className="store-grid">
+
                     {filteredStores.length === 0 ? (
                       <p className="empty-text">
                         {stores.length === 0
@@ -979,6 +1042,7 @@ function App() {
                           <p>{store.address}</p>
 
                           <div className="rating-info">
+
                             <span>
                               Overall Rating:{" "}
                               {Number(
@@ -991,9 +1055,11 @@ function App() {
                               {store.user_rating ||
                                 "Not rated"}
                             </span>
+
                           </div>
 
                           <div className="rating-actions">
+
                             <select
                               value={ratingValue}
                               onChange={(e) =>
@@ -1036,10 +1102,12 @@ function App() {
                                 ? "Update Rating"
                                 : "Rate Store"}
                             </button>
+
                           </div>
                         </div>
                       ))
                     )}
+
                   </div>
 
                   {ratingMessage && (
@@ -1047,6 +1115,7 @@ function App() {
                       {ratingMessage}
                     </div>
                   )}
+
                 </div>
               </>
             )}
@@ -1069,6 +1138,7 @@ function App() {
                 </div>
 
                 <div className="stats-grid">
+
                   <div className="stat-card">
                     <span>Average Rating</span>
 
@@ -1088,9 +1158,11 @@ function App() {
                         ?.total_ratings || 0}
                     </strong>
                   </div>
+
                 </div>
 
                 <div className="section-card">
+
                   <h3>
                     {ownerData.store?.name}
                   </h3>
@@ -1111,6 +1183,7 @@ function App() {
                     </p>
                   ) : (
                     <div className="table-wrapper">
+
                       <table>
                         <thead>
                           <tr>
@@ -1140,8 +1213,10 @@ function App() {
                           )}
                         </tbody>
                       </table>
+
                     </div>
                   )}
+
                 </div>
               </>
             )}
@@ -1161,7 +1236,9 @@ function App() {
                 </div>
 
                 <div className="section-card">
+
                   <div className="section-header">
+
                     <h3>All Users</h3>
 
                     <input
@@ -1173,9 +1250,11 @@ function App() {
                         setUserSearch(e.target.value)
                       }
                     />
+
                   </div>
 
                   <div className="table-wrapper">
+
                     <table>
                       <thead>
                         <tr>
@@ -1189,6 +1268,7 @@ function App() {
                       <tbody>
                         {filteredUsers.map((item) => (
                           <tr key={item.id}>
+
                             <td>
                               {item.name}
                             </td>
@@ -1218,11 +1298,14 @@ function App() {
                                 View
                               </button>
                             </td>
+
                           </tr>
                         ))}
                       </tbody>
                     </table>
+
                   </div>
+
                 </div>
               </>
             )}
@@ -1241,7 +1324,9 @@ function App() {
                 </div>
 
                 <div className="section-card">
+
                   <div className="table-wrapper">
+
                     <table>
                       <thead>
                         <tr>
@@ -1256,6 +1341,7 @@ function App() {
                       <tbody>
                         {adminStores.map((store) => (
                           <tr key={store.id}>
+
                             <td>
                               {store.name}
                             </td>
@@ -1289,11 +1375,14 @@ function App() {
                                 View
                               </button>
                             </td>
+
                           </tr>
                         ))}
                       </tbody>
                     </table>
+
                   </div>
+
                 </div>
               </>
             )}
@@ -1313,7 +1402,9 @@ function App() {
                 </div>
 
                 <div className="section-card form-card">
+
                   <form onSubmit={handleCreateUser}>
+
                     <label>Name</label>
 
                     <input
@@ -1405,7 +1496,9 @@ function App() {
                     >
                       Add User
                     </button>
+
                   </form>
+
                 </div>
               </>
             )}
@@ -1425,7 +1518,9 @@ function App() {
                 </div>
 
                 <div className="section-card form-card">
+
                   <form onSubmit={handleCreateStore}>
+
                     <label>Store Name</label>
 
                     <input
@@ -1479,7 +1574,9 @@ function App() {
                     >
                       Add Store
                     </button>
+
                   </form>
+
                 </div>
               </>
             )}
@@ -1499,7 +1596,9 @@ function App() {
                 </div>
 
                 <div className="section-card">
+
                   <div className="section-header">
+
                     <h3>Stores</h3>
 
                     <input
@@ -1511,9 +1610,11 @@ function App() {
                         setStoreSearch(e.target.value)
                       }
                     />
+
                   </div>
 
                   <div className="store-grid">
+
                     {filteredStores.length === 0 ? (
                       <p className="empty-text">
                         {stores.length === 0
@@ -1526,11 +1627,13 @@ function App() {
                           className="store-card"
                           key={store.id}
                         >
+
                           <h3>{store.name}</h3>
 
                           <p>{store.address}</p>
 
                           <div className="rating-info">
+
                             <span>
                               Overall Rating:{" "}
                               {Number(
@@ -1543,9 +1646,11 @@ function App() {
                               {store.user_rating ||
                                 "Not rated"}
                             </span>
+
                           </div>
 
                           <div className="rating-actions">
+
                             <select
                               value={ratingValue}
                               onChange={(e) =>
@@ -1588,11 +1693,15 @@ function App() {
                                 ? "Update Rating"
                                 : "Rate Store"}
                             </button>
+
                           </div>
+
                         </div>
                       ))
                     )}
+
                   </div>
+
                 </div>
               </>
             )}
@@ -1610,7 +1719,9 @@ function App() {
               </div>
 
               <div className="section-card form-card">
+
                 <form onSubmit={handleChangePassword}>
+
                   <label>
                     Current Password
                   </label>
@@ -1653,10 +1764,13 @@ function App() {
                   >
                     Change Password
                   </button>
+
                 </form>
+
               </div>
             </>
           )}
+
         </main>
       </div>
 
@@ -1830,6 +1944,7 @@ function App() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
