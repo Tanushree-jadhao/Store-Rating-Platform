@@ -1,5 +1,5 @@
-
 import { useEffect, useState } from "react";
+
 import {
   loginUser,
   signupUser,
@@ -16,6 +16,7 @@ import {
   updateRating,
   getOwnerDashboard,
 } from "./api";
+
 import "./App.css";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
+
     if (!savedUser) return null;
 
     try {
@@ -36,6 +38,7 @@ function App() {
 
   const [role, setRole] = useState(() => {
     const savedUser = localStorage.getItem("user");
+
     if (!savedUser) return "";
 
     try {
@@ -96,9 +99,12 @@ function App() {
   const [ownerData, setOwnerData] = useState(null);
 
   const [showChangePassword, setShowChangePassword] = useState(false);
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
+
+  // ==================== DASHBOARD DATA ====================
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -126,6 +132,8 @@ function App() {
 
     loadDashboardData();
   }, [loggedIn, role]);
+
+  // ==================== LOGIN ====================
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -155,11 +163,11 @@ function App() {
       setLoginRole("");
       setMessage("");
     } catch (error) {
-      setMessage(
-        error.response?.data?.message || "Invalid email or password."
-      );
+      setMessage(error.message || "Invalid email or password.");
     }
   };
+
+  // ==================== SIGNUP ====================
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -177,9 +185,14 @@ function App() {
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
-    if (signupName.trim().length < 20 || signupName.trim().length > 60) {
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
+
+    if (
+      signupName.trim().length < 20 ||
+      signupName.trim().length > 60
+    ) {
       setMessage("Name must be between 20 and 60 characters.");
       return;
     }
@@ -217,11 +230,14 @@ function App() {
       setSignupAddress("");
       setSignupPassword("");
       setSignupRole("user");
+
       setShowSignup(false);
     } catch (error) {
-      setMessage(error.response?.data?.message || "Signup failed.");
+      setMessage(error.message || "Signup failed.");
     }
   };
+
+  // ==================== LOGOUT ====================
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -235,6 +251,8 @@ function App() {
     setStores([]);
   };
 
+  // ==================== ADMIN USERS ====================
+
   const loadAdminUsers = async () => {
     try {
       const data = await getAdminUsers();
@@ -243,6 +261,8 @@ function App() {
       console.error("Failed to load users:", error);
     }
   };
+
+  // ==================== ADMIN STORES ====================
 
   const loadAdminStores = async () => {
     try {
@@ -258,6 +278,7 @@ function App() {
     setShowAddStore(false);
     setUserCreateMessage("");
     setStoreCreateMessage("");
+
     await loadAdminUsers();
   };
 
@@ -266,8 +287,11 @@ function App() {
     setShowAddStore(false);
     setUserCreateMessage("");
     setStoreCreateMessage("");
+
     await loadAdminStores();
   };
+
+  // ==================== VIEW USER ====================
 
   const handleViewUser = async (id) => {
     try {
@@ -278,6 +302,8 @@ function App() {
     }
   };
 
+  // ==================== VIEW STORE ====================
+
   const handleViewStore = async (id) => {
     try {
       const data = await getStoreDetails(id);
@@ -286,6 +312,8 @@ function App() {
       setMessage("Unable to load store details.");
     }
   };
+
+  // ==================== CREATE USER ====================
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
@@ -311,10 +339,12 @@ function App() {
       await loadAdminUsers();
     } catch (error) {
       setUserCreateMessage(
-        error.response?.data?.message || "Failed to create user."
+        error.message || "Failed to create user."
       );
     }
   };
+
+  // ==================== CREATE STORE ====================
 
   const handleCreateStore = async (e) => {
     e.preventDefault();
@@ -324,7 +354,9 @@ function App() {
       await createAdminStore({
         name: newStoreName.trim(),
         address: newStoreAddress.trim(),
-        owner_id: newStoreOwnerId ? Number(newStoreOwnerId) : null,
+        owner_id: newStoreOwnerId
+          ? Number(newStoreOwnerId)
+          : null,
       });
 
       setStoreCreateMessage("Store created successfully.");
@@ -339,10 +371,12 @@ function App() {
       setAdminStats(stats);
     } catch (error) {
       setStoreCreateMessage(
-        error.response?.data?.message || "Failed to create store."
+        error.message || "Failed to create store."
       );
     }
   };
+
+  // ==================== FILTER USERS ====================
 
   const filteredAdminUsers = adminUsers.filter((item) => {
     const search = userSearch.toLowerCase();
@@ -354,6 +388,8 @@ function App() {
     );
   });
 
+  // ==================== FILTER STORES ====================
+
   const filteredAdminStores = adminStores.filter((item) => {
     const search = storeSearch.toLowerCase();
 
@@ -363,6 +399,8 @@ function App() {
       item.owner_name?.toLowerCase().includes(search)
     );
   });
+
+  // ==================== RATINGS ====================
 
   const handleRatingChange = (storeId, value) => {
     setRatingValues((previous) => ({
@@ -374,7 +412,11 @@ function App() {
   const handleSubmitRating = async (store) => {
     const rating = Number(ratingValues[store.id]);
 
-    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    if (
+      !Number.isInteger(rating) ||
+      rating < 1 ||
+      rating > 5
+    ) {
       setMessage("Please select a rating between 1 and 5.");
       return;
     }
@@ -385,12 +427,14 @@ function App() {
           store_id: store.id,
           rating,
         });
+
         setMessage("Rating updated successfully.");
       } else {
         await submitRating({
           store_id: store.id,
           rating,
         });
+
         setMessage("Rating submitted successfully.");
       }
 
@@ -402,10 +446,12 @@ function App() {
       }, 2000);
     } catch (error) {
       setMessage(
-        error.response?.data?.message || "Failed to submit rating."
+        error.message || "Failed to submit rating."
       );
     }
   };
+
+  // ==================== CHANGE PASSWORD ====================
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -416,7 +462,8 @@ function App() {
       return;
     }
 
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
     if (!passwordRegex.test(newPassword)) {
       setPasswordMessage(
@@ -432,19 +479,23 @@ function App() {
       });
 
       setPasswordMessage("Password changed successfully.");
+
       setCurrentPassword("");
       setNewPassword("");
     } catch (error) {
       setPasswordMessage(
-        error.response?.data?.message || "Failed to change password."
+        error.message || "Failed to change password."
       );
     }
   };
+
+  // ==================== LOGIN / SIGNUP PAGE ====================
 
   if (!loggedIn) {
     return (
       <div className="app-container">
         <div className="auth-card">
+
           <div className="brand-header">
             <div
               style={{
@@ -455,7 +506,14 @@ function App() {
                 marginBottom: "5px",
               }}
             >
-              <span style={{ fontSize: "26px", lineHeight: 1 }}>🏪</span>
+              <span
+                style={{
+                  fontSize: "26px",
+                  lineHeight: 1,
+                }}
+              >
+                🏪
+              </span>
 
               <h1
                 style={{
@@ -488,20 +546,26 @@ function App() {
                   type="text"
                   placeholder="Full Name"
                   value={signupName}
-                  onChange={(e) => setSignupName(e.target.value)}
+                  onChange={(e) =>
+                    setSignupName(e.target.value)
+                  }
                 />
 
                 <input
                   type="email"
                   placeholder="Email Address"
                   value={signupEmail}
-                  onChange={(e) => setSignupEmail(e.target.value)}
+                  onChange={(e) =>
+                    setSignupEmail(e.target.value)
+                  }
                 />
 
                 <textarea
                   placeholder="Address"
                   value={signupAddress}
-                  onChange={(e) => setSignupAddress(e.target.value)}
+                  onChange={(e) =>
+                    setSignupAddress(e.target.value)
+                  }
                   rows="3"
                 />
 
@@ -509,27 +573,48 @@ function App() {
                   type="password"
                   placeholder="Password"
                   value={signupPassword}
-                  onChange={(e) => setSignupPassword(e.target.value)}
+                  onChange={(e) =>
+                    setSignupPassword(e.target.value)
+                  }
                 />
 
                 <select
                   value={signupRole}
-                  onChange={(e) => setSignupRole(e.target.value)}
+                  onChange={(e) =>
+                    setSignupRole(e.target.value)
+                  }
                 >
-                  <option value="user">Normal User</option>
-                  <option value="owner">Store Owner</option>
-                  <option value="admin">System Administrator</option>
+                  <option value="user">
+                    Normal User
+                  </option>
+
+                  <option value="owner">
+                    Store Owner
+                  </option>
+
+                  <option value="admin">
+                    System Administrator
+                  </option>
                 </select>
 
-                {message && <p className="message">{message}</p>}
+                {message && (
+                  <p className="message">
+                    {message}
+                  </p>
+                )}
 
-                <button type="submit" className="primary-btn">
+                <button
+                  type="submit"
+                  className="primary-btn"
+                >
                   Create Account
                 </button>
               </form>
 
               <div className="login-footer">
-                <span>Already have an account?</span>
+                <span>
+                  Already have an account?
+                </span>
 
                 <button
                   className="text-btn"
@@ -551,35 +636,61 @@ function App() {
                   type="email"
                   placeholder="Email Address"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) =>
+                    setEmail(e.target.value)
+                  }
                 />
 
                 <input
                   type="password"
                   placeholder="Password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) =>
+                    setPassword(e.target.value)
+                  }
                 />
 
                 <select
                   value={loginRole}
-                  onChange={(e) => setLoginRole(e.target.value)}
+                  onChange={(e) =>
+                    setLoginRole(e.target.value)
+                  }
                 >
-                  <option value="">Select Role</option>
-                  <option value="user">Normal User</option>
-                  <option value="owner">Store Owner</option>
-                  <option value="admin">System Administrator</option>
+                  <option value="">
+                    Select Role
+                  </option>
+
+                  <option value="user">
+                    Normal User
+                  </option>
+
+                  <option value="owner">
+                    Store Owner
+                  </option>
+
+                  <option value="admin">
+                    System Administrator
+                  </option>
                 </select>
 
-                {message && <p className="message">{message}</p>}
+                {message && (
+                  <p className="message">
+                    {message}
+                  </p>
+                )}
 
-                <button type="submit" className="primary-btn">
+                <button
+                  type="submit"
+                  className="primary-btn"
+                >
                   Login
                 </button>
               </form>
 
               <div className="login-footer">
-                <span>Don't have an account?</span>
+                <span>
+                  Don't have an account?
+                </span>
 
                 <button
                   className="text-btn"
@@ -598,8 +709,11 @@ function App() {
     );
   }
 
+  // ==================== DASHBOARD ====================
+
   return (
     <div className="dashboard-container">
+
       <header className="topbar">
         <div>
           <h1>🏪 RateHub</h1>
@@ -611,12 +725,17 @@ function App() {
 
           <button
             className="secondary-btn"
-            onClick={() => setShowChangePassword(!showChangePassword)}
+            onClick={() =>
+              setShowChangePassword(!showChangePassword)
+            }
           >
             Change Password
           </button>
 
-          <button className="logout-btn" onClick={handleLogout}>
+          <button
+            className="logout-btn"
+            onClick={handleLogout}
+          >
             Logout
           </button>
         </div>
@@ -631,21 +750,30 @@ function App() {
               type="password"
               placeholder="Current Password"
               value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
+              onChange={(e) =>
+                setCurrentPassword(e.target.value)
+              }
             />
 
             <input
               type="password"
               placeholder="New Password"
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={(e) =>
+                setNewPassword(e.target.value)
+              }
             />
 
             {passwordMessage && (
-              <p className="message">{passwordMessage}</p>
+              <p className="message">
+                {passwordMessage}
+              </p>
             )}
 
-            <button type="submit" className="primary-btn">
+            <button
+              type="submit"
+              className="primary-btn"
+            >
               Update Password
             </button>
           </form>
@@ -653,31 +781,45 @@ function App() {
       )}
 
       {message && role !== "user" && (
-        <div className="dashboard-message">{message}</div>
+        <div className="dashboard-message">
+          {message}
+        </div>
       )}
+
+      {/* ==================== ADMIN ==================== */}
 
       {role === "admin" && (
         <div className="dashboard-content">
+
           <h2>System Administrator Dashboard</h2>
 
           <div className="stats-grid">
+
             <div className="stat-card">
               <h3>Total Users</h3>
-              <strong>{adminStats.totalUsers}</strong>
+              <strong>
+                {adminStats.totalUsers}
+              </strong>
             </div>
 
             <div className="stat-card">
               <h3>Total Stores</h3>
-              <strong>{adminStats.totalStores}</strong>
+              <strong>
+                {adminStats.totalStores}
+              </strong>
             </div>
 
             <div className="stat-card">
               <h3>Total Ratings</h3>
-              <strong>{adminStats.totalRatings}</strong>
+              <strong>
+                {adminStats.totalRatings}
+              </strong>
             </div>
+
           </div>
 
           <div className="admin-actions">
+
             <button
               className="primary-btn"
               onClick={handleAdminUsers}
@@ -715,106 +857,155 @@ function App() {
             >
               Add Store
             </button>
+
           </div>
 
           {showAddUser && (
             <div className="form-card">
+
               <h2>Add User</h2>
 
               <form onSubmit={handleCreateUser}>
+
                 <input
                   type="text"
                   placeholder="Name"
                   value={newUserName}
-                  onChange={(e) => setNewUserName(e.target.value)}
+                  onChange={(e) =>
+                    setNewUserName(e.target.value)
+                  }
                 />
 
                 <input
                   type="email"
                   placeholder="Email"
                   value={newUserEmail}
-                  onChange={(e) => setNewUserEmail(e.target.value)}
+                  onChange={(e) =>
+                    setNewUserEmail(e.target.value)
+                  }
                 />
 
                 <textarea
                   placeholder="Address"
                   value={newUserAddress}
-                  onChange={(e) => setNewUserAddress(e.target.value)}
+                  onChange={(e) =>
+                    setNewUserAddress(e.target.value)
+                  }
                 />
 
                 <input
                   type="password"
                   placeholder="Password"
                   value={newUserPassword}
-                  onChange={(e) => setNewUserPassword(e.target.value)}
+                  onChange={(e) =>
+                    setNewUserPassword(e.target.value)
+                  }
                 />
 
                 <select
                   value={newUserRole}
-                  onChange={(e) => setNewUserRole(e.target.value)}
+                  onChange={(e) =>
+                    setNewUserRole(e.target.value)
+                  }
                 >
-                  <option value="user">Normal User</option>
-                  <option value="owner">Store Owner</option>
-                  <option value="admin">System Administrator</option>
+                  <option value="user">
+                    Normal User
+                  </option>
+
+                  <option value="owner">
+                    Store Owner
+                  </option>
+
+                  <option value="admin">
+                    System Administrator
+                  </option>
                 </select>
 
                 {userCreateMessage && (
-                  <p className="message">{userCreateMessage}</p>
+                  <p className="message">
+                    {userCreateMessage}
+                  </p>
                 )}
 
-                <button type="submit" className="primary-btn">
+                <button
+                  type="submit"
+                  className="primary-btn"
+                >
                   Add User
                 </button>
+
               </form>
             </div>
           )}
 
           {showAddStore && (
             <div className="form-card">
+
               <h2>Add Store</h2>
 
               <form onSubmit={handleCreateStore}>
+
                 <input
                   type="text"
                   placeholder="Store Name"
                   value={newStoreName}
-                  onChange={(e) => setNewStoreName(e.target.value)}
+                  onChange={(e) =>
+                    setNewStoreName(e.target.value)
+                  }
                 />
 
                 <textarea
                   placeholder="Store Address"
                   value={newStoreAddress}
-                  onChange={(e) => setNewStoreAddress(e.target.value)}
+                  onChange={(e) =>
+                    setNewStoreAddress(e.target.value)
+                  }
                 />
 
                 <select
                   value={newStoreOwnerId}
-                  onChange={(e) => setNewStoreOwnerId(e.target.value)}
+                  onChange={(e) =>
+                    setNewStoreOwnerId(e.target.value)
+                  }
                 >
-                  <option value="">Select Store Owner</option>
+                  <option value="">
+                    Select Store Owner
+                  </option>
 
                   {adminUsers
-                    .filter((item) => item.role === "owner")
+                    .filter(
+                      (item) => item.role === "owner"
+                    )
                     .map((item) => (
-                      <option key={item.id} value={item.id}>
+                      <option
+                        key={item.id}
+                        value={item.id}
+                      >
                         {item.name} - {item.email}
                       </option>
                     ))}
                 </select>
 
                 {storeCreateMessage && (
-                  <p className="message">{storeCreateMessage}</p>
+                  <p className="message">
+                    {storeCreateMessage}
+                  </p>
                 )}
 
-                <button type="submit" className="primary-btn">
+                <button
+                  type="submit"
+                  className="primary-btn"
+                >
                   Create Store
                 </button>
+
               </form>
             </div>
           )}
 
           {adminUsers.length > 0 && (
             <div className="table-card">
+
               <div className="section-header">
                 <h2>All Users</h2>
 
@@ -822,12 +1013,16 @@ function App() {
                   type="text"
                   placeholder="Search users..."
                   value={userSearch}
-                  onChange={(e) => setUserSearch(e.target.value)}
+                  onChange={(e) =>
+                    setUserSearch(e.target.value)
+                  }
                 />
               </div>
 
               <div className="table-wrapper">
+
                 <table>
+
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -840,31 +1035,44 @@ function App() {
                   <tbody>
                     {filteredAdminUsers.map((item) => (
                       <tr key={item.id}>
+
                         <td>{item.name}</td>
+
                         <td>{item.email}</td>
+
                         <td>{item.role}</td>
+
                         <td>
                           <button
                             className="small-btn"
-                            onClick={() => handleViewUser(item.id)}
+                            onClick={() =>
+                              handleViewUser(item.id)
+                            }
                           >
                             View
                           </button>
                         </td>
+
                       </tr>
                     ))}
                   </tbody>
+
                 </table>
+
               </div>
 
               {filteredAdminUsers.length === 0 && (
-                <p className="empty-text">No matching users found.</p>
+                <p className="empty-text">
+                  No matching users found.
+                </p>
               )}
+
             </div>
           )}
 
           {adminStores.length > 0 && (
             <div className="table-card">
+
               <div className="section-header">
                 <h2>All Stores</h2>
 
@@ -872,12 +1080,16 @@ function App() {
                   type="text"
                   placeholder="Search stores..."
                   value={storeSearch}
-                  onChange={(e) => setStoreSearch(e.target.value)}
+                  onChange={(e) =>
+                    setStoreSearch(e.target.value)
+                  }
                 />
               </div>
 
               <div className="table-wrapper">
+
                 <table>
+
                   <thead>
                     <tr>
                       <th>Store</th>
@@ -891,50 +1103,78 @@ function App() {
                   <tbody>
                     {filteredAdminStores.map((item) => (
                       <tr key={item.id}>
+
                         <td>{item.name}</td>
+
                         <td>{item.address}</td>
-                        <td>{item.owner_name || "Not assigned"}</td>
+
                         <td>
-                          {Number(item.overall_rating || 0).toFixed(2)}
+                          {item.owner_name ||
+                            "Not assigned"}
                         </td>
+
+                        <td>
+                          {Number(
+                            item.overall_rating || 0
+                          ).toFixed(2)}
+                        </td>
+
                         <td>
                           <button
                             className="small-btn"
-                            onClick={() => handleViewStore(item.id)}
+                            onClick={() =>
+                              handleViewStore(item.id)
+                            }
                           >
                             View
                           </button>
                         </td>
+
                       </tr>
                     ))}
                   </tbody>
+
                 </table>
+
               </div>
 
               {filteredAdminStores.length === 0 && (
-                <p className="empty-text">No matching stores found.</p>
+                <p className="empty-text">
+                  No matching stores found.
+                </p>
               )}
+
             </div>
           )}
+
         </div>
       )}
 
+      {/* ==================== NORMAL USER ==================== */}
+
       {role === "user" && (
         <div className="dashboard-content">
+
           <h2>Normal User Dashboard</h2>
 
           <div className="section-header">
+
             <div>
               <h2>All Stores</h2>
-              <p>Search and rate your favourite stores.</p>
+              <p>
+                Search and rate your favourite stores.
+              </p>
             </div>
 
             <input
               type="text"
               placeholder="Search by store name or address..."
               value={storeSearch}
-              onChange={(e) => setStoreSearch(e.target.value)}
+              onChange={(e) =>
+                setStoreSearch(e.target.value)
+              }
             />
+
           </div>
 
           {stores.length === 0 ? (
@@ -944,24 +1184,38 @@ function App() {
             </div>
           ) : (
             <div className="store-grid">
+
               {stores
                 .filter((store) => {
-                  const search = storeSearch.toLowerCase();
+                  const search =
+                    storeSearch.toLowerCase();
 
                   return (
-                    store.name?.toLowerCase().includes(search) ||
-                    store.address?.toLowerCase().includes(search)
+                    store.name
+                      ?.toLowerCase()
+                      .includes(search) ||
+                    store.address
+                      ?.toLowerCase()
+                      .includes(search)
                   );
                 })
                 .map((store) => (
-                  <div className="store-card" key={store.id}>
+                  <div
+                    className="store-card"
+                    key={store.id}
+                  >
+
                     <div className="store-card-header">
+
                       <h3>{store.name}</h3>
 
                       <span>
                         ⭐{" "}
-                        {Number(store.overall_rating || 0).toFixed(2)}
+                        {Number(
+                          store.overall_rating || 0
+                        ).toFixed(2)}
                       </span>
+
                     </div>
 
                     <p className="store-address">
@@ -969,6 +1223,7 @@ function App() {
                     </p>
 
                     <div className="rating-info">
+
                       <p>
                         Your Rating:{" "}
                         <strong>
@@ -977,69 +1232,119 @@ function App() {
                             : "Not rated"}
                         </strong>
                       </p>
+
                     </div>
 
                     <select
-                      value={ratingValues[store.id] || ""}
+                      value={
+                        ratingValues[store.id] || ""
+                      }
                       onChange={(e) =>
-                        handleRatingChange(store.id, e.target.value)
+                        handleRatingChange(
+                          store.id,
+                          e.target.value
+                        )
                       }
                     >
-                      <option value="">Select Rating</option>
-                      <option value="1">⭐ 1</option>
-                      <option value="2">⭐ 2</option>
-                      <option value="3">⭐ 3</option>
-                      <option value="4">⭐ 4</option>
-                      <option value="5">⭐ 5</option>
+                      <option value="">
+                        Select Rating
+                      </option>
+
+                      <option value="1">
+                        ⭐ 1
+                      </option>
+
+                      <option value="2">
+                        ⭐ 2
+                      </option>
+
+                      <option value="3">
+                        ⭐ 3
+                      </option>
+
+                      <option value="4">
+                        ⭐ 4
+                      </option>
+
+                      <option value="5">
+                        ⭐ 5
+                      </option>
                     </select>
 
                     <button
                       className="primary-btn"
-                      onClick={() => handleSubmitRating(store)}
+                      onClick={() =>
+                        handleSubmitRating(store)
+                      }
                     >
                       {store.user_rating
                         ? "Update Rating"
                         : "Submit Rating"}
                     </button>
+
                   </div>
                 ))}
+
             </div>
           )}
 
           {stores.length > 0 &&
             stores.filter((store) => {
-              const search = storeSearch.toLowerCase();
+              const search =
+                storeSearch.toLowerCase();
 
               return (
-                store.name?.toLowerCase().includes(search) ||
-                store.address?.toLowerCase().includes(search)
+                store.name
+                  ?.toLowerCase()
+                  .includes(search) ||
+                store.address
+                  ?.toLowerCase()
+                  .includes(search)
               );
             }).length === 0 && (
               <div className="empty-card">
                 <h3>No matching stores found</h3>
-                <p>Try another store name or address.</p>
+                <p>
+                  Try another store name or address.
+                </p>
               </div>
             )}
 
           {message && (
-            <div className="dashboard-message">{message}</div>
+            <div className="dashboard-message">
+              {message}
+            </div>
           )}
+
         </div>
       )}
 
+      {/* ==================== OWNER ==================== */}
+
       {role === "owner" && (
         <div className="dashboard-content">
+
           <h2>Store Owner Dashboard</h2>
 
           {ownerData?.store ? (
             <>
+
               <div className="owner-store-card">
-                <h2>{ownerData.store.name}</h2>
-                <p>{ownerData.store.address}</p>
+
+                <h2>
+                  {ownerData.store.name}
+                </h2>
+
+                <p>
+                  {ownerData.store.address}
+                </p>
+
               </div>
 
               <div className="stats-grid">
+
                 <div className="stat-card">
+
                   <h3>Average Rating</h3>
 
                   <strong>
@@ -1047,31 +1352,42 @@ function App() {
                       ownerData.store.average_rating || 0
                     ).toFixed(2)}
                   </strong>
+
                 </div>
 
                 <div className="stat-card">
+
                   <h3>Total Ratings</h3>
 
                   <strong>
                     {ownerData.store.total_ratings || 0}
                   </strong>
+
                 </div>
 
                 <div className="stat-card">
+
                   <h3>Users Who Rated</h3>
 
                   <strong>
                     {ownerData.usersWhoRated?.length || 0}
                   </strong>
+
                 </div>
+
               </div>
 
               <div className="table-card">
-                <h2>Users Who Rated Your Store</h2>
+
+                <h2>
+                  Users Who Rated Your Store
+                </h2>
 
                 {ownerData.usersWhoRated?.length > 0 ? (
                   <div className="table-wrapper">
+
                     <table>
+
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -1082,56 +1398,80 @@ function App() {
                       </thead>
 
                       <tbody>
-                        {ownerData.usersWhoRated.map((item) => (
-                          <tr key={item.id}>
-                            <td>{item.name}</td>
-                            <td>{item.email}</td>
-                            <td>⭐ {item.rating}</td>
-                            <td>
-                              {item.created_at
-                                ? new Date(
-                                    item.created_at
-                                  ).toLocaleDateString()
-                                : "-"}
-                            </td>
-                          </tr>
-                        ))}
+                        {ownerData.usersWhoRated.map(
+                          (item) => (
+                            <tr key={item.id}>
+
+                              <td>{item.name}</td>
+
+                              <td>{item.email}</td>
+
+                              <td>
+                                ⭐ {item.rating}
+                              </td>
+
+                              <td>
+                                {item.created_at
+                                  ? new Date(
+                                      item.created_at
+                                    ).toLocaleDateString()
+                                  : "-"}
+                              </td>
+
+                            </tr>
+                          )
+                        )}
                       </tbody>
+
                     </table>
+
                   </div>
                 ) : (
                   <p className="empty-text">
                     No users have rated your store yet.
                   </p>
                 )}
+
               </div>
+
             </>
           ) : (
             <div className="empty-card">
               <h3>No store assigned</h3>
-              <p>Please contact the administrator.</p>
+              <p>
+                Please contact the administrator.
+              </p>
             </div>
           )}
+
         </div>
       )}
+
+      {/* ==================== USER DETAILS MODAL ==================== */}
 
       {selectedUser && (
         <div
           className="modal-overlay"
           onClick={() => setSelectedUser(null)}
         >
+
           <div
             className="user-details-modal"
             onClick={(e) => e.stopPropagation()}
           >
+
             <button
               className="modal-close"
-              onClick={() => setSelectedUser(null)}
+              onClick={() =>
+                setSelectedUser(null)
+              }
             >
               ×
             </button>
 
-            <div className="modal-icon">👤</div>
+            <div className="modal-icon">
+              👤
+            </div>
 
             <h2>User Details</h2>
 
@@ -1141,53 +1481,71 @@ function App() {
 
             <div className="user-detail-row">
               <span>Name</span>
-              <strong>{selectedUser.name}</strong>
+              <strong>
+                {selectedUser.name}
+              </strong>
             </div>
 
             <div className="user-detail-row">
               <span>Email</span>
-              <strong>{selectedUser.email}</strong>
+              <strong>
+                {selectedUser.email}
+              </strong>
             </div>
 
             <div className="user-detail-row">
               <span>Address</span>
               <strong>
-                {selectedUser.address || "Not provided"}
+                {selectedUser.address ||
+                  "Not provided"}
               </strong>
             </div>
 
             <div className="user-detail-row">
               <span>Role</span>
-              <strong>{selectedUser.role}</strong>
+              <strong>
+                {selectedUser.role}
+              </strong>
             </div>
 
             <button
               className="modal-close-btn"
-              onClick={() => setSelectedUser(null)}
+              onClick={() =>
+                setSelectedUser(null)
+              }
             >
               Close
             </button>
+
           </div>
         </div>
       )}
+
+      {/* ==================== STORE DETAILS MODAL ==================== */}
 
       {selectedStore && (
         <div
           className="modal-overlay"
           onClick={() => setSelectedStore(null)}
         >
+
           <div
             className="user-details-modal"
             onClick={(e) => e.stopPropagation()}
           >
+
             <button
               className="modal-close"
-              onClick={() => setSelectedStore(null)}
+              onClick={() =>
+                setSelectedStore(null)
+              }
             >
               ×
             </button>
 
-            <div className="modal-icon">🏪</div>
+            <div className="modal-icon">
+              🏪
+            </div>
 
             <h2>Store Details</h2>
 
@@ -1197,18 +1555,23 @@ function App() {
 
             <div className="user-detail-row">
               <span>Store Name</span>
-              <strong>{selectedStore.name}</strong>
+              <strong>
+                {selectedStore.name}
+              </strong>
             </div>
 
             <div className="user-detail-row">
               <span>Address</span>
-              <strong>{selectedStore.address}</strong>
+              <strong>
+                {selectedStore.address}
+              </strong>
             </div>
 
             <div className="user-detail-row">
               <span>Owner</span>
               <strong>
-                {selectedStore.owner_name || "Not assigned"}
+                {selectedStore.owner_name ||
+                  "Not assigned"}
               </strong>
             </div>
 
@@ -1224,13 +1587,17 @@ function App() {
 
             <button
               className="modal-close-btn"
-              onClick={() => setSelectedStore(null)}
+              onClick={() =>
+                setSelectedStore(null)
+              }
             >
               Close
             </button>
+
           </div>
         </div>
       )}
+
     </div>
   );
 }
