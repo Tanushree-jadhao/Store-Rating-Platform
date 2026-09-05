@@ -27,7 +27,6 @@ function App() {
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
-
     if (!savedUser) return null;
 
     try {
@@ -39,7 +38,6 @@ function App() {
 
   const [role, setRole] = useState(() => {
     const savedUser = localStorage.getItem("user");
-
     if (!savedUser) return "";
 
     try {
@@ -54,7 +52,6 @@ function App() {
   const [loginRole, setLoginRole] = useState("");
 
   const [showSignup, setShowSignup] = useState(false);
-
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupAddress, setSignupAddress] = useState("");
@@ -96,7 +93,6 @@ function App() {
 
   const [stores, setStores] = useState([]);
   const [ratingValues, setRatingValues] = useState({});
-
   const [ownerData, setOwnerData] = useState(null);
 
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -215,7 +211,6 @@ function App() {
     }
 
     try {
-      // Save signup values before clearing the form
       const signupData = {
         name: signupName.trim(),
         email: signupEmail.trim(),
@@ -224,32 +219,26 @@ function App() {
         role: signupRole,
       };
 
-      // 1. Create account
       await signupUser(signupData);
 
-      // 2. Automatically login after account creation
       const loginData = await loginUser({
         email: signupData.email,
         password: signupData.password,
         role: signupData.role,
       });
 
-      // 3. Save login session
       localStorage.setItem("token", loginData.token);
       localStorage.setItem("user", JSON.stringify(loginData.user));
 
-      // 4. Open dashboard automatically
       setUser(loginData.user);
       setRole(loginData.user.role);
       setLoggedIn(true);
 
-      // 5. Clear signup form
       setSignupName("");
       setSignupEmail("");
       setSignupAddress("");
       setSignupPassword("");
       setSignupRole("user");
-
       setShowSignup(false);
       setMessage("");
     } catch (error) {
@@ -736,6 +725,7 @@ function App() {
 
   return (
     <div className="dashboard-container">
+
       <header className="topbar">
         <div>
           <h1>🏪 RateHub</h1>
@@ -812,79 +802,216 @@ function App() {
 
       {role === "admin" && (
         <div className="dashboard-content">
-          <h2>System Administrator Dashboard</h2>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "20px",
+              marginBottom: "24px",
+              flexWrap: "wrap",
+            }}
+          >
+            <div>
+              <h2 style={{ marginBottom: "6px" }}>
+                System Administrator Dashboard
+              </h2>
+
+              <p
+                style={{
+                  margin: 0,
+                  color: "#64748b",
+                }}
+              >
+                Manage users, stores and platform activity
+              </p>
+            </div>
+
+            <div
+              style={{
+                fontSize: "14px",
+                color: "#64748b",
+              }}
+            >
+              Welcome, <strong>{user?.name}</strong>
+            </div>
+          </div>
+
+          {/* ==================== STATISTICS ==================== */}
 
           <div className="stats-grid">
-            <div className="stat-card">
-              <h3>Total Users</h3>
+
+            <div
+              className="stat-card"
+              style={{
+                borderTop: "4px solid #2563eb",
+              }}
+            >
+              <h3>👥 Total Users</h3>
+
               <strong>
                 {adminStats.totalUsers}
               </strong>
+
+              <p
+                style={{
+                  margin: "8px 0 0",
+                  color: "#64748b",
+                  fontSize: "13px",
+                }}
+              >
+                Registered platform users
+              </p>
             </div>
 
-            <div className="stat-card">
-              <h3>Total Stores</h3>
+            <div
+              className="stat-card"
+              style={{
+                borderTop: "4px solid #16a34a",
+              }}
+            >
+              <h3>🏪 Total Stores</h3>
+
               <strong>
                 {adminStats.totalStores}
               </strong>
+
+              <p
+                style={{
+                  margin: "8px 0 0",
+                  color: "#64748b",
+                  fontSize: "13px",
+                }}
+              >
+                Stores on the platform
+              </p>
             </div>
 
-            <div className="stat-card">
-              <h3>Total Ratings</h3>
+            <div
+              className="stat-card"
+              style={{
+                borderTop: "4px solid #f59e0b",
+              }}
+            >
+              <h3>⭐ Total Ratings</h3>
+
               <strong>
                 {adminStats.totalRatings}
               </strong>
+
+              <p
+                style={{
+                  margin: "8px 0 0",
+                  color: "#64748b",
+                  fontSize: "13px",
+                }}
+              >
+                Ratings submitted by users
+              </p>
+            </div>
+
+          </div>
+
+          {/* ==================== QUICK ACTIONS ==================== */}
+
+          <div
+            style={{
+              marginTop: "28px",
+              marginBottom: "28px",
+            }}
+          >
+            <h2
+              style={{
+                marginBottom: "6px",
+              }}
+            >
+              Quick Actions
+            </h2>
+
+            <p
+              style={{
+                marginTop: 0,
+                color: "#64748b",
+              }}
+            >
+              Choose an action to manage the platform
+            </p>
+
+            <div className="admin-actions">
+
+              <button
+                className="primary-btn"
+                onClick={handleAdminUsers}
+              >
+                👥 Manage Users
+              </button>
+
+              <button
+                className="primary-btn"
+                onClick={handleAdminStores}
+              >
+                🏪 Manage Stores
+              </button>
+
+              <button
+                className="secondary-btn"
+                onClick={async () => {
+                  setShowAddUser(!showAddUser);
+                  setShowAddStore(false);
+                  setUserCreateMessage("");
+                  setStoreCreateMessage("");
+
+                  await loadAdminUsers();
+                }}
+              >
+                ➕ Add User
+              </button>
+
+              <button
+                className="secondary-btn"
+                onClick={async () => {
+                  setShowAddStore(!showAddStore);
+                  setShowAddUser(false);
+                  setUserCreateMessage("");
+                  setStoreCreateMessage("");
+
+                  // Important:
+                  // Load owners before opening Add Store.
+                  await loadAdminUsers();
+                }}
+              >
+                🏪 Add Store
+              </button>
+
             </div>
           </div>
 
-          <div className="admin-actions">
-            <button
-              className="primary-btn"
-              onClick={handleAdminUsers}
-            >
-              Manage Users
-            </button>
-
-            <button
-              className="primary-btn"
-              onClick={handleAdminStores}
-            >
-              Manage Stores
-            </button>
-
-            <button
-              className="secondary-btn"
-              onClick={() => {
-                setShowAddUser(!showAddUser);
-                setShowAddStore(false);
-                setUserCreateMessage("");
-                setStoreCreateMessage("");
-              }}
-            >
-              Add User
-            </button>
-
-            <button
-              className="secondary-btn"
-              onClick={() => {
-                setShowAddStore(!showAddStore);
-                setShowAddUser(false);
-                setUserCreateMessage("");
-                setStoreCreateMessage("");
-              }}
-            >
-              Add Store
-            </button>
-          </div>
+          {/* ==================== ADD USER ==================== */}
 
           {showAddUser && (
-            <div className="form-card">
-              <h2>Add User</h2>
+            <div
+              className="form-card"
+              style={{
+                marginBottom: "24px",
+              }}
+            >
+              <h2>➕ Add New User</h2>
+
+              <p
+                style={{
+                  color: "#64748b",
+                  marginTop: "-8px",
+                }}
+              >
+                Create a user, store owner or administrator account.
+              </p>
 
               <form onSubmit={handleCreateUser}>
+
                 <input
                   type="text"
-                  placeholder="Name"
+                  placeholder="Full Name"
                   value={newUserName}
                   onChange={(e) =>
                     setNewUserName(e.target.value)
@@ -893,7 +1020,7 @@ function App() {
 
                 <input
                   type="email"
-                  placeholder="Email"
+                  placeholder="Email Address"
                   value={newUserEmail}
                   onChange={(e) =>
                     setNewUserEmail(e.target.value)
@@ -946,17 +1073,35 @@ function App() {
                   type="submit"
                   className="primary-btn"
                 >
-                  Add User
+                  Create User
                 </button>
+
               </form>
             </div>
           )}
 
+          {/* ==================== ADD STORE ==================== */}
+
           {showAddStore && (
-            <div className="form-card">
-              <h2>Add Store</h2>
+            <div
+              className="form-card"
+              style={{
+                marginBottom: "24px",
+              }}
+            >
+              <h2>🏪 Add New Store</h2>
+
+              <p
+                style={{
+                  color: "#64748b",
+                  marginTop: "-8px",
+                }}
+              >
+                Create a store and assign it to a store owner.
+              </p>
 
               <form onSubmit={handleCreateStore}>
+
                 <input
                   type="text"
                   placeholder="Store Name"
@@ -998,6 +1143,19 @@ function App() {
                     ))}
                 </select>
 
+                {adminUsers.filter(
+                  (item) => item.role === "owner"
+                ).length === 0 && (
+                  <p
+                    style={{
+                      color: "#dc2626",
+                      fontSize: "14px",
+                    }}
+                  >
+                    No store owner found. Create a Store Owner account first.
+                  </p>
+                )}
+
                 {storeCreateMessage && (
                   <p className="message">
                     {storeCreateMessage}
@@ -1010,14 +1168,34 @@ function App() {
                 >
                   Create Store
                 </button>
+
               </form>
             </div>
           )}
 
+          {/* ==================== USERS TABLE ==================== */}
+
           {adminUsers.length > 0 && (
-            <div className="table-card">
+            <div
+              className="table-card"
+              style={{
+                marginBottom: "24px",
+              }}
+            >
               <div className="section-header">
-                <h2>All Users</h2>
+
+                <div>
+                  <h2>👥 All Users</h2>
+
+                  <p
+                    style={{
+                      margin: "4px 0 0",
+                      color: "#64748b",
+                    }}
+                  >
+                    View and search registered users
+                  </p>
+                </div>
 
                 <input
                   type="text"
@@ -1027,6 +1205,7 @@ function App() {
                     setUserSearch(e.target.value)
                   }
                 />
+
               </div>
 
               <div className="table-wrapper">
@@ -1044,8 +1223,19 @@ function App() {
                     {filteredAdminUsers.map((item) => (
                       <tr key={item.id}>
                         <td>{item.name}</td>
+
                         <td>{item.email}</td>
-                        <td>{item.role}</td>
+
+                        <td>
+                          <span
+                            style={{
+                              textTransform: "capitalize",
+                              fontWeight: 600,
+                            }}
+                          >
+                            {item.role}
+                          </span>
+                        </td>
 
                         <td>
                           <button
@@ -1071,10 +1261,25 @@ function App() {
             </div>
           )}
 
+          {/* ==================== STORES TABLE ==================== */}
+
           {adminStores.length > 0 && (
             <div className="table-card">
+
               <div className="section-header">
-                <h2>All Stores</h2>
+
+                <div>
+                  <h2>🏪 All Stores</h2>
+
+                  <p
+                    style={{
+                      margin: "4px 0 0",
+                      color: "#64748b",
+                    }}
+                  >
+                    View stores, owners and ratings
+                  </p>
+                </div>
 
                 <input
                   type="text"
@@ -1084,10 +1289,12 @@ function App() {
                     setStoreSearch(e.target.value)
                   }
                 />
+
               </div>
 
               <div className="table-wrapper">
                 <table>
+
                   <thead>
                     <tr>
                       <th>Store</th>
@@ -1101,6 +1308,7 @@ function App() {
                   <tbody>
                     {filteredAdminStores.map((item) => (
                       <tr key={item.id}>
+
                         <td>{item.name}</td>
 
                         <td>{item.address}</td>
@@ -1111,6 +1319,7 @@ function App() {
                         </td>
 
                         <td>
+                          ⭐{" "}
                           {Number(
                             item.overall_rating || 0
                           ).toFixed(2)}
@@ -1126,9 +1335,11 @@ function App() {
                             View
                           </button>
                         </td>
+
                       </tr>
                     ))}
                   </tbody>
+
                 </table>
               </div>
 
@@ -1137,8 +1348,10 @@ function App() {
                   No matching stores found.
                 </p>
               )}
+
             </div>
           )}
+
         </div>
       )}
 
@@ -1146,6 +1359,7 @@ function App() {
 
       {role === "user" && (
         <div className="dashboard-content">
+
           <h2>Normal User Dashboard</h2>
 
           <div className="section-header">
@@ -1174,6 +1388,7 @@ function App() {
             </div>
           ) : (
             <div className="store-grid">
+
               {stores
                 .filter((store) => {
                   const search =
@@ -1193,6 +1408,7 @@ function App() {
                     className="store-card"
                     key={store.id}
                   >
+
                     <div className="store-card-header">
                       <h3>{store.name}</h3>
 
@@ -1265,6 +1481,7 @@ function App() {
                         ? "Update Rating"
                         : "Submit Rating"}
                     </button>
+
                   </div>
                 ))}
             </div>
@@ -1298,6 +1515,7 @@ function App() {
               {message}
             </div>
           )}
+
         </div>
       )}
 
@@ -1305,11 +1523,13 @@ function App() {
 
       {role === "owner" && (
         <div className="dashboard-content">
+
           <h2>Store Owner Dashboard</h2>
 
           {ownerData?.store ? (
             <>
               <div className="owner-store-card">
+
                 <h2>
                   {ownerData.store.name}
                 </h2>
@@ -1317,9 +1537,11 @@ function App() {
                 <p>
                   {ownerData.store.address}
                 </p>
+
               </div>
 
               <div className="stats-grid">
+
                 <div className="stat-card">
                   <h3>Average Rating</h3>
 
@@ -1345,16 +1567,20 @@ function App() {
                     {ownerData.usersWhoRated?.length || 0}
                   </strong>
                 </div>
+
               </div>
 
               <div className="table-card">
+
                 <h2>
                   Users Who Rated Your Store
                 </h2>
 
                 {ownerData.usersWhoRated?.length > 0 ? (
                   <div className="table-wrapper">
+
                     <table>
+
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -1368,6 +1594,7 @@ function App() {
                         {ownerData.usersWhoRated.map(
                           (item) => (
                             <tr key={item.id}>
+
                               <td>{item.name}</td>
 
                               <td>{item.email}</td>
@@ -1383,28 +1610,35 @@ function App() {
                                     ).toLocaleDateString()
                                   : "-"}
                               </td>
+
                             </tr>
                           )
                         )}
                       </tbody>
+
                     </table>
+
                   </div>
                 ) : (
                   <p className="empty-text">
                     No users have rated your store yet.
                   </p>
                 )}
+
               </div>
             </>
           ) : (
             <div className="empty-card">
+
               <h3>No store assigned</h3>
 
               <p>
                 Please contact the administrator.
               </p>
+
             </div>
           )}
+
         </div>
       )}
 
@@ -1419,6 +1653,7 @@ function App() {
             className="user-details-modal"
             onClick={(e) => e.stopPropagation()}
           >
+
             <button
               className="modal-close"
               onClick={() =>
@@ -1479,6 +1714,7 @@ function App() {
             >
               Close
             </button>
+
           </div>
         </div>
       )}
@@ -1494,6 +1730,7 @@ function App() {
             className="user-details-modal"
             onClick={(e) => e.stopPropagation()}
           >
+
             <button
               className="modal-close"
               onClick={() =>
@@ -1557,9 +1794,11 @@ function App() {
             >
               Close
             </button>
+
           </div>
         </div>
       )}
+
     </div>
   );
 }
