@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import "./App.css";
-
 import {
   loginUser,
   signupUser,
@@ -17,19 +15,16 @@ import {
   updateRating,
   getOwnerDashboard,
 } from "./api";
+import "./App.css";
 
 function App() {
-  // ================= AUTH STATE =================
-  const [loggedIn, setLoggedIn] = useState(() => {
-    return Boolean(localStorage.getItem("token"));
-  });
+  const [loggedIn, setLoggedIn] = useState(() =>
+    Boolean(localStorage.getItem("token"))
+  );
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
-
-    if (!savedUser) {
-      return null;
-    }
+    if (!savedUser) return null;
 
     try {
       return JSON.parse(savedUser);
@@ -40,10 +35,7 @@ function App() {
 
   const [role, setRole] = useState(() => {
     const savedUser = localStorage.getItem("user");
-
-    if (!savedUser) {
-      return "";
-    }
+    if (!savedUser) return "";
 
     try {
       return JSON.parse(savedUser)?.role || "";
@@ -52,24 +44,24 @@ function App() {
     }
   });
 
-  const [activePage, setActivePage] = useState("dashboard");
+  const [activePage, setActivePage] = useState("login");
 
-  // ================= LOGIN =================
+  // Login
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginRole, setLoginRole] = useState("user");
-  const [loginMessage, setLoginMessage] = useState("");
+  const [loginRole, setLoginRole] = useState("");
 
-  // ================= SIGNUP =================
-  const [showSignup, setShowSignup] = useState(false);
+  // Signup
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupAddress, setSignupAddress] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupRole, setSignupRole] = useState("user");
-  const [signupMessage, setSignupMessage] = useState("");
 
-  // ================= ADMIN =================
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  // Admin
   const [adminStats, setAdminStats] = useState({
     totalUsers: 0,
     totalStores: 0,
@@ -80,13 +72,11 @@ function App() {
   const [adminStores, setAdminStores] = useState([]);
 
   const [userSearch, setUserSearch] = useState("");
+  const [userRoleFilter, setUserRoleFilter] = useState("");
+  const [userSortBy, setUserSortBy] = useState("name");
+  const [userSortOrder, setUserSortOrder] = useState("asc");
+
   const [storeSearch, setStoreSearch] = useState("");
-
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [selectedStore, setSelectedStore] = useState(null);
-
-  const [userCreateMessage, setUserCreateMessage] = useState("");
-  const [storeCreateMessage, setStoreCreateMessage] = useState("");
 
   const [newUser, setNewUser] = useState({
     name: "",
@@ -102,62 +92,31 @@ function App() {
     owner_id: "",
   });
 
-  // ================= USER =================
+  const [userCreateMessage, setUserCreateMessage] = useState("");
+  const [storeCreateMessage, setStoreCreateMessage] = useState("");
+
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedStore, setSelectedStore] = useState(null);
+
+  // Normal User
   const [stores, setStores] = useState([]);
-  const [ratingValue, setRatingValue] = useState(5);
+  const [userRating, setUserRating] = useState({});
   const [ratingMessage, setRatingMessage] = useState("");
 
-  // ================= OWNER =================
+  // Owner
   const [ownerData, setOwnerData] = useState(null);
 
-  // ================= CHANGE PASSWORD =================
+  // Change password
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
 
-  // ================= ADMIN FUNCTIONS =================
-  const loadAdminDashboard = async () => {
-    try {
-      const stats = await getAdminDashboardStats();
-      setAdminStats(stats);
-    } catch (error) {
-      console.error("Admin dashboard error:", error);
-    }
-  };
+  // =========================
+  // LOAD DASHBOARD DATA
+  // =========================
 
-  const loadAdminUsers = async () => {
-    try {
-      const data = await getAdminUsers();
-      setAdminUsers(data || []);
-    } catch (error) {
-      console.error("Admin users error:", error);
-    }
-  };
-
-  const loadAdminStores = async () => {
-    try {
-      const data = await getAdminStores();
-      setAdminStores(data || []);
-    } catch (error) {
-      console.error("Admin stores error:", error);
-    }
-  };
-
-  // ================= USER FUNCTIONS =================
-  const loadStores = async () => {
-    try {
-      const data = await getStores();
-      setStores(data || []);
-    } catch (error) {
-      console.error("Stores error:", error);
-    }
-  };
-
-  // ================= LOAD DASHBOARD =================
   useEffect(() => {
-    if (!loggedIn) {
-      return;
-    }
+    if (!loggedIn) return;
 
     const loadDashboardData = async () => {
       try {
@@ -175,27 +134,32 @@ function App() {
           const data = await getOwnerDashboard();
           setOwnerData(data);
         }
-      } catch (error) {
-        console.error("Dashboard loading error:", error);
+      } catch (err) {
+        console.error("Dashboard loading error:", err);
       }
     };
 
     loadDashboardData();
   }, [loggedIn, role]);
 
-  // ================= LOGIN =================
+  // =========================
+  // LOGIN
+  // =========================
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoginMessage("");
 
-    if (!email || !password) {
-      setLoginMessage("Please enter email and password");
+    setMessage("");
+    setError("");
+
+    if (!email.trim() || !password || !loginRole) {
+      setError("Email, password and login role are required");
       return;
     }
 
     try {
       const data = await loginUser({
-        email,
+        email: email.trim(),
         password,
         role: loginRole,
       });
@@ -210,59 +174,59 @@ function App() {
 
       setEmail("");
       setPassword("");
-    } catch (error) {
-      setLoginMessage(
-        error?.response?.data?.message ||
-          error?.message ||
+      setLoginRole("");
+      setError("");
+      setMessage("");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          err.message ||
           "Login failed"
       );
     }
   };
 
-  // ================= SIGNUP =================
+  // =========================
+  // SIGNUP
+  // =========================
+
   const handleSignup = async (e) => {
     e.preventDefault();
-    setSignupMessage("");
 
-    if (
-      !signupName ||
-      !signupEmail ||
-      !signupAddress ||
-      !signupPassword
-    ) {
-      setSignupMessage("Please fill all fields");
+    setMessage("");
+    setError("");
+
+    const name = signupName.trim();
+    const signupEmailValue = signupEmail.trim();
+    const address = signupAddress.trim();
+
+    if (!name || !signupEmailValue || !address || !signupPassword) {
+      setError("All fields are required");
+      return;
+    }
+
+    if (name.length < 20 || name.length > 60) {
+      setError("Name must be between 20 and 60 characters");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+    if (!emailRegex.test(signupEmailValue)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (address.length > 400) {
+      setError("Address cannot exceed 400 characters");
+      return;
+    }
+
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
-    if (
-      signupName.trim().length < 20 ||
-      signupName.trim().length > 60
-    ) {
-      setSignupMessage(
-        "Name must be between 20 and 60 characters"
-      );
-      return;
-    }
-
-    if (!emailRegex.test(signupEmail.trim())) {
-      setSignupMessage("Please enter a valid email address");
-      return;
-    }
-
-    if (signupAddress.trim().length > 400) {
-      setSignupMessage(
-        "Address cannot exceed 400 characters"
-      );
-      return;
-    }
-
     if (!passwordRegex.test(signupPassword)) {
-      setSignupMessage(
+      setError(
         "Password must be 8-16 characters with at least one uppercase letter and one special character"
       );
       return;
@@ -270,58 +234,85 @@ function App() {
 
     try {
       const data = await signupUser({
-        name: signupName,
-        email: signupEmail,
-        address: signupAddress,
+        name,
+        email: signupEmailValue,
+        address,
         password: signupPassword,
         role: signupRole,
       });
 
-      setSignupMessage(
-        data?.message || "Account created successfully"
+      setMessage(
+        data.message || "Account created successfully"
       );
 
       setSignupName("");
       setSignupEmail("");
       setSignupAddress("");
       setSignupPassword("");
-    } catch (error) {
-      setSignupMessage(
-        error?.response?.data?.message ||
-          error?.message ||
+      setSignupRole("user");
+      setActivePage("login");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          err.message ||
           "Signup failed"
       );
     }
   };
 
-  // ================= LOGOUT =================
+  // =========================
+  // LOGOUT
+  // =========================
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
     setLoggedIn(false);
-    setRole("");
     setUser(null);
-    setActivePage("dashboard");
+    setRole("");
+    setActivePage("login");
 
     setEmail("");
     setPassword("");
-    setLoginMessage("");
-
-    setOwnerData(null);
-    setStores([]);
+    setLoginRole("");
+    setMessage("");
+    setError("");
   };
 
-  // ================= CREATE USER =================
+  // =========================
+  // ADMIN USERS
+  // =========================
+
+  const loadAdminUsers = async () => {
+    try {
+      const data = await getAdminUsers({
+        search: userSearch,
+        role: userRoleFilter,
+        sortBy: userSortBy,
+        order: userSortOrder,
+      });
+
+      setAdminUsers(data || []);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Failed to load users"
+      );
+    }
+  };
+
   const handleCreateUser = async (e) => {
     e.preventDefault();
+
     setUserCreateMessage("");
+    setError("");
 
     try {
       const data = await createAdminUser(newUser);
 
       setUserCreateMessage(
-        data?.message || "User created successfully"
+        data.message || "User created successfully"
       );
 
       setNewUser({
@@ -333,26 +324,56 @@ function App() {
       });
 
       await loadAdminUsers();
-      await loadAdminDashboard();
-    } catch (error) {
-      setUserCreateMessage(
-        error?.response?.data?.message ||
-          error?.message ||
+
+      const stats = await getAdminDashboardStats();
+      setAdminStats(stats);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
           "Failed to create user"
       );
     }
   };
 
-  // ================= CREATE STORE =================
+  const handleViewUser = async (id) => {
+    try {
+      const data = await getUserDetails(id);
+      setSelectedUser(data.user || data);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Failed to load user details"
+      );
+    }
+  };
+
+  // =========================
+  // ADMIN STORES
+  // =========================
+
+  const loadAdminStores = async () => {
+    try {
+      const data = await getAdminStores();
+      setAdminStores(data || []);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Failed to load stores"
+      );
+    }
+  };
+
   const handleCreateStore = async (e) => {
     e.preventDefault();
+
     setStoreCreateMessage("");
+    setError("");
 
     try {
       const data = await createAdminStore(newStore);
 
       setStoreCreateMessage(
-        data?.message || "Store created successfully"
+        data.message || "Store created successfully"
       );
 
       setNewStore({
@@ -362,80 +383,103 @@ function App() {
       });
 
       await loadAdminStores();
-      await loadAdminDashboard();
-    } catch (error) {
-      setStoreCreateMessage(
-        error?.response?.data?.message ||
-          error?.message ||
+
+      const stats = await getAdminDashboardStats();
+      setAdminStats(stats);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
           "Failed to create store"
       );
     }
   };
 
-  // ================= VIEW USER =================
-  const handleViewUser = async (id) => {
-    try {
-      const data = await getUserDetails(id);
-      setSelectedUser(data?.user || data);
-    } catch (error) {
-      console.error("User details error:", error);
-    }
-  };
-
-  // ================= VIEW STORE =================
   const handleViewStore = async (id) => {
     try {
       const data = await getStoreDetails(id);
-      setSelectedStore(data?.store || data);
-    } catch (error) {
-      console.error("Store details error:", error);
+      setSelectedStore(data.store || data);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Failed to load store details"
+      );
     }
   };
 
-  // ================= RATING =================
+  // =========================
+  // USER STORES
+  // =========================
+
+  const filteredStores = stores.filter((store) => {
+    const search = storeSearch.toLowerCase();
+
+    return (
+      store.name?.toLowerCase().includes(search) ||
+      store.address?.toLowerCase().includes(search)
+    );
+  });
+
+  const handleRatingChange = (storeId, value) => {
+    setUserRating((prev) => ({
+      ...prev,
+      [storeId]: value,
+    }));
+  };
+
   const handleSubmitRating = async (storeId) => {
     setRatingMessage("");
 
-    try {
-      const existingStore = stores.find(
-        (store) => store.id === storeId
-      );
+    const rating = Number(userRating[storeId]);
 
-      if (existingStore?.user_rating) {
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      setRatingMessage(
+        "Rating must be an integer between 1 and 5"
+      );
+      return;
+    }
+
+    try {
+      await submitRating({
+        store_id: storeId,
+        rating,
+      });
+
+      setRatingMessage("Rating submitted successfully");
+
+      const data = await getStores();
+      setStores(data || []);
+    } catch {
+      try {
         await updateRating({
           store_id: storeId,
-          rating: Number(ratingValue),
+          rating,
         });
 
         setRatingMessage("Rating updated successfully");
-      } else {
-        await submitRating({
-          store_id: storeId,
-          rating: Number(ratingValue),
-        });
 
-        setRatingMessage("Rating submitted successfully");
+        const data = await getStores();
+        setStores(data || []);
+      } catch (updateErr) {
+        setRatingMessage(
+          updateErr.response?.data?.message ||
+            "Failed to submit rating"
+        );
       }
-
-      await loadStores();
-    } catch (error) {
-      setRatingMessage(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Failed to submit rating"
-      );
     }
   };
 
-  // ================= CHANGE PASSWORD =================
+  // =========================
+  // CHANGE PASSWORD
+  // =========================
+
   const handleChangePassword = async (e) => {
     e.preventDefault();
+
     setPasswordMessage("");
+    setError("");
 
     if (!currentPassword || !newPassword) {
-      setPasswordMessage(
-        "Please fill both password fields"
-      );
+      setError("Both password fields are required");
       return;
     }
 
@@ -443,7 +487,7 @@ function App() {
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
     if (!passwordRegex.test(newPassword)) {
-      setPasswordMessage(
+      setError(
         "New password must be 8-16 characters with at least one uppercase letter and one special character"
       );
       return;
@@ -456,190 +500,61 @@ function App() {
       });
 
       setPasswordMessage(
-        data?.message ||
-          "Password changed successfully"
+        data.message || "Password changed successfully"
       );
 
       setCurrentPassword("");
       setNewPassword("");
-    } catch (error) {
-      setPasswordMessage(
-        error?.response?.data?.message ||
-          error?.message ||
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
           "Failed to change password"
       );
     }
   };
 
-  // ================= FILTERS =================
-  const filteredUsers = adminUsers.filter((item) => {
-    const search = userSearch.toLowerCase();
+  // =========================
+  // PAGE LOADERS
+  // =========================
 
-    return (
-      item.name?.toLowerCase().includes(search) ||
-      item.email?.toLowerCase().includes(search) ||
-      item.role?.toLowerCase().includes(search)
-    );
-  });
+  const openAdminUsers = async () => {
+    setActivePage("admin-users");
+    setUserCreateMessage("");
+    setError("");
+    await loadAdminUsers();
+  };
 
-  const filteredStores = stores.filter((store) => {
-    const search = storeSearch.toLowerCase();
+  const openAdminStores = async () => {
+    setActivePage("admin-stores");
+    setStoreCreateMessage("");
+    setError("");
+    await loadAdminStores();
+  };
 
-    return (
-      store.name?.toLowerCase().includes(search) ||
-      store.address?.toLowerCase().includes(search)
-    );
-  });
+  const openUserStores = async () => {
+    setActivePage("stores");
+    setError("");
 
-  // ================= LOGIN / SIGNUP PAGE =================
-  if (!loggedIn) {
-    if (showSignup) {
-      return (
-        <div className="auth-page">
-          <div className="auth-card">
-            <div className="brand-header">
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "9px",
-                  marginBottom: "5px",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "26px",
-                    lineHeight: 1,
-                  }}
-                >
-                  🏪
-                </span>
-
-                <h1
-                  style={{
-                    margin: 0,
-                    fontSize: "27px",
-                    lineHeight: 1.2,
-                  }}
-                >
-                  Store Rating Platform
-                </h1>
-              </div>
-
-              <p
-                style={{
-                  fontSize: "11px",
-                  textAlign: "center",
-                  margin: "7px 0 0",
-                }}
-              >
-                Rate stores. Share experiences. Make better choices.
-              </p>
-            </div>
-
-            <div className="login-heading">
-              <h2>Create Account</h2>
-              <span>Create your account</span>
-            </div>
-
-            <form onSubmit={handleSignup}>
-              <label>Name</label>
-
-              <input
-                type="text"
-                value={signupName}
-                onChange={(e) =>
-                  setSignupName(e.target.value)
-                }
-                placeholder="Enter your full name"
-              />
-
-              <label>Email</label>
-
-              <input
-                type="email"
-                value={signupEmail}
-                onChange={(e) =>
-                  setSignupEmail(e.target.value)
-                }
-                placeholder="Enter your email"
-              />
-
-              <label>Address</label>
-
-              <textarea
-                value={signupAddress}
-                onChange={(e) =>
-                  setSignupAddress(e.target.value)
-                }
-                placeholder="Enter your address"
-              />
-
-              <label>Password</label>
-
-              <input
-                type="password"
-                value={signupPassword}
-                onChange={(e) =>
-                  setSignupPassword(e.target.value)
-                }
-                placeholder="8-16 characters"
-              />
-
-              <label>Account Type</label>
-
-              <select
-                value={signupRole}
-                onChange={(e) =>
-                  setSignupRole(e.target.value)
-                }
-              >
-                <option value="user">
-                  Normal User
-                </option>
-
-                <option value="owner">
-                  Store Owner
-                </option>
-
-                <option value="admin">
-                  System Administrator
-                </option>
-              </select>
-
-              {signupMessage && (
-                <div className="message-box">
-                  {signupMessage}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="primary-btn"
-              >
-                Create Account
-              </button>
-            </form>
-
-            <button
-              type="button"
-              className="link-btn"
-              onClick={() => {
-                setShowSignup(false);
-                setSignupMessage("");
-              }}
-            >
-              Already have an account? Login
-            </button>
-          </div>
-        </div>
+    try {
+      const data = await getStores();
+      setStores(data || []);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Failed to load stores"
       );
     }
+  };
 
+  // =========================
+  // LOGIN / SIGNUP SCREEN
+  // =========================
+
+  if (!loggedIn) {
     return (
       <div className="auth-page">
         <div className="auth-card">
+
           <div className="brand-header">
             <div
               style={{
@@ -681,148 +596,248 @@ function App() {
             </p>
           </div>
 
-          <form onSubmit={handleLogin}>
-            <label>Email</label>
+          {activePage === "login" && (
+            <>
+              <h2>Welcome Back</h2>
 
-            <input
-              type="email"
-              value={email}
-              onChange={(e) =>
-                setEmail(e.target.value)
-              }
-              placeholder="Enter your email"
-            />
+              {message && (
+                <div className="success-message">
+                  {message}
+                </div>
+              )}
 
-            <label>Password</label>
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
 
-            <input
-              type="password"
-              value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
-              placeholder="Enter your password"
-            />
+              <form onSubmit={handleLogin}>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
 
-            <label>Login As</label>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) =>
+                    setPassword(e.target.value)
+                  }
+                  required
+                />
 
-            <select
-              value={loginRole}
-              onChange={(e) =>
-                setLoginRole(e.target.value)
-              }
-            >
-              <option value="user">
-                Normal User
-              </option>
+                <select
+                  value={loginRole}
+                  onChange={(e) =>
+                    setLoginRole(e.target.value)
+                  }
+                  required
+                >
+                  <option value="">Select Role</option>
+                  <option value="user">
+                    Normal User
+                  </option>
+                  <option value="owner">
+                    Store Owner
+                  </option>
+                  <option value="admin">
+                    System Administrator
+                  </option>
+                </select>
 
-              <option value="owner">
-                Store Owner
-              </option>
+                <button
+                  type="submit"
+                  className="primary-btn"
+                >
+                  Login
+                </button>
+              </form>
 
-              <option value="admin">
-                System Administrator
-              </option>
-            </select>
+              <button
+                type="button"
+                className="secondary-btn"
+                onClick={() => {
+                  setActivePage("signup");
+                  setError("");
+                  setMessage("");
+                }}
+              >
+                Create Account
+              </button>
+            </>
+          )}
 
-            {loginMessage && (
-              <div className="message-box error">
-                {loginMessage}
-              </div>
-            )}
+          {activePage === "signup" && (
+            <>
+              <h2>Create Account</h2>
 
-            <button
-              type="submit"
-              className="primary-btn"
-            >
-              Login
-            </button>
-          </form>
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
 
-          <button
-            type="button"
-            className="link-btn"
-            onClick={() => {
-              setShowSignup(true);
-              setLoginMessage("");
-            }}
-          >
-            Don't have an account? Create Account
-          </button>
+              {message && (
+                <div className="success-message">
+                  {message}
+                </div>
+              )}
+
+              <form onSubmit={handleSignup}>
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  value={signupName}
+                  onChange={(e) =>
+                    setSignupName(e.target.value)
+                  }
+                  required
+                />
+
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={signupEmail}
+                  onChange={(e) =>
+                    setSignupEmail(e.target.value)
+                  }
+                  required
+                />
+
+                <input
+                  type="text"
+                  placeholder="Address"
+                  value={signupAddress}
+                  onChange={(e) =>
+                    setSignupAddress(e.target.value)
+                  }
+                  required
+                />
+
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={signupPassword}
+                  onChange={(e) =>
+                    setSignupPassword(e.target.value)
+                  }
+                  required
+                />
+
+                <select
+                  value={signupRole}
+                  onChange={(e) =>
+                    setSignupRole(e.target.value)
+                  }
+                  required
+                >
+                  <option value="user">
+                    Normal User
+                  </option>
+                  <option value="owner">
+                    Store Owner
+                  </option>
+                  <option value="admin">
+                    System Administrator
+                  </option>
+                </select>
+
+                <button
+                  type="submit"
+                  className="primary-btn"
+                >
+                  Create Account
+                </button>
+              </form>
+
+              <button
+                type="button"
+                className="secondary-btn"
+                onClick={() => {
+                  setActivePage("login");
+                  setError("");
+                  setMessage("");
+                }}
+              >
+                Back to Login
+              </button>
+            </>
+          )}
+
         </div>
       </div>
     );
   }
 
-  // ================= MAIN APPLICATION =================
+  // =========================
+  // DASHBOARD
+  // =========================
+
   return (
-    <div className="app-container">
-      {/* TOPBAR */}
-      <header className="topbar">
-        <div className="topbar-brand">
-          🏪 Store Rating Platform
+    <div className="app-layout">
+
+      <aside className="sidebar">
+
+        <div className="sidebar-brand">
+          <span>🏪</span>
+          <div>
+            <strong>RateHub</strong>
+            <small>Store Rating Platform</small>
+          </div>
         </div>
 
-        <div className="topbar-right">
-          <span className="user-name">
-            {user?.name}
-          </span>
-
-          <button
-            type="button"
-            className="logout-btn"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
+        <div className="user-info">
+          <strong>{user?.name}</strong>
+          <span>{user?.email}</span>
+          <small>
+            {role === "admin"
+              ? "System Administrator"
+              : role === "owner"
+              ? "Store Owner"
+              : "Normal User"}
+          </small>
         </div>
-      </header>
 
-      <div className="layout">
-        {/* SIDEBAR */}
-        <aside className="sidebar">
+        <nav>
+
           <button
             className={
               activePage === "dashboard"
                 ? "nav-btn active"
                 : "nav-btn"
             }
-            onClick={() =>
-              setActivePage("dashboard")
-            }
+            onClick={() => setActivePage("dashboard")}
           >
-            Dashboard
+            📊 Dashboard
           </button>
 
-          {/* ADMIN MENU */}
           {role === "admin" && (
             <>
               <button
                 className={
-                  activePage === "users"
+                  activePage === "admin-users"
                     ? "nav-btn active"
                     : "nav-btn"
                 }
-                onClick={() => {
-                  setActivePage("users");
-                  loadAdminUsers();
-                }}
+                onClick={openAdminUsers}
               >
-                Users
+                👥 Users
               </button>
 
               <button
                 className={
-                  activePage === "stores"
+                  activePage === "admin-stores"
                     ? "nav-btn active"
                     : "nav-btn"
                 }
-                onClick={() => {
-                  setActivePage("stores");
-                  loadAdminStores();
-                }}
+                onClick={openAdminStores}
               >
-                Stores
+                🏬 Stores
               </button>
 
               <button
@@ -834,9 +849,10 @@ function App() {
                 onClick={() => {
                   setActivePage("add-user");
                   setUserCreateMessage("");
+                  setError("");
                 }}
               >
-                Add User
+                ➕ Add User
               </button>
 
               <button
@@ -848,434 +864,642 @@ function App() {
                 onClick={() => {
                   setActivePage("add-store");
                   setStoreCreateMessage("");
+                  setError("");
                 }}
               >
-                Add Store
+                ➕ Add Store
               </button>
             </>
           )}
 
-          {/* USER MENU */}
           {role === "user" && (
-            <>
-              <button
-                className={
-                  activePage === "all-stores"
-                    ? "nav-btn active"
-                    : "nav-btn"
-                }
-                onClick={() => {
-                  setActivePage("all-stores");
-                  loadStores();
-                }}
-              >
-                All Stores
-              </button>
-
-              <button
-                className={
-                  activePage === "change-password"
-                    ? "nav-btn active"
-                    : "nav-btn"
-                }
-                onClick={() =>
-                  setActivePage("change-password")
-                }
-              >
-                Change Password
-              </button>
-            </>
-          )}
-
-          {/* OWNER MENU */}
-          {role === "owner" && (
             <button
               className={
-                activePage === "change-password"
+                activePage === "stores"
                   ? "nav-btn active"
                   : "nav-btn"
               }
-              onClick={() =>
-                setActivePage("change-password")
-              }
+              onClick={openUserStores}
             >
-              Change Password
+              🏬 All Stores
             </button>
           )}
-        </aside>
 
-        {/* MAIN CONTENT */}
-        <main className="main-content">
-          {/* ADMIN DASHBOARD */}
-          {activePage === "dashboard" &&
-            role === "admin" && (
-              <>
-                <div className="page-header">
-                  <h2>
-                    System Administrator Dashboard
-                  </h2>
+          <button
+            className={
+              activePage === "change-password"
+                ? "nav-btn active"
+                : "nav-btn"
+            }
+            onClick={() => {
+              setActivePage("change-password");
+              setError("");
+              setPasswordMessage("");
+            }}
+          >
+            🔐 Change Password
+          </button>
 
-                  <p>
-                    Manage the Store Rating Platform
-                  </p>
-                </div>
+        </nav>
 
-                <div className="stats-grid">
-                  <div className="stat-card">
+        <button
+          className="logout-btn"
+          onClick={handleLogout}
+        >
+          🚪 Logout
+        </button>
+
+      </aside>
+
+      <main className="main-content">
+
+        {/* DASHBOARD */}
+
+        {activePage === "dashboard" && (
+          <section>
+
+            <div className="page-header">
+              <div>
+                <h1>
+                  {role === "admin"
+                    ? "Admin Dashboard"
+                    : role === "owner"
+                    ? "Owner Dashboard"
+                    : "User Dashboard"}
+                </h1>
+
+                <p>
+                  {role === "admin"
+                    ? "Manage users, stores and ratings."
+                    : role === "owner"
+                    ? "Monitor your store ratings and customers."
+                    : "Discover stores and share your experience."}
+                </p>
+              </div>
+            </div>
+
+            {role === "admin" && (
+              <div className="stats-grid">
+
+                <div className="stat-card">
+                  <div className="stat-icon">👥</div>
+                  <div>
                     <span>Total Users</span>
-
                     <strong>
                       {adminStats.totalUsers}
                     </strong>
                   </div>
+                </div>
 
-                  <div className="stat-card">
+                <div className="stat-card">
+                  <div className="stat-icon">🏬</div>
+                  <div>
                     <span>Total Stores</span>
-
                     <strong>
                       {adminStats.totalStores}
                     </strong>
                   </div>
+                </div>
 
-                  <div className="stat-card">
+                <div className="stat-card">
+                  <div className="stat-icon">⭐</div>
+                  <div>
                     <span>Total Ratings</span>
-
                     <strong>
                       {adminStats.totalRatings}
                     </strong>
                   </div>
                 </div>
-              </>
+
+              </div>
             )}
 
-          {/* USER DASHBOARD */}
-          {activePage === "dashboard" &&
-            role === "user" && (
+            {role === "user" && (
               <>
-                <div className="page-header">
+                <div className="dashboard-welcome">
                   <h2>
-                    Welcome, {user?.name}
+                    Welcome, {user?.name} 👋
                   </h2>
 
                   <p>
-                    Discover stores and share your
-                    experience.
+                    Browse stores, check ratings and share
+                    your experience.
                   </p>
                 </div>
 
-                <div className="section-card">
-                  <div className="section-header">
-                    <div>
-                      <h3>Stores</h3>
+                <div className="search-box">
+                  <input
+                    type="text"
+                    placeholder="Search stores by name or address..."
+                    value={storeSearch}
+                    onChange={(e) =>
+                      setStoreSearch(e.target.value)
+                    }
+                  />
+                </div>
 
-                      <p>
-                        Search and rate stores
-                      </p>
+                <div className="store-grid">
+
+                  {filteredStores.length === 0 ? (
+                    <div className="empty-state">
+                      {stores.length === 0
+                        ? "No stores available."
+                        : "No stores match your search."}
                     </div>
+                  ) : (
+                    filteredStores.map((store) => (
+                      <div
+                        className="store-card"
+                        key={store.id}
+                      >
 
-                    <input
-                      className="search-input"
-                      type="text"
-                      placeholder="Search store..."
-                      value={storeSearch}
-                      onChange={(e) =>
-                        setStoreSearch(e.target.value)
-                      }
-                    />
-                  </div>
+                        <div className="store-card-top">
 
-                  <div className="store-grid">
-                    {filteredStores.length === 0 ? (
-                      <p className="empty-text">
-                        {stores.length === 0
-                          ? "No stores available."
-                          : "No matching stores found."}
-                      </p>
-                    ) : (
-                      filteredStores.map((store) => (
-                        <div
-                          className="store-card"
-                          key={store.id}
-                        >
-                          <h3>{store.name}</h3>
-
-                          <p>{store.address}</p>
-
-                          <div className="rating-info">
-                            <span>
-                              Overall Rating:{" "}
-                              {Number(
-                                store.overall_rating || 0
-                              ).toFixed(2)}
-                            </span>
-
-                            <span>
-                              Your Rating:{" "}
-                              {store.user_rating ||
-                                "Not rated"}
-                            </span>
+                          <div>
+                            <h3>{store.name}</h3>
+                            <p>{store.address}</p>
                           </div>
 
-                          <div className="rating-actions">
+                          <div className="rating-badge">
+                            ⭐{" "}
+                            {Number(
+                              store.overall_rating || 0
+                            ).toFixed(2)}
+                          </div>
+
+                        </div>
+
+                        <div className="store-rating-section">
+
+                          <span>Your Rating</span>
+
+                          <div className="rating-row">
+
                             <select
-                              value={ratingValue}
+                              value={
+                                userRating[store.id] || ""
+                              }
                               onChange={(e) =>
-                                setRatingValue(
-                                  Number(e.target.value)
+                                handleRatingChange(
+                                  store.id,
+                                  e.target.value
                                 )
                               }
                             >
+                              <option value="">
+                                Select
+                              </option>
                               <option value="1">
-                                1 Star
+                                1 ⭐
                               </option>
-
                               <option value="2">
-                                2 Stars
+                                2 ⭐
                               </option>
-
                               <option value="3">
-                                3 Stars
+                                3 ⭐
                               </option>
-
                               <option value="4">
-                                4 Stars
+                                4 ⭐
                               </option>
-
                               <option value="5">
-                                5 Stars
+                                5 ⭐
                               </option>
                             </select>
 
                             <button
-                              type="button"
-                              className="primary-btn small"
+                              className="primary-btn small-btn"
                               onClick={() =>
                                 handleSubmitRating(
                                   store.id
                                 )
                               }
                             >
-                              {store.user_rating
-                                ? "Update Rating"
-                                : "Rate Store"}
+                              Rate
                             </button>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
 
-                  {ratingMessage && (
-                    <div className="message-box">
-                      {ratingMessage}
-                    </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+                    ))
                   )}
+
                 </div>
+
+                {ratingMessage && (
+                  <div className="success-message">
+                    {ratingMessage}
+                  </div>
+                )}
               </>
             )}
 
-          {/* OWNER DASHBOARD */}
-          {activePage === "dashboard" &&
-            role === "owner" &&
-            ownerData && (
+            {role === "owner" && ownerData && (
               <>
-                <div className="page-header">
-                  <h2>
-                    Store Owner Dashboard
-                  </h2>
-
-                  <p>
-                    View your store performance
-                    and customer ratings.
-                  </p>
-                </div>
-
                 <div className="stats-grid">
-                  <div className="stat-card">
-                    <span>Average Rating</span>
 
-                    <strong>
-                      {Number(
-                        ownerData.store
-                          ?.average_rating || 0
-                      ).toFixed(2)}
-                    </strong>
+                  <div className="stat-card">
+                    <div className="stat-icon">
+                      ⭐
+                    </div>
+
+                    <div>
+                      <span>Average Rating</span>
+                      <strong>
+                        {Number(
+                          ownerData.store?.average_rating || 0
+                        ).toFixed(2)}
+                      </strong>
+                    </div>
                   </div>
 
                   <div className="stat-card">
-                    <span>Total Ratings</span>
+                    <div className="stat-icon">
+                      📝
+                    </div>
 
-                    <strong>
-                      {ownerData.store
-                        ?.total_ratings || 0}
-                    </strong>
+                    <div>
+                      <span>Total Ratings</span>
+                      <strong>
+                        {ownerData.store?.total_ratings || 0}
+                      </strong>
+                    </div>
                   </div>
+
                 </div>
 
-                <div className="section-card">
-                  <h3>
+                <div className="owner-store-card">
+                  <h2>
                     {ownerData.store?.name}
-                  </h3>
+                  </h2>
 
                   <p>
                     {ownerData.store?.address}
                   </p>
+                </div>
 
-                  <h3 className="table-title">
-                    Users Who Rated
-                  </h3>
+                <div className="table-card">
 
-                  {ownerData.usersWhoRated?.length ===
-                  0 ? (
-                    <p className="empty-text">
-                      No users have rated your
-                      store yet.
-                    </p>
+                  <h2>Users Who Rated</h2>
+
+                  {ownerData.usersWhoRated?.length === 0 ? (
+                    <div className="empty-state">
+                      No ratings yet.
+                    </div>
                   ) : (
                     <div className="table-wrapper">
+
                       <table>
+
                         <thead>
                           <tr>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Rating</th>
+                            <th>Date</th>
                           </tr>
                         </thead>
 
                         <tbody>
                           {ownerData.usersWhoRated.map(
-                            (item) => (
-                              <tr key={item.id}>
+                            (ratedUser) => (
+                              <tr key={ratedUser.id}>
+
                                 <td>
-                                  {item.name}
+                                  {ratedUser.name}
                                 </td>
 
                                 <td>
-                                  {item.email}
+                                  {ratedUser.email}
                                 </td>
 
                                 <td>
-                                  ⭐ {item.rating}
+                                  ⭐ {ratedUser.rating}
                                 </td>
+
+                                <td>
+                                  {ratedUser.created_at
+                                    ? new Date(
+                                        ratedUser.created_at
+                                      ).toLocaleDateString()
+                                    : "-"}
+                                </td>
+
                               </tr>
                             )
                           )}
                         </tbody>
+
                       </table>
+
                     </div>
                   )}
+
                 </div>
               </>
             )}
 
-          {/* ADMIN USERS */}
-          {activePage === "users" &&
-            role === "admin" && (
-              <>
-                <div className="page-header">
-                  <h2>Users</h2>
+          </section>
+        )}
 
+        {/* ADMIN USERS */}
+
+        {activePage === "admin-users" &&
+          role === "admin" && (
+            <section>
+
+              <div className="page-header">
+                <div>
+                  <h1>Users</h1>
                   <p>
-                    View and manage registered
-                    users.
+                    View and manage registered users.
                   </p>
                 </div>
+              </div>
 
-                <div className="section-card">
-                  <div className="section-header">
-                    <h3>All Users</h3>
+              <div className="filters-card">
 
-                    <input
-                      className="search-input"
-                      type="text"
-                      placeholder="Search users..."
-                      value={userSearch}
-                      onChange={(e) =>
-                        setUserSearch(e.target.value)
-                      }
-                    />
-                  </div>
+                <input
+                  type="text"
+                  placeholder="Search users..."
+                  value={userSearch}
+                  onChange={(e) =>
+                    setUserSearch(e.target.value)
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      loadAdminUsers();
+                    }
+                  }}
+                />
 
-                  <div className="table-wrapper">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Role</th>
-                          <th>Action</th>
+                <select
+                  value={userRoleFilter}
+                  onChange={(e) =>
+                    setUserRoleFilter(e.target.value)
+                  }
+                >
+                  <option value="">
+                    All Roles
+                  </option>
+                  <option value="user">
+                    Normal User
+                  </option>
+                  <option value="owner">
+                    Store Owner
+                  </option>
+                  <option value="admin">
+                    System Administrator
+                  </option>
+                </select>
+
+                <select
+                  value={userSortBy}
+                  onChange={(e) =>
+                    setUserSortBy(e.target.value)
+                  }
+                >
+                  <option value="name">
+                    Name
+                  </option>
+                  <option value="email">
+                    Email
+                  </option>
+                  <option value="role">
+                    Role
+                  </option>
+                  <option value="created_at">
+                    Created Date
+                  </option>
+                </select>
+
+                <select
+                  value={userSortOrder}
+                  onChange={(e) =>
+                    setUserSortOrder(e.target.value)
+                  }
+                >
+                  <option value="asc">
+                    Ascending
+                  </option>
+                  <option value="desc">
+                    Descending
+                  </option>
+                </select>
+
+                <button
+                  className="primary-btn"
+                  onClick={loadAdminUsers}
+                >
+                  Search
+                </button>
+
+              </div>
+
+              <div className="table-card">
+
+                <div className="table-wrapper">
+
+                  <table>
+
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Address</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {adminUsers.map((adminUser) => (
+                        <tr key={adminUser.id}>
+
+                          <td>
+                            {adminUser.name}
+                          </td>
+
+                          <td>
+                            {adminUser.email}
+                          </td>
+
+                          <td>
+                            <span className="role-badge">
+                              {adminUser.role}
+                            </span>
+                          </td>
+
+                          <td>
+                            {adminUser.address}
+                          </td>
+
+                          <td>
+                            <button
+                              className="view-btn"
+                              onClick={() =>
+                                handleViewUser(
+                                  adminUser.id
+                                )
+                              }
+                            >
+                              View
+                            </button>
+                          </td>
+
                         </tr>
-                      </thead>
+                      ))}
+                    </tbody>
 
-                      <tbody>
-                        {filteredUsers.map((item) => (
-                          <tr key={item.id}>
-                            <td>
-                              {item.name}
-                            </td>
+                  </table>
 
-                            <td>
-                              {item.email}
-                            </td>
-
-                            <td>
-                              {item.role === "admin"
-                                ? "System Administrator"
-                                : item.role === "owner"
-                                ? "Store Owner"
-                                : "Normal User"}
-                            </td>
-
-                            <td>
-                              <button
-                                type="button"
-                                className="secondary-btn"
-                                onClick={() =>
-                                  handleViewUser(
-                                    item.id
-                                  )
-                                }
-                              >
-                                View
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
                 </div>
-              </>
-            )}
 
-          {/* ADMIN STORES */}
-          {activePage === "stores" &&
-            role === "admin" && (
-              <>
-                <div className="page-header">
-                  <h2>Stores</h2>
+              </div>
 
+            </section>
+          )}
+
+        {/* USER MODAL */}
+
+        {selectedUser && (
+          <div
+            className="modal-overlay"
+            onClick={() => setSelectedUser(null)}
+          >
+
+            <div
+              className="user-details-modal"
+              onClick={(e) =>
+                e.stopPropagation()
+              }
+            >
+
+              <button
+                className="modal-close"
+                onClick={() =>
+                  setSelectedUser(null)
+                }
+              >
+                ×
+              </button>
+
+              <div className="modal-icon">
+                👤
+              </div>
+
+              <h2>User Details</h2>
+
+              <p className="modal-subtitle">
+                Complete user information
+              </p>
+
+              <div className="user-detail-row">
+                <span>Name</span>
+                <strong>
+                  {selectedUser.name}
+                </strong>
+              </div>
+
+              <div className="user-detail-row">
+                <span>Email</span>
+                <strong>
+                  {selectedUser.email}
+                </strong>
+              </div>
+
+              <div className="user-detail-row">
+                <span>Address</span>
+                <strong>
+                  {selectedUser.address}
+                </strong>
+              </div>
+
+              <div className="user-detail-row">
+                <span>Role</span>
+                <strong>
+                  {selectedUser.role}
+                </strong>
+              </div>
+
+              <button
+                className="modal-close-btn"
+                onClick={() =>
+                  setSelectedUser(null)
+                }
+              >
+                Close
+              </button>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ADMIN STORES */}
+
+        {activePage === "admin-stores" &&
+          role === "admin" && (
+            <section>
+
+              <div className="page-header">
+                <div>
+                  <h1>Stores</h1>
                   <p>
                     View all registered stores.
                   </p>
                 </div>
+              </div>
 
-                <div className="section-card">
-                  <div className="table-wrapper">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Address</th>
-                          <th>Owner</th>
-                          <th>Rating</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
+              <div className="search-box">
 
-                      <tbody>
-                        {adminStores.map((store) => (
+                <input
+                  type="text"
+                  placeholder="Search stores..."
+                  value={storeSearch}
+                  onChange={(e) =>
+                    setStoreSearch(e.target.value)
+                  }
+                />
+
+              </div>
+
+              <div className="table-card">
+
+                <div className="table-wrapper">
+
+                  <table>
+
+                    <thead>
+                      <tr>
+                        <th>Store Name</th>
+                        <th>Address</th>
+                        <th>Owner</th>
+                        <th>Overall Rating</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+
+                      {adminStores
+                        .filter((store) => {
+                          const search =
+                            storeSearch.toLowerCase();
+
+                          return (
+                            store.name
+                              ?.toLowerCase()
+                              .includes(search) ||
+                            store.address
+                              ?.toLowerCase()
+                              .includes(search)
+                          );
+                        })
+                        .map((store) => (
                           <tr key={store.id}>
+
                             <td>
                               {store.name}
                             </td>
@@ -1286,7 +1510,7 @@ function App() {
 
                             <td>
                               {store.owner_name ||
-                                "Not assigned"}
+                                "Not Assigned"}
                             </td>
 
                             <td>
@@ -1298,8 +1522,7 @@ function App() {
 
                             <td>
                               <button
-                                type="button"
-                                className="secondary-btn"
+                                className="view-btn"
                                 onClick={() =>
                                   handleViewStore(
                                     store.id
@@ -1309,541 +1532,527 @@ function App() {
                                 View
                               </button>
                             </td>
+
                           </tr>
                         ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </>
-            )}
 
-          {/* ADD USER */}
-          {activePage === "add-user" &&
-            role === "admin" && (
-              <>
-                <div className="page-header">
-                  <h2>Add User</h2>
+                    </tbody>
 
-                  <p>
-                    Create a new platform
-                    account.
-                  </p>
+                  </table>
+
                 </div>
 
-                <div className="section-card form-card">
-                  <form onSubmit={handleCreateUser}>
-                    <label>Name</label>
-
-                    <input
-                      type="text"
-                      value={newUser.name}
-                      onChange={(e) =>
-                        setNewUser({
-                          ...newUser,
-                          name: e.target.value,
-                        })
-                      }
-                      placeholder="20-60 characters"
-                    />
-
-                    <label>Email</label>
-
-                    <input
-                      type="email"
-                      value={newUser.email}
-                      onChange={(e) =>
-                        setNewUser({
-                          ...newUser,
-                          email: e.target.value,
-                        })
-                      }
-                      placeholder="Enter email"
-                    />
-
-                    <label>Address</label>
-
-                    <textarea
-                      value={newUser.address}
-                      onChange={(e) =>
-                        setNewUser({
-                          ...newUser,
-                          address: e.target.value,
-                        })
-                      }
-                      placeholder="Maximum 400 characters"
-                    />
-
-                    <label>Password</label>
-
-                    <input
-                      type="password"
-                      value={newUser.password}
-                      onChange={(e) =>
-                        setNewUser({
-                          ...newUser,
-                          password: e.target.value,
-                        })
-                      }
-                      placeholder="8-16 characters"
-                    />
-
-                    <label>Role</label>
-
-                    <select
-                      value={newUser.role}
-                      onChange={(e) =>
-                        setNewUser({
-                          ...newUser,
-                          role: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="user">
-                        Normal User
-                      </option>
-
-                      <option value="owner">
-                        Store Owner
-                      </option>
-
-                      <option value="admin">
-                        System Administrator
-                      </option>
-                    </select>
-
-                    {userCreateMessage && (
-                      <div className="message-box">
-                        {userCreateMessage}
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      className="primary-btn"
-                    >
-                      Add User
-                    </button>
-                  </form>
-                </div>
-              </>
-            )}
-
-          {/* ADD STORE */}
-          {activePage === "add-store" &&
-            role === "admin" && (
-              <>
-                <div className="page-header">
-                  <h2>Add Store</h2>
-
-                  <p>
-                    Create a store and assign
-                    an owner.
-                  </p>
-                </div>
-
-                <div className="section-card form-card">
-                  <form onSubmit={handleCreateStore}>
-                    <label>Store Name</label>
-
-                    <input
-                      type="text"
-                      value={newStore.name}
-                      onChange={(e) =>
-                        setNewStore({
-                          ...newStore,
-                          name: e.target.value,
-                        })
-                      }
-                      placeholder="20-60 characters"
-                    />
-
-                    <label>Address</label>
-
-                    <textarea
-                      value={newStore.address}
-                      onChange={(e) =>
-                        setNewStore({
-                          ...newStore,
-                          address: e.target.value,
-                        })
-                      }
-                      placeholder="Maximum 400 characters"
-                    />
-
-                    <label>Owner ID</label>
-
-                    <input
-                      type="number"
-                      value={newStore.owner_id}
-                      onChange={(e) =>
-                        setNewStore({
-                          ...newStore,
-                          owner_id: e.target.value,
-                        })
-                      }
-                      placeholder="Enter owner ID"
-                    />
-
-                    {storeCreateMessage && (
-                      <div className="message-box">
-                        {storeCreateMessage}
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      className="primary-btn"
-                    >
-                      Add Store
-                    </button>
-                  </form>
-                </div>
-              </>
-            )}
-
-          {/* ALL STORES */}
-          {activePage === "all-stores" &&
-            role === "user" && (
-              <>
-                <div className="page-header">
-                  <h2>All Stores</h2>
-
-                  <p>
-                    Search and rate available
-                    stores.
-                  </p>
-                </div>
-
-                <div className="section-card">
-                  <div className="section-header">
-                    <h3>Stores</h3>
-
-                    <input
-                      className="search-input"
-                      type="text"
-                      placeholder="Search by name or address..."
-                      value={storeSearch}
-                      onChange={(e) =>
-                        setStoreSearch(e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div className="store-grid">
-                    {filteredStores.length === 0 ? (
-                      <p className="empty-text">
-                        {stores.length === 0
-                          ? "No stores available."
-                          : "No matching stores found."}
-                      </p>
-                    ) : (
-                      filteredStores.map((store) => (
-                        <div
-                          className="store-card"
-                          key={store.id}
-                        >
-                          <h3>{store.name}</h3>
-
-                          <p>{store.address}</p>
-
-                          <div className="rating-info">
-                            <span>
-                              Overall Rating:{" "}
-                              {Number(
-                                store.overall_rating || 0
-                              ).toFixed(2)}
-                            </span>
-
-                            <span>
-                              Your Rating:{" "}
-                              {store.user_rating ||
-                                "Not rated"}
-                            </span>
-                          </div>
-
-                          <div className="rating-actions">
-                            <select
-                              value={ratingValue}
-                              onChange={(e) =>
-                                setRatingValue(
-                                  Number(e.target.value)
-                                )
-                              }
-                            >
-                              <option value="1">
-                                1 Star
-                              </option>
-
-                              <option value="2">
-                                2 Stars
-                              </option>
-
-                              <option value="3">
-                                3 Stars
-                              </option>
-
-                              <option value="4">
-                                4 Stars
-                              </option>
-
-                              <option value="5">
-                                5 Stars
-                              </option>
-                            </select>
-
-                            <button
-                              type="button"
-                              className="primary-btn small"
-                              onClick={() =>
-                                handleSubmitRating(
-                                  store.id
-                                )
-                              }
-                            >
-                              {store.user_rating
-                                ? "Update Rating"
-                                : "Rate Store"}
-                            </button>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
-
-          {/* CHANGE PASSWORD */}
-          {activePage === "change-password" && (
-            <>
-              <div className="page-header">
-                <h2>Change Password</h2>
-
-                <p>
-                  Update your account password.
-                </p>
               </div>
 
-              <div className="section-card form-card">
-                <form onSubmit={handleChangePassword}>
+            </section>
+          )}
+
+        {/* STORE MODAL */}
+
+        {selectedStore && (
+          <div
+            className="modal-overlay"
+            onClick={() =>
+              setSelectedStore(null)
+            }
+          >
+
+            <div
+              className="user-details-modal"
+              onClick={(e) =>
+                e.stopPropagation()
+              }
+            >
+
+              <button
+                className="modal-close"
+                onClick={() =>
+                  setSelectedStore(null)
+                }
+              >
+                ×
+              </button>
+
+              <div className="modal-icon">
+                🏬
+              </div>
+
+              <h2>Store Details</h2>
+
+              <p className="modal-subtitle">
+                Complete store information
+              </p>
+
+              <div className="user-detail-row">
+                <span>Store Name</span>
+                <strong>
+                  {selectedStore.name}
+                </strong>
+              </div>
+
+              <div className="user-detail-row">
+                <span>Address</span>
+                <strong>
+                  {selectedStore.address}
+                </strong>
+              </div>
+
+              <div className="user-detail-row">
+                <span>Owner</span>
+                <strong>
+                  {selectedStore.owner_name ||
+                    "Not Assigned"}
+                </strong>
+              </div>
+
+              <div className="user-detail-row">
+                <span>Overall Rating</span>
+                <strong>
+                  ⭐{" "}
+                  {Number(
+                    selectedStore.overall_rating || 0
+                  ).toFixed(2)}
+                </strong>
+              </div>
+
+              <button
+                className="modal-close-btn"
+                onClick={() =>
+                  setSelectedStore(null)
+                }
+              >
+                Close
+              </button>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ADD USER */}
+
+        {activePage === "add-user" &&
+          role === "admin" && (
+            <section>
+
+              <div className="page-header">
+                <div>
+                  <h1>Add User</h1>
+                  <p>
+                    Create a new platform account.
+                  </p>
+                </div>
+              </div>
+
+              {userCreateMessage && (
+                <div className="success-message">
+                  {userCreateMessage}
+                </div>
+              )}
+
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
+
+              <div className="form-card">
+
+                <form onSubmit={handleCreateUser}>
+
                   <label>
-                    Current Password
+                    Full Name
+                  </label>
+
+                  <input
+                    type="text"
+                    value={newUser.name}
+                    onChange={(e) =>
+                      setNewUser({
+                        ...newUser,
+                        name: e.target.value,
+                      })
+                    }
+                    required
+                  />
+
+                  <label>
+                    Email
+                  </label>
+
+                  <input
+                    type="email"
+                    value={newUser.email}
+                    onChange={(e) =>
+                      setNewUser({
+                        ...newUser,
+                        email: e.target.value,
+                      })
+                    }
+                    required
+                  />
+
+                  <label>
+                    Address
+                  </label>
+
+                  <input
+                    type="text"
+                    value={newUser.address}
+                    onChange={(e) =>
+                      setNewUser({
+                        ...newUser,
+                        address: e.target.value,
+                      })
+                    }
+                    required
+                  />
+
+                  <label>
+                    Password
                   </label>
 
                   <input
                     type="password"
-                    value={currentPassword}
+                    value={newUser.password}
                     onChange={(e) =>
-                      setCurrentPassword(
-                        e.target.value
-                      )
+                      setNewUser({
+                        ...newUser,
+                        password: e.target.value,
+                      })
                     }
-                    placeholder="Enter current password"
+                    required
                   />
 
                   <label>
-                    New Password
+                    Role
                   </label>
 
-                  <input
-                    type="password"
-                    value={newPassword}
+                  <select
+                    value={newUser.role}
                     onChange={(e) =>
-                      setNewPassword(
-                        e.target.value
-                      )
+                      setNewUser({
+                        ...newUser,
+                        role: e.target.value,
+                      })
                     }
-                    placeholder="8-16 characters"
-                  />
+                  >
+                    <option value="user">
+                      Normal User
+                    </option>
 
-                  {passwordMessage && (
-                    <div className="message-box">
-                      {passwordMessage}
-                    </div>
-                  )}
+                    <option value="owner">
+                      Store Owner
+                    </option>
+
+                    <option value="admin">
+                      System Administrator
+                    </option>
+                  </select>
 
                   <button
                     type="submit"
                     className="primary-btn"
                   >
-                    Change Password
+                    Add User
                   </button>
+
                 </form>
+
               </div>
-            </>
+
+            </section>
           )}
-        </main>
-      </div>
 
-      {/* ================= USER DETAILS MODAL ================= */}
-      {selectedUser && (
-        <div
-          className="modal-overlay"
-          onClick={() =>
-            setSelectedUser(null)
-          }
-        >
-          <div
-            className="user-details-modal"
-            onClick={(e) =>
-              e.stopPropagation()
-            }
-          >
-            <button
-              type="button"
-              className="modal-close"
-              onClick={() =>
-                setSelectedUser(null)
-              }
-              aria-label="Close"
-            >
-              ×
-            </button>
+        {/* ADD STORE */}
 
-            <div className="modal-icon">
-              👤
+        {activePage === "add-store" &&
+          role === "admin" && (
+            <section>
+
+              <div className="page-header">
+                <div>
+                  <h1>Add Store</h1>
+                  <p>
+                    Create a new store and assign its owner.
+                  </p>
+                </div>
+              </div>
+
+              {storeCreateMessage && (
+                <div className="success-message">
+                  {storeCreateMessage}
+                </div>
+              )}
+
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
+
+              <div className="form-card">
+
+                <form onSubmit={handleCreateStore}>
+
+                  <label>
+                    Store Name
+                  </label>
+
+                  <input
+                    type="text"
+                    value={newStore.name}
+                    onChange={(e) =>
+                      setNewStore({
+                        ...newStore,
+                        name: e.target.value,
+                      })
+                    }
+                    required
+                  />
+
+                  <label>
+                    Address
+                  </label>
+
+                  <input
+                    type="text"
+                    value={newStore.address}
+                    onChange={(e) =>
+                      setNewStore({
+                        ...newStore,
+                        address: e.target.value,
+                      })
+                    }
+                    required
+                  />
+
+                  <label>
+                    Owner ID
+                  </label>
+
+                  <input
+                    type="number"
+                    value={newStore.owner_id}
+                    onChange={(e) =>
+                      setNewStore({
+                        ...newStore,
+                        owner_id: e.target.value,
+                      })
+                    }
+                    placeholder="Enter Store Owner ID"
+                    required
+                  />
+
+                  <button
+                    type="submit"
+                    className="primary-btn"
+                  >
+                    Add Store
+                  </button>
+
+                </form>
+
+              </div>
+
+            </section>
+          )}
+
+        {/* ALL STORES */}
+
+        {activePage === "stores" &&
+          role === "user" && (
+            <section>
+
+              <div className="page-header">
+                <div>
+                  <h1>All Stores</h1>
+                  <p>
+                    Search stores and submit your rating.
+                  </p>
+                </div>
+              </div>
+
+              <div className="search-box">
+
+                <input
+                  type="text"
+                  placeholder="Search by store name or address..."
+                  value={storeSearch}
+                  onChange={(e) =>
+                    setStoreSearch(e.target.value)
+                  }
+                />
+
+              </div>
+
+              <div className="store-grid">
+
+                {filteredStores.length === 0 ? (
+                  <div className="empty-state">
+                    {stores.length === 0
+                      ? "No stores available."
+                      : "No stores match your search."}
+                  </div>
+                ) : (
+                  filteredStores.map((store) => (
+                    <div
+                      className="store-card"
+                      key={store.id}
+                    >
+
+                      <div className="store-card-top">
+
+                        <div>
+                          <h3>{store.name}</h3>
+                          <p>{store.address}</p>
+                        </div>
+
+                        <div className="rating-badge">
+                          ⭐{" "}
+                          {Number(
+                            store.overall_rating || 0
+                          ).toFixed(2)}
+                        </div>
+
+                      </div>
+
+                      <div className="store-rating-section">
+
+                        <span>Your Rating</span>
+
+                        <div className="rating-row">
+
+                          <select
+                            value={
+                              userRating[store.id] || ""
+                            }
+                            onChange={(e) =>
+                              handleRatingChange(
+                                store.id,
+                                e.target.value
+                              )
+                            }
+                          >
+                            <option value="">
+                              Select
+                            </option>
+                            <option value="1">
+                              1 ⭐
+                            </option>
+                            <option value="2">
+                              2 ⭐
+                            </option>
+                            <option value="3">
+                              3 ⭐
+                            </option>
+                            <option value="4">
+                              4 ⭐
+                            </option>
+                            <option value="5">
+                              5 ⭐
+                            </option>
+                          </select>
+
+                          <button
+                            className="primary-btn small-btn"
+                            onClick={() =>
+                              handleSubmitRating(
+                                store.id
+                              )
+                            }
+                          >
+                            Rate
+                          </button>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                  ))
+                )}
+
+              </div>
+
+            </section>
+          )}
+
+        {/* CHANGE PASSWORD */}
+
+        {activePage === "change-password" && (
+          <section>
+
+            <div className="page-header">
+              <div>
+                <h1>Change Password</h1>
+                <p>
+                  Update your account password securely.
+                </p>
+              </div>
             </div>
 
-            <h2>User Details</h2>
+            {passwordMessage && (
+              <div className="success-message">
+                {passwordMessage}
+              </div>
+            )}
 
-            <p className="modal-subtitle">
-              Account information
-            </p>
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
 
-            <div className="user-detail-row">
-              <span>Name</span>
+            <div className="form-card">
 
-              <strong>
-                {selectedUser.name}
-              </strong>
+              <form onSubmit={handleChangePassword}>
+
+                <label>
+                  Current Password
+                </label>
+
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) =>
+                    setCurrentPassword(
+                      e.target.value
+                    )
+                  }
+                  required
+                />
+
+                <label>
+                  New Password
+                </label>
+
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) =>
+                    setNewPassword(
+                      e.target.value
+                    )
+                  }
+                  required
+                />
+
+                <button
+                  type="submit"
+                  className="primary-btn"
+                >
+                  Change Password
+                </button>
+
+              </form>
+
             </div>
 
-            <div className="user-detail-row">
-              <span>Email</span>
+          </section>
+        )}
 
-              <strong>
-                {selectedUser.email}
-              </strong>
-            </div>
-
-            <div className="user-detail-row">
-              <span>Address</span>
-
-              <strong>
-                {selectedUser.address ||
-                  "Not provided"}
-              </strong>
-            </div>
-
-            <div className="user-detail-row">
-              <span>Role</span>
-
-              <strong>
-                {selectedUser.role === "admin"
-                  ? "System Administrator"
-                  : selectedUser.role === "owner"
-                  ? "Store Owner"
-                  : "Normal User"}
-              </strong>
-            </div>
-
-            <button
-              type="button"
-              className="modal-close-btn"
-              onClick={() =>
-                setSelectedUser(null)
-              }
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ================= STORE DETAILS MODAL ================= */}
-      {selectedStore && (
-        <div
-          className="modal-overlay"
-          onClick={() =>
-            setSelectedStore(null)
-          }
-        >
-          <div
-            className="user-details-modal"
-            onClick={(e) =>
-              e.stopPropagation()
-            }
-          >
-            <button
-              type="button"
-              className="modal-close"
-              onClick={() =>
-                setSelectedStore(null)
-              }
-              aria-label="Close"
-            >
-              ×
-            </button>
-
-            <div className="modal-icon">
-              🏪
-            </div>
-
-            <h2>Store Details</h2>
-
-            <p className="modal-subtitle">
-              Store information
-            </p>
-
-            <div className="user-detail-row">
-              <span>Name</span>
-
-              <strong>
-                {selectedStore.name}
-              </strong>
-            </div>
-
-            <div className="user-detail-row">
-              <span>Address</span>
-
-              <strong>
-                {selectedStore.address}
-              </strong>
-            </div>
-
-            <div className="user-detail-row">
-              <span>Owner</span>
-
-              <strong>
-                {selectedStore.owner_name ||
-                  "Not assigned"}
-              </strong>
-            </div>
-
-            <div className="user-detail-row">
-              <span>Overall Rating</span>
-
-              <strong>
-                ⭐{" "}
-                {Number(
-                  selectedStore.overall_rating || 0
-                ).toFixed(2)}
-              </strong>
-            </div>
-
-            <button
-              type="button"
-              className="modal-close-btn"
-              onClick={() =>
-                setSelectedStore(null)
-              }
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      </main>
     </div>
   );
 }
