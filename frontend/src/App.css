@@ -9827,3 +9827,7 @@ tbody tr:hover {
 .owner-sidebar .logout-btn:hover {
   background: rgba(255,255,255,0.10) !important;
 }
+/* Remove extra hamburger above RateHub */
+.dashboard-topbar .menu-btn {
+  display: none !important;
+}
