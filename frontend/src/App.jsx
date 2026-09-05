@@ -27,6 +27,7 @@ function App() {
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
+
     if (!savedUser) return null;
 
     try {
@@ -38,6 +39,7 @@ function App() {
 
   const [role, setRole] = useState(() => {
     const savedUser = localStorage.getItem("user");
+
     if (!savedUser) return "";
 
     try {
@@ -213,40 +215,45 @@ function App() {
     }
 
     try {
-      // First create the account
-      await signupUser({
+      // Save signup values before clearing the form
+      const signupData = {
         name: signupName.trim(),
         email: signupEmail.trim(),
         address: signupAddress.trim(),
         password: signupPassword,
         role: signupRole,
-      });
+      };
 
-      // Automatically login after successful signup
+      // 1. Create account
+      await signupUser(signupData);
+
+      // 2. Automatically login after account creation
       const loginData = await loginUser({
-        email: signupEmail.trim(),
-        password: signupPassword,
-        role: signupRole,
+        email: signupData.email,
+        password: signupData.password,
+        role: signupData.role,
       });
 
-      // Save login session
+      // 3. Save login session
       localStorage.setItem("token", loginData.token);
       localStorage.setItem("user", JSON.stringify(loginData.user));
 
-      // Open dashboard automatically
+      // 4. Open dashboard automatically
       setUser(loginData.user);
       setRole(loginData.user.role);
       setLoggedIn(true);
 
-      // Clear signup fields
+      // 5. Clear signup form
       setSignupName("");
       setSignupEmail("");
       setSignupAddress("");
       setSignupPassword("");
       setSignupRole("user");
+
       setShowSignup(false);
       setMessage("");
     } catch (error) {
+      console.error("Signup/Login error:", error);
       setMessage(error.message || "Signup failed.");
     }
   };
@@ -351,6 +358,9 @@ function App() {
       setNewUserRole("user");
 
       await loadAdminUsers();
+
+      const stats = await getAdminDashboardStats();
+      setAdminStats(stats);
     } catch (error) {
       setUserCreateMessage(
         error.message || "Failed to create user."
@@ -1092,6 +1102,7 @@ function App() {
                     {filteredAdminStores.map((item) => (
                       <tr key={item.id}>
                         <td>{item.name}</td>
+
                         <td>{item.address}</td>
 
                         <td>
@@ -1358,6 +1369,7 @@ function App() {
                           (item) => (
                             <tr key={item.id}>
                               <td>{item.name}</td>
+
                               <td>{item.email}</td>
 
                               <td>
