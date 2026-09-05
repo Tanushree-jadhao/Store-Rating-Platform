@@ -9648,3 +9648,182 @@ tbody tr:hover {
   font-size: 14px !important;
   font-weight: 500 !important;
 }
+/* =========================================================
+   FINAL OWNER DARK BLUE + TOP LEFT BRAND FIX
+   DASHBOARD ONLY
+   LOGIN PAGE UNTOUCHED
+   ========================================================= */
+
+/* ---------- TOP BAR ---------- */
+
+.dashboard-topbar {
+  position: relative !important;
+  z-index: 100 !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  background: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 32px !important;
+}
+
+/* Left side brand */
+.dashboard-topbar .topbar-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-width: 300px !important;
+}
+
+/* Hamburger */
+.dashboard-topbar .menu-btn {
+  width: 42px !important;
+  height: 42px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* RateHub brand */
+.dashboard-topbar .brand-area {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 2px !important;
+}
+
+.dashboard-topbar .brand-area h1 {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #1d4ed8 !important;
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+}
+
+.dashboard-topbar .brand-area p {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #64748b !important;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+}
+
+/* Right side */
+.dashboard-topbar .topbar-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  flex-shrink: 0 !important;
+}
+
+.dashboard-topbar .user-profile {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  white-space: nowrap !important;
+}
+
+.dashboard-topbar .user-profile strong,
+.dashboard-topbar .user-profile small {
+  display: block !important;
+}
+
+
+/* =========================================================
+   OWNER = DARK BLUE
+   ========================================================= */
+
+.owner-sidebar {
+  background: linear-gradient(
+    180deg,
+    #071b34 0%,
+    #0b2a4a 100%
+  ) !important;
+}
+
+.owner-sidebar .sidebar-section-title {
+  color: #ffffff !important;
+}
+
+.owner-sidebar .sidebar-item {
+  color: #ffffff !important;
+}
+
+.owner-sidebar .sidebar-item:hover {
+  background: rgba(59, 130, 246, 0.16) !important;
+}
+
+/* Active Dashboard */
+.owner-sidebar .sidebar-item.active {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* Owner dashboard hero */
+.owner-reference-dashboard .reference-hero {
+  background: linear-gradient(
+    135deg,
+    #0b2f55 0%,
+    #145da0 55%,
+    #2563eb 100%
+  ) !important;
+  color: #ffffff !important;
+}
+
+.owner-reference-dashboard .reference-hero h2,
+.owner-reference-dashboard .reference-hero p {
+  color: #ffffff !important;
+}
+
+.owner-reference-dashboard .reference-hero-icon {
+  background: rgba(255,255,255,0.18) !important;
+  color: #ffffff !important;
+}
+
+/* Owner stat cards */
+.owner-reference-dashboard .reference-stat.green .reference-stat-icon,
+.owner-reference-dashboard .reference-stat.purple .reference-stat-icon {
+  background: #e8f1ff !important;
+}
+
+.owner-reference-dashboard .reference-stat.green strong,
+.owner-reference-dashboard .reference-stat.purple strong {
+  color: #2563eb !important;
+}
+
+/* Owner performance elements */
+.owner-reference-dashboard .performance-card {
+  border-top-color: #2563eb !important;
+}
+
+.owner-reference-dashboard .rating-bar-fill {
+  background: #2563eb !important;
+}
+
+.owner-reference-dashboard .rating-donut {
+  border-color: #2563eb !important;
+}
+
+.owner-reference-dashboard .panel-icon {
+  color: #2563eb !important;
+}
+
+
+/* =========================================================
+   SIDEBAR LOGOUT
+   ========================================================= */
+
+.owner-sidebar .logout-btn {
+  background: transparent !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,0.20) !important;
+}
+
+.owner-sidebar .logout-btn:hover {
+  background: rgba(255,255,255,0.10) !important;
+}
