@@ -9404,3 +9404,247 @@ tbody tr:hover {
     grid-template-columns: 1fr !important;
   }
 }
+/* =========================================================
+   FINAL OWNER + TOPBAR FIX
+   LOGIN PAGE UNTOUCHED
+   ========================================================= */
+
+/* OWNER = ORANGE / AMBER */
+.owner-sidebar {
+  background: linear-gradient(180deg, #431407 0%, #7c2d12 100%) !important;
+}
+
+.owner-sidebar .sidebar-item.active {
+  background: #f97316 !important;
+}
+
+.owner-reference-dashboard .reference-hero {
+  background: linear-gradient(
+    135deg,
+    #c2410c,
+    #f97316 60%,
+    #fb923c
+  ) !important;
+}
+
+.owner-reference-dashboard .reference-hero-icon {
+  background: #ffedd5 !important;
+  color: #ea580c !important;
+}
+
+.owner-reference-dashboard .reference-stat.green .reference-stat-icon,
+.owner-reference-dashboard .reference-stat.purple .reference-stat-icon {
+  background: #ffedd5 !important;
+}
+
+.owner-reference-dashboard .reference-stat.green strong,
+.owner-reference-dashboard .reference-stat.purple strong {
+  color: #ea580c !important;
+}
+
+.owner-reference-dashboard .performance-card {
+  border-top-color: #f97316 !important;
+}
+
+.owner-reference-dashboard .rating-bar-fill {
+  background: #f97316 !important;
+}
+
+.owner-reference-dashboard .rating-donut {
+  border-color: #f97316 !important;
+}
+
+/* =========================================================
+   TOPBAR TEXT PROPERLY SEPARATED
+   ========================================================= */
+
+.dashboard-topbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 30px !important;
+}
+
+.dashboard-topbar .topbar-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  min-width: 0 !important;
+}
+
+.dashboard-topbar .brand-area {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+.dashboard-topbar .brand-area h1 {
+  margin: 0 !important;
+  font-size: 21px !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+}
+
+.dashboard-topbar .brand-area p {
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+}
+
+.dashboard-topbar .topbar-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  flex-shrink: 0 !important;
+}
+
+.dashboard-topbar .user-profile {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  white-space: nowrap !important;
+}
+
+.dashboard-topbar .user-profile strong {
+  display: block !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+}
+
+.dashboard-topbar .user-profile small {
+  display: block !important;
+  margin-top: 2px !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.3 !important;
+}
+
+.dashboard-topbar .secondary-btn,
+.dashboard-topbar .logout-btn {
+  white-space: nowrap !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+/* =========================================================
+   FINAL OWNER + TOPBAR FIX
+   LOGIN PAGE UNTOUCHED
+   ========================================================= */
+
+/* OWNER = ORANGE / AMBER */
+.owner-sidebar {
+  background: linear-gradient(180deg, #431407 0%, #7c2d12 100%) !important;
+}
+
+.owner-sidebar .sidebar-item.active {
+  background: #f97316 !important;
+}
+
+.owner-reference-dashboard .reference-hero {
+  background: linear-gradient(
+    135deg,
+    #c2410c,
+    #f97316 60%,
+    #fb923c
+  ) !important;
+}
+
+.owner-reference-dashboard .reference-hero-icon {
+  background: #ffedd5 !important;
+  color: #ea580c !important;
+}
+
+.owner-reference-dashboard .reference-stat.green .reference-stat-icon,
+.owner-reference-dashboard .reference-stat.purple .reference-stat-icon {
+  background: #ffedd5 !important;
+}
+
+.owner-reference-dashboard .reference-stat.green strong,
+.owner-reference-dashboard .reference-stat.purple strong {
+  color: #ea580c !important;
+}
+
+.owner-reference-dashboard .performance-card {
+  border-top-color: #f97316 !important;
+}
+
+.owner-reference-dashboard .rating-bar-fill {
+  background: #f97316 !important;
+}
+
+.owner-reference-dashboard .rating-donut {
+  border-color: #f97316 !important;
+}
+
+/* =========================================================
+   TOPBAR TEXT PROPERLY SEPARATED
+   ========================================================= */
+
+.dashboard-topbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 30px !important;
+}
+
+.dashboard-topbar .topbar-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  min-width: 0 !important;
+}
+
+.dashboard-topbar .brand-area {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+.dashboard-topbar .brand-area h1 {
+  margin: 0 !important;
+  font-size: 21px !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+}
+
+.dashboard-topbar .brand-area p {
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+}
+
+.dashboard-topbar .topbar-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  flex-shrink: 0 !important;
+}
+
+.dashboard-topbar .user-profile {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  white-space: nowrap !important;
+}
+
+.dashboard-topbar .user-profile strong {
+  display: block !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+}
+
+.dashboard-topbar .user-profile small {
+  display: block !important;
+  margin-top: 2px !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.3 !important;
+}
+
+.dashboard-topbar .secondary-btn,
+.dashboard-topbar .logout-btn {
+  white-space: nowrap !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
