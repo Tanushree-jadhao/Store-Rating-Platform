@@ -10353,3 +10353,10 @@ tbody tr:hover {
 .user-reference-dashboard .large-search input {
   font-size: 15px !important;
 }
+/* Explore Stores - normal readable size */
+.user-reference-dashboard .explore-panel .table-panel-head h3 {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  margin: 4px 0 6px !important;
+}
