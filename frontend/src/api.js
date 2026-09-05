@@ -1,25 +1,35 @@
-const API_URL = "https://store-rating-platform-mtuu.onrender.com/api";
+const API_URL =
+  "https://store-rating-platform-mtuu.onrender.com/api";
 
 const getToken = () => localStorage.getItem("token");
 
 // LOGIN
-export const loginUser = async (email, password, role) => {
-  const response = await fetch(`${API_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: email.trim().toLowerCase(),
-      password,
-      role,
-    }),
-  });
+export const loginUser = async (
+  email,
+  password,
+  role
+) => {
+  const response = await fetch(
+    `${API_URL}/auth/login`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email.trim().toLowerCase(),
+        password,
+        role,
+      }),
+    }
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Login failed");
+    throw new Error(
+      data.message || "Login failed"
+    );
   }
 
   return data;
@@ -35,24 +45,29 @@ export const signupUser = async (
 ) => {
   const selectedRole = role || "user";
 
-  const response = await fetch(`${API_URL}/auth/signup`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      address: address.trim(),
-      password,
-      role: selectedRole,
-    }),
-  });
+  const response = await fetch(
+    `${API_URL}/auth/signup`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        address: address.trim(),
+        password,
+        role: selectedRole,
+      }),
+    }
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Signup failed");
+    throw new Error(
+      data.message || "Signup failed"
+    );
   }
 
   return data;
@@ -60,17 +75,21 @@ export const signupUser = async (
 
 // ADMIN DASHBOARD
 export const getAdminDashboard = async () => {
-  const response = await fetch(`${API_URL}/admin/dashboard`, {
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-    },
-  });
+  const response = await fetch(
+    `${API_URL}/admin/dashboard`,
+    {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    }
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to load admin dashboard"
+      data.message ||
+        "Failed to load admin dashboard"
     );
   }
 
@@ -79,16 +98,21 @@ export const getAdminDashboard = async () => {
 
 // ADMIN USERS
 export const getAdminUsers = async () => {
-  const response = await fetch(`${API_URL}/admin/users`, {
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-    },
-  });
+  const response = await fetch(
+    `${API_URL}/admin/users`,
+    {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    }
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Failed to load users");
+    throw new Error(
+      data.message || "Failed to load users"
+    );
   }
 
   return Array.isArray(data)
@@ -97,7 +121,9 @@ export const getAdminUsers = async () => {
 };
 
 // ADMIN USER DETAILS
-export const getAdminUserDetails = async (userId) => {
+export const getAdminUserDetails = async (
+  userId
+) => {
   const response = await fetch(
     `${API_URL}/admin/users/${userId}`,
     {
@@ -111,7 +137,8 @@ export const getAdminUserDetails = async (userId) => {
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to load user details"
+      data.message ||
+        "Failed to load user details"
     );
   }
 
@@ -120,17 +147,21 @@ export const getAdminUserDetails = async (userId) => {
 
 // GET STORES FOR NORMAL USER
 export const getStores = async () => {
-  const response = await fetch(`${API_URL}/stores`, {
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-    },
-  });
+  const response = await fetch(
+    `${API_URL}/stores`,
+    {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    }
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to load stores"
+      data.message ||
+        "Failed to load stores"
     );
   }
 
@@ -140,24 +171,31 @@ export const getStores = async () => {
 };
 
 // SUBMIT RATING
-export const submitRating = async (store_id, rating) => {
-  const response = await fetch(`${API_URL}/ratings`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
-    },
-    body: JSON.stringify({
-      store_id,
-      rating,
-    }),
-  });
+export const submitRating = async (
+  store_id,
+  rating
+) => {
+  const response = await fetch(
+    `${API_URL}/ratings`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify({
+        store_id,
+        rating,
+      }),
+    }
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to submit rating"
+      data.message ||
+        "Failed to submit rating"
     );
   }
 
@@ -165,24 +203,31 @@ export const submitRating = async (store_id, rating) => {
 };
 
 // UPDATE RATING
-export const updateRating = async (store_id, rating) => {
-  const response = await fetch(`${API_URL}/ratings`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
-    },
-    body: JSON.stringify({
-      store_id,
-      rating,
-    }),
-  });
+export const updateRating = async (
+  store_id,
+  rating
+) => {
+  const response = await fetch(
+    `${API_URL}/ratings`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify({
+        store_id,
+        rating,
+      }),
+    }
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to update rating"
+      data.message ||
+        "Failed to update rating"
     );
   }
 
@@ -191,17 +236,21 @@ export const updateRating = async (store_id, rating) => {
 
 // ADMIN STORES
 export const getAdminStores = async () => {
-  const response = await fetch(`${API_URL}/admin/stores`, {
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-    },
-  });
+  const response = await fetch(
+    `${API_URL}/admin/stores`,
+    {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    }
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to load admin stores"
+      data.message ||
+        "Failed to load admin stores"
     );
   }
 
@@ -217,25 +266,29 @@ export const createAdminUser = async (
   password,
   role
 ) => {
-  const response = await fetch(`${API_URL}/admin/users`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
-    },
-    body: JSON.stringify({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      password,
-      role,
-    }),
-  });
+  const response = await fetch(
+    `${API_URL}/admin/users`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify({
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+        role,
+      }),
+    }
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to create user"
+      data.message ||
+        "Failed to create user"
     );
   }
 
@@ -248,24 +301,28 @@ export const createAdminStore = async (
   address,
   owner_id
 ) => {
-  const response = await fetch(`${API_URL}/admin/stores`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
-    },
-    body: JSON.stringify({
-      name: name.trim(),
-      address: address.trim(),
-      owner_id,
-    }),
-  });
+  const response = await fetch(
+    `${API_URL}/admin/stores`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify({
+        name: name.trim(),
+        address: address.trim(),
+        owner_id,
+      }),
+    }
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to create store"
+      data.message ||
+        "Failed to create store"
     );
   }
 
@@ -274,11 +331,21 @@ export const createAdminStore = async (
 
 // OWNER DASHBOARD
 export const getOwnerDashboard = async () => {
+  const token = getToken();
+
+  if (!token) {
+    throw new Error(
+      "Owner login token not found. Please login again."
+    );
+  }
+
   const response = await fetch(
     `${API_URL}/owner/dashboard`,
     {
+      method: "GET",
       headers: {
-        Authorization: `Bearer ${getToken()}`,
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     }
   );
@@ -287,7 +354,8 @@ export const getOwnerDashboard = async () => {
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to load owner dashboard"
+      data.message ||
+        `Owner dashboard failed (${response.status})`
     );
   }
 
@@ -318,7 +386,8 @@ export const changePassword = async (
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to change password"
+      data.message ||
+        "Failed to change password"
     );
   }
 
