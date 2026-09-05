@@ -1,41 +1,43 @@
-const API_URL =
-  "https://store-rating-platform-mtuu.onrender.com/api";
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://store-rating-platform-mtuu.onrender.com";
 
 const getToken = () => localStorage.getItem("token");
 
-// LOGIN
-export const loginUser = async (
-  email,
-  password,
-  role
-) => {
-  const response = await fetch(
-    `${API_URL}/auth/login`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email.trim().toLowerCase(),
-        password,
-        role,
-      }),
-    }
-  );
+const authHeaders = () => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${getToken()}`,
+});
 
-  const data = await response.json();
+const handleResponse = async (response) => {
+  const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Login failed"
-    );
+    throw new Error(data.message || "Something went wrong");
   }
 
   return data;
 };
 
-// SIGNUP
+// ==================== AUTH ====================
+
+export const loginUser = async (email, password, role) => {
+  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      role,
+    }),
+  });
+
+  return handleResponse(response);
+};
+
 export const signupUser = async (
   name,
   email,
@@ -43,338 +45,29 @@ export const signupUser = async (
   password,
   role = "user"
 ) => {
-  const selectedRole = role || "user";
+  const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name,
+      email,
+      address,
+      password,
+      role,
+    }),
+  });
 
-  const response = await fetch(
-    `${API_URL}/auth/signup`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        address: address.trim(),
-        password,
-        role: selectedRole,
-      }),
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message || "Signup failed"
-    );
-  }
-
-  return data;
+  return handleResponse(response);
 };
 
-// ADMIN DASHBOARD
-export const getAdminDashboard = async () => {
+export const changePassword = async (currentPassword, newPassword) => {
   const response = await fetch(
-    `${API_URL}/admin/dashboard`,
-    {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to load admin dashboard"
-    );
-  }
-
-  return data;
-};
-
-// ADMIN USERS
-export const getAdminUsers = async () => {
-  const response = await fetch(
-    `${API_URL}/admin/users`,
-    {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to load users"
-    );
-  }
-
-  return Array.isArray(data)
-    ? data
-    : data.users || [];
-};
-
-// ADMIN USER DETAILS
-export const getAdminUserDetails = async (
-  userId
-) => {
-  const response = await fetch(
-    `${API_URL}/admin/users/${userId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to load user details"
-    );
-  }
-
-  return data;
-};
-
-// GET STORES FOR NORMAL USER
-export const getStores = async () => {
-  const response = await fetch(
-    `${API_URL}/stores`,
-    {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to load stores"
-    );
-  }
-
-  return Array.isArray(data)
-    ? data
-    : data.stores || [];
-};
-
-// SUBMIT RATING
-export const submitRating = async (
-  store_id,
-  rating
-) => {
-  const response = await fetch(
-    `${API_URL}/ratings`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({
-        store_id,
-        rating,
-      }),
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to submit rating"
-    );
-  }
-
-  return data;
-};
-
-// UPDATE RATING
-export const updateRating = async (
-  store_id,
-  rating
-) => {
-  const response = await fetch(
-    `${API_URL}/ratings`,
+    `${API_BASE_URL}/api/auth/change-password`,
     {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({
-        store_id,
-        rating,
-      }),
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to update rating"
-    );
-  }
-
-  return data;
-};
-
-// ADMIN STORES
-export const getAdminStores = async () => {
-  const response = await fetch(
-    `${API_URL}/admin/stores`,
-    {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to load admin stores"
-    );
-  }
-
-  return Array.isArray(data)
-    ? data
-    : data.stores || [];
-};
-
-// CREATE ADMIN USER
-export const createAdminUser = async (
-  name,
-  email,
-  password,
-  role
-) => {
-  const response = await fetch(
-    `${API_URL}/admin/users`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        password,
-        role,
-      }),
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to create user"
-    );
-  }
-
-  return data;
-};
-
-// CREATE ADMIN STORE
-export const createAdminStore = async (
-  name,
-  address,
-  owner_id
-) => {
-  const response = await fetch(
-    `${API_URL}/admin/stores`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({
-        name: name.trim(),
-        address: address.trim(),
-        owner_id,
-      }),
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to create store"
-    );
-  }
-
-  return data;
-};
-
-// OWNER DASHBOARD
-export const getOwnerDashboard = async () => {
-  const token = getToken();
-
-  if (!token) {
-    throw new Error(
-      "Owner login token not found. Please login again."
-    );
-  }
-
-  const response = await fetch(
-    `${API_URL}/owner/dashboard`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        `Owner dashboard failed (${response.status})`
-    );
-  }
-
-  return data;
-};
-
-// CHANGE PASSWORD
-export const changePassword = async (
-  currentPassword,
-  newPassword
-) => {
-  const response = await fetch(
-    `${API_URL}/auth/change-password`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
-      },
+      headers: authHeaders(),
       body: JSON.stringify({
         currentPassword,
         newPassword,
@@ -382,14 +75,193 @@ export const changePassword = async (
     }
   );
 
-  const data = await response.json();
+  return handleResponse(response);
+};
 
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to change password"
-    );
-  }
+// ==================== ADMIN ====================
 
-  return data;
+export const getAdminDashboardStats = async () => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/dashboard`,
+    {
+      method: "GET",
+      headers: authHeaders(),
+    }
+  );
+
+  const data = await handleResponse(response);
+
+  return {
+    totalUsers: data.totalUsers ?? 0,
+    totalStores: data.totalStores ?? 0,
+    totalRatings: data.totalRatings ?? 0,
+  };
+};
+
+export const getAdminUsers = async (
+  search = "",
+  role = "",
+  sortBy = "name",
+  order = "asc"
+) => {
+  const params = new URLSearchParams();
+
+  if (search) params.append("search", search);
+  if (role) params.append("role", role);
+  if (sortBy) params.append("sortBy", sortBy);
+  if (order) params.append("order", order);
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/users?${params.toString()}`,
+    {
+      method: "GET",
+      headers: authHeaders(),
+    }
+  );
+
+  const data = await handleResponse(response);
+
+  return data.users || data || [];
+};
+
+export const getAdminStores = async (
+  search = "",
+  sortBy = "name",
+  order = "asc"
+) => {
+  const params = new URLSearchParams();
+
+  if (search) params.append("search", search);
+  if (sortBy) params.append("sortBy", sortBy);
+  if (order) params.append("order", order);
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/stores?${params.toString()}`,
+    {
+      method: "GET",
+      headers: authHeaders(),
+    }
+  );
+
+  const data = await handleResponse(response);
+
+  return data.stores || data || [];
+};
+
+export const createAdminUser = async (userData) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/users`,
+    {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify(userData),
+    }
+  );
+
+  return handleResponse(response);
+};
+
+export const createAdminStore = async (storeData) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/stores`,
+    {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify(storeData),
+    }
+  );
+
+  return handleResponse(response);
+};
+
+export const getUserDetails = async (userId) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/users/${userId}`,
+    {
+      method: "GET",
+      headers: authHeaders(),
+    }
+  );
+
+  const data = await handleResponse(response);
+
+  return data.user || data;
+};
+
+export const getStoreDetails = async (storeId) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/stores/${storeId}`,
+    {
+      method: "GET",
+      headers: authHeaders(),
+    }
+  );
+
+  const data = await handleResponse(response);
+
+  return data.store || data;
+};
+
+// ==================== STORES ====================
+
+export const getStores = async () => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/stores`,
+    {
+      method: "GET",
+      headers: authHeaders(),
+    }
+  );
+
+  const data = await handleResponse(response);
+
+  return data.stores || data || [];
+};
+
+// ==================== RATINGS ====================
+
+export const submitRating = async (storeId, rating) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/ratings`,
+    {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({
+        store_id: storeId,
+        rating: Number(rating),
+      }),
+    }
+  );
+
+  return handleResponse(response);
+};
+
+export const updateRating = async (storeId, rating) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/ratings`,
+    {
+      method: "PUT",
+      headers: authHeaders(),
+      body: JSON.stringify({
+        store_id: storeId,
+        rating: Number(rating),
+      }),
+    }
+  );
+
+  return handleResponse(response);
+};
+
+// ==================== OWNER ====================
+
+export const getOwnerDashboard = async () => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/owner/dashboard`,
+    {
+      method: "GET",
+      headers: authHeaders(),
+    }
+  );
+
+  return handleResponse(response)
 };

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import "./App.css";
 
@@ -163,7 +162,7 @@ function App() {
     }
   };
 
-  // ================= RESTORE / LOAD DASHBOARD =================
+  // ================= LOAD DASHBOARD =================
 
   useEffect(() => {
     if (!loggedIn) {
@@ -323,6 +322,7 @@ function App() {
     setEmail("");
     setPassword("");
     setLoginMessage("");
+
     setOwnerData(null);
     setStores([]);
   };
@@ -541,7 +541,6 @@ function App() {
             </div>
 
             <form onSubmit={handleSignup}>
-
               <label>Name</label>
 
               <input
@@ -657,7 +656,6 @@ function App() {
           </div>
 
           <form onSubmit={handleLogin}>
-
             <label>Email</label>
 
             <input
@@ -713,7 +711,6 @@ function App() {
             >
               Login
             </button>
-
           </form>
 
           <button
@@ -737,6 +734,8 @@ function App() {
   return (
     <div className="app-container">
 
+      {/* TOPBAR */}
+
       <header className="topbar">
 
         <div className="topbar-brand">
@@ -758,7 +757,6 @@ function App() {
           </button>
 
         </div>
-
       </header>
 
       <div className="layout">
@@ -904,7 +902,6 @@ function App() {
             role === "admin" && (
               <>
                 <div className="page-header">
-
                   <h2>
                     System Administrator Dashboard
                   </h2>
@@ -912,7 +909,6 @@ function App() {
                   <p>
                     Manage the Store Rating Platform
                   </p>
-
                 </div>
 
                 <div className="stats-grid">
@@ -951,7 +947,6 @@ function App() {
             role === "user" && (
               <>
                 <div className="page-header">
-
                   <h2>
                     Welcome, {user?.name}
                   </h2>
@@ -960,7 +955,6 @@ function App() {
                     Discover stores and share your
                     experience.
                   </p>
-
                 </div>
 
                 <div className="section-card">
@@ -1163,6 +1157,7 @@ function App() {
                         </thead>
 
                         <tbody>
+
                           {ownerData.usersWhoRated.map(
                             (item) => (
                               <tr key={item.id}>
@@ -1182,6 +1177,7 @@ function App() {
                               </tr>
                             )
                           )}
+
                         </tbody>
 
                       </table>
@@ -1241,12 +1237,17 @@ function App() {
                       </thead>
 
                       <tbody>
+
                         {filteredUsers.map((item) => (
                           <tr key={item.id}>
 
-                            <td>{item.name}</td>
+                            <td>
+                              {item.name}
+                            </td>
 
-                            <td>{item.email}</td>
+                            <td>
+                              {item.email}
+                            </td>
 
                             <td>
                               {item.role === "admin"
@@ -1257,6 +1258,7 @@ function App() {
                             </td>
 
                             <td>
+
                               <button
                                 type="button"
                                 className="secondary-btn"
@@ -1268,10 +1270,12 @@ function App() {
                               >
                                 View
                               </button>
+
                             </td>
 
                           </tr>
                         ))}
+
                       </tbody>
 
                     </table>
@@ -1314,6 +1318,7 @@ function App() {
                       </thead>
 
                       <tbody>
+
                         {adminStores.map((store) => (
                           <tr key={store.id}>
 
@@ -1338,6 +1343,7 @@ function App() {
                             </td>
 
                             <td>
+
                               <button
                                 type="button"
                                 className="secondary-btn"
@@ -1349,10 +1355,12 @@ function App() {
                               >
                                 View
                               </button>
+
                             </td>
 
                           </tr>
                         ))}
+
                       </tbody>
 
                     </table>
@@ -1767,6 +1775,7 @@ function App() {
             setSelectedUser(null)
           }
         >
+
           <div
             className="user-details-modal"
             onClick={(e) =>
@@ -1855,6 +1864,7 @@ function App() {
             setSelectedStore(null)
           }
         >
+
           <div
             className="user-details-modal"
             onClick={(e) =>
