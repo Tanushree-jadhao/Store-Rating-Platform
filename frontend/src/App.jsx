@@ -112,7 +112,7 @@ function App() {
       try {
         if (role === "admin") {
           const stats = await getAdminDashboardStats();
-          setAdminStats(stats);
+          setAdminStats(stats || {});
         }
 
         if (role === "user") {
@@ -184,7 +184,6 @@ function App() {
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
@@ -260,10 +259,10 @@ function App() {
     setLoggedIn(false);
     setUser(null);
     setRole("");
-
     setMessage("");
     setOwnerData(null);
     setStores([]);
+    setShowChangePassword(false);
   };
 
   // ==================== ADMIN USERS ====================
@@ -291,7 +290,6 @@ function App() {
   const handleAdminUsers = async () => {
     setShowAddUser(false);
     setShowAddStore(false);
-
     setUserCreateMessage("");
     setStoreCreateMessage("");
 
@@ -301,7 +299,6 @@ function App() {
   const handleAdminStores = async () => {
     setShowAddUser(false);
     setShowAddStore(false);
-
     setUserCreateMessage("");
     setStoreCreateMessage("");
 
@@ -356,7 +353,7 @@ function App() {
       await loadAdminUsers();
 
       const stats = await getAdminDashboardStats();
-      setAdminStats(stats);
+      setAdminStats(stats || {});
     } catch (error) {
       setUserCreateMessage(
         error.message || "Failed to create user."
@@ -388,7 +385,7 @@ function App() {
       await loadAdminStores();
 
       const stats = await getAdminDashboardStats();
-      setAdminStats(stats);
+      setAdminStats(stats || {});
     } catch (error) {
       setStoreCreateMessage(
         error.message || "Failed to create store."
@@ -510,13 +507,17 @@ function App() {
   };
 
   // ==================== LOGIN / SIGNUP PAGE ====================
-  // DO NOT CHANGE THIS SECTION
 
   if (!loggedIn) {
     return (
       <div className="app-container">
         <div className="auth-card">
-          <div className="brand-header">
+          <div
+            style={{
+              textAlign: "center",
+              marginBottom: "24px",
+            }}
+          >
             <div
               style={{
                 display: "flex",
@@ -637,6 +638,7 @@ function App() {
                 </span>
 
                 <button
+                  type="button"
                   className="text-btn"
                   onClick={() => {
                     setShowSignup(false);
@@ -713,6 +715,7 @@ function App() {
                 </span>
 
                 <button
+                  type="button"
                   className="text-btn"
                   onClick={() => {
                     setShowSignup(true);
@@ -732,8 +735,7 @@ function App() {
   // ==================== DASHBOARD ====================
 
   return (
-    <div className="dashboard-container">
-
+    <div>
       {/* ==================== TOP BAR ==================== */}
 
       <header className="topbar">
@@ -820,9 +822,6 @@ function App() {
 
       {role === "admin" && (
         <div className="dashboard-content">
-
-          {/* ADMIN HEADER */}
-
           <div
             style={{
               display: "flex",
@@ -858,18 +857,15 @@ function App() {
             </div>
           </div>
 
-          {/* ==================== LEFT + RIGHT ADMIN LAYOUT ==================== */}
-
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "230px minmax(0, 1fr)",
               gap: "24px",
-              alignItems: "start",
+              alignItems: "stretch",
             }}
           >
-
-            {/* ==================== LEFT QUICK ACTIONS ==================== */}
+            {/* ==================== LEFT SIDEBAR ==================== */}
 
             <div
               style={{
@@ -879,88 +875,95 @@ function App() {
                 boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
                 position: "sticky",
                 top: "20px",
+                height: "calc(100vh - 160px)",
+                minHeight: "500px",
+                display: "flex",
+                flexDirection: "column",
+                boxSizing: "border-box",
               }}
             >
-              <h2
-                style={{
-                  margin: "0 0 6px",
-                  fontSize: "20px",
-                }}
-              >
-                ⚡ Quick Actions
-              </h2>
+              <div>
+                <h2
+                  style={{
+                    margin: "0 0 6px",
+                    fontSize: "20px",
+                  }}
+                >
+                  ⚡ Quick Actions
+                </h2>
 
-              <p
-                style={{
-                  margin: "0 0 20px",
-                  color: "#64748b",
-                  fontSize: "13px",
-                  lineHeight: "1.5",
-                }}
-              >
-                Choose an action to manage the platform
-              </p>
+                <p
+                  style={{
+                    margin: "0 0 20px",
+                    color: "#64748b",
+                    fontSize: "13px",
+                    lineHeight: "1.5",
+                  }}
+                >
+                  Choose an action to manage the platform
+                </p>
 
-              <button
-                className="primary-btn"
-                style={{
-                  width: "100%",
-                  marginBottom: "10px",
-                }}
-                onClick={handleAdminUsers}
-              >
-                👥 Manage Users
-              </button>
+                <button
+                  className="primary-btn"
+                  style={{
+                    width: "100%",
+                    marginBottom: "10px",
+                  }}
+                  onClick={handleAdminUsers}
+                >
+                  👥 Manage Users
+                </button>
 
-              <button
-                className="primary-btn"
-                style={{
-                  width: "100%",
-                  marginBottom: "10px",
-                }}
-                onClick={handleAdminStores}
-              >
-                🏪 Manage Stores
-              </button>
+                <button
+                  className="primary-btn"
+                  style={{
+                    width: "100%",
+                    marginBottom: "10px",
+                  }}
+                  onClick={handleAdminStores}
+                >
+                  🏪 Manage Stores
+                </button>
 
-              <button
-                className="secondary-btn"
-                style={{
-                  width: "100%",
-                  marginBottom: "10px",
-                }}
-                onClick={async () => {
-                  setShowAddUser(!showAddUser);
-                  setShowAddStore(false);
-                  setUserCreateMessage("");
-                  setStoreCreateMessage("");
-                  await loadAdminUsers();
-                }}
-              >
-                ➕ Add User
-              </button>
+                <button
+                  className="secondary-btn"
+                  style={{
+                    width: "100%",
+                    marginBottom: "10px",
+                  }}
+                  onClick={async () => {
+                    setShowAddUser(!showAddUser);
+                    setShowAddStore(false);
+                    setUserCreateMessage("");
+                    setStoreCreateMessage("");
+                    await loadAdminUsers();
+                  }}
+                >
+                  ➕ Add User
+                </button>
 
-              <button
-                className="secondary-btn"
-                style={{
-                  width: "100%",
-                }}
-                onClick={async () => {
-                  setShowAddStore(!showAddStore);
-                  setShowAddUser(false);
-                  setUserCreateMessage("");
-                  setStoreCreateMessage("");
-                  await loadAdminUsers();
-                }}
-              >
-                🏪 Add Store
-              </button>
+                <button
+                  className="secondary-btn"
+                  style={{
+                    width: "100%",
+                  }}
+                  onClick={async () => {
+                    setShowAddStore(!showAddStore);
+                    setShowAddUser(false);
+                    setUserCreateMessage("");
+                    setStoreCreateMessage("");
+                    await loadAdminUsers();
+                  }}
+                >
+                  🏪 Add Store
+                </button>
+              </div>
 
-              {/* ADMIN CHANGE PASSWORD + LOGOUT */}
+              {/* ==================== BOTTOM CONTROLS ==================== */}
 
               <div
                 style={{
-                  marginTop: "24px",
+                  marginTop: "auto",
                   paddingTop: "18px",
                   borderTop: "1px solid #e5e7eb",
                 }}
@@ -1000,11 +1003,9 @@ function App() {
                 width: "100%",
               }}
             >
-
               {/* ==================== STATISTICS ==================== */}
 
               <div className="stats-grid">
-
                 <div
                   className="stat-card"
                   style={{
@@ -1014,7 +1015,7 @@ function App() {
                   <h3>👥 Total Users</h3>
 
                   <strong>
-                    {adminStats.totalUsers}
+                    {adminStats.totalUsers || 0}
                   </strong>
 
                   <p
@@ -1037,7 +1038,7 @@ function App() {
                   <h3>🏪 Total Stores</h3>
 
                   <strong>
-                    {adminStats.totalStores}
+                    {adminStats.totalStores || 0}
                   </strong>
 
                   <p
@@ -1060,7 +1061,7 @@ function App() {
                   <h3>⭐ Total Ratings</h3>
 
                   <strong>
-                    {adminStats.totalRatings}
+                    {adminStats.totalRatings || 0}
                   </strong>
 
                   <p
@@ -1073,7 +1074,6 @@ function App() {
                     Ratings submitted by users
                   </p>
                 </div>
-
               </div>
 
               {/* ==================== ADD USER ==================== */}
@@ -1098,7 +1098,6 @@ function App() {
                   </p>
 
                   <form onSubmit={handleCreateUser}>
-
                     <input
                       type="text"
                       placeholder="Full Name"
@@ -1165,7 +1164,6 @@ function App() {
                     >
                       Create User
                     </button>
-
                   </form>
                 </div>
               )}
@@ -1192,7 +1190,6 @@ function App() {
                   </p>
 
                   <form onSubmit={handleCreateStore}>
-
                     <input
                       type="text"
                       placeholder="Store Name"
@@ -1259,7 +1256,6 @@ function App() {
                     >
                       Create Store
                     </button>
-
                   </form>
                 </div>
               )}
@@ -1275,7 +1271,6 @@ function App() {
                   }}
                 >
                   <div className="section-header">
-
                     <div>
                       <h2>👥 All Users</h2>
 
@@ -1297,12 +1292,10 @@ function App() {
                         setUserSearch(e.target.value)
                       }
                     />
-
                   </div>
 
                   <div className="table-wrapper">
                     <table>
-
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -1315,9 +1308,7 @@ function App() {
                       <tbody>
                         {filteredAdminUsers.map((item) => (
                           <tr key={item.id}>
-
                             <td>{item.name}</td>
-
                             <td>{item.email}</td>
 
                             <td>
@@ -1341,11 +1332,9 @@ function App() {
                                 View
                               </button>
                             </td>
-
                           </tr>
                         ))}
                       </tbody>
-
                     </table>
                   </div>
 
@@ -1361,9 +1350,7 @@ function App() {
 
               {adminStores.length > 0 && (
                 <div className="table-card">
-
                   <div className="section-header">
-
                     <div>
                       <h2>🏪 All Stores</h2>
 
@@ -1385,12 +1372,10 @@ function App() {
                         setStoreSearch(e.target.value)
                       }
                     />
-
                   </div>
 
                   <div className="table-wrapper">
                     <table>
-
                       <thead>
                         <tr>
                           <th>Store</th>
@@ -1404,9 +1389,7 @@ function App() {
                       <tbody>
                         {filteredAdminStores.map((item) => (
                           <tr key={item.id}>
-
                             <td>{item.name}</td>
-
                             <td>{item.address}</td>
 
                             <td>
@@ -1431,11 +1414,9 @@ function App() {
                                 View
                               </button>
                             </td>
-
                           </tr>
                         ))}
                       </tbody>
-
                     </table>
                   </div>
 
@@ -1444,10 +1425,8 @@ function App() {
                       No matching stores found.
                     </p>
                   )}
-
                 </div>
               )}
-
             </div>
           </div>
         </div>
@@ -1457,11 +1436,9 @@ function App() {
 
       {role === "user" && (
         <div className="dashboard-content">
-
           <h2>Normal User Dashboard</h2>
 
           <div className="section-header">
-
             <div>
               <h2>All Stores</h2>
 
@@ -1478,7 +1455,6 @@ function App() {
                 setStoreSearch(e.target.value)
               }
             />
-
           </div>
 
           {stores.length === 0 ? (
@@ -1488,7 +1464,6 @@ function App() {
             </div>
           ) : (
             <div className="store-grid">
-
               {stores
                 .filter((store) => {
                   const search =
@@ -1508,9 +1483,7 @@ function App() {
                     className="store-card"
                     key={store.id}
                   >
-
                     <div className="store-card-header">
-
                       <h3>{store.name}</h3>
 
                       <span>
@@ -1519,7 +1492,6 @@ function App() {
                           store.overall_rating || 0
                         ).toFixed(2)}
                       </span>
-
                     </div>
 
                     <p className="store-address">
@@ -1531,7 +1503,7 @@ function App() {
                         Your Rating:{" "}
                         <strong>
                           {store.user_rating
-                            ? `${store.user_rating}/5`
+                            ? store.user_rating + "/5"
                             : "Not rated"}
                         </strong>
                       </p>
@@ -1583,7 +1555,6 @@ function App() {
                         ? "Update Rating"
                         : "Submit Rating"}
                     </button>
-
                   </div>
                 ))}
             </div>
@@ -1616,7 +1587,6 @@ function App() {
               {message}
             </div>
           )}
-
         </div>
       )}
 
@@ -1624,25 +1594,17 @@ function App() {
 
       {role === "owner" && (
         <div className="dashboard-content">
-
           <h2>Store Owner Dashboard</h2>
 
           {ownerData?.store ? (
             <>
               <div className="owner-store-card">
+                <h2>{ownerData.store.name}</h2>
 
-                <h2>
-                  {ownerData.store.name}
-                </h2>
-
-                <p>
-                  {ownerData.store.address}
-                </p>
-
+                <p>{ownerData.store.address}</p>
               </div>
 
               <div className="stats-grid">
-
                 <div className="stat-card">
                   <h3>Average Rating</h3>
 
@@ -1668,20 +1630,16 @@ function App() {
                     {ownerData.usersWhoRated?.length || 0}
                   </strong>
                 </div>
-
               </div>
 
               <div className="table-card">
-
                 <h2>
                   Users Who Rated Your Store
                 </h2>
 
                 {ownerData.usersWhoRated?.length > 0 ? (
                   <div className="table-wrapper">
-
                     <table>
-
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -1695,7 +1653,6 @@ function App() {
                         {ownerData.usersWhoRated.map(
                           (item) => (
                             <tr key={item.id}>
-
                               <td>{item.name}</td>
 
                               <td>{item.email}</td>
@@ -1711,21 +1668,17 @@ function App() {
                                     ).toLocaleDateString()
                                   : "-"}
                               </td>
-
                             </tr>
                           )
                         )}
                       </tbody>
-
                     </table>
-
                   </div>
                 ) : (
                   <p className="empty-text">
                     No users have rated your store yet.
                   </p>
                 )}
-
               </div>
             </>
           ) : (
@@ -1737,7 +1690,6 @@ function App() {
               </p>
             </div>
           )}
-
         </div>
       )}
 
@@ -1752,7 +1704,6 @@ function App() {
             className="user-details-modal"
             onClick={(e) => e.stopPropagation()}
           >
-
             <button
               className="modal-close"
               onClick={() =>
@@ -1813,7 +1764,6 @@ function App() {
             >
               Close
             </button>
-
           </div>
         </div>
       )}
@@ -1829,7 +1779,6 @@ function App() {
             className="user-details-modal"
             onClick={(e) => e.stopPropagation()}
           >
-
             <button
               className="modal-close"
               onClick={() =>
@@ -1893,11 +1842,9 @@ function App() {
             >
               Close
             </button>
-
           </div>
         </div>
       )}
-
     </div>
   );
 }
