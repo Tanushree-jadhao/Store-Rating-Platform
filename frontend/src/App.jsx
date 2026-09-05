@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 
 import {
@@ -26,7 +27,6 @@ function App() {
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
-
     if (!savedUser) return null;
 
     try {
@@ -38,7 +38,6 @@ function App() {
 
   const [role, setRole] = useState(() => {
     const savedUser = localStorage.getItem("user");
-
     if (!savedUser) return "";
 
     try {
@@ -99,7 +98,6 @@ function App() {
   const [ownerData, setOwnerData] = useState(null);
 
   const [showChangePassword, setShowChangePassword] = useState(false);
-
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
@@ -215,6 +213,7 @@ function App() {
     }
 
     try {
+      // First create the account
       await signupUser({
         name: signupName.trim(),
         email: signupEmail.trim(),
@@ -223,15 +222,30 @@ function App() {
         role: signupRole,
       });
 
-      setMessage("Account created successfully. Please login.");
+      // Automatically login after successful signup
+      const loginData = await loginUser({
+        email: signupEmail.trim(),
+        password: signupPassword,
+        role: signupRole,
+      });
 
+      // Save login session
+      localStorage.setItem("token", loginData.token);
+      localStorage.setItem("user", JSON.stringify(loginData.user));
+
+      // Open dashboard automatically
+      setUser(loginData.user);
+      setRole(loginData.user.role);
+      setLoggedIn(true);
+
+      // Clear signup fields
       setSignupName("");
       setSignupEmail("");
       setSignupAddress("");
       setSignupPassword("");
       setSignupRole("user");
-
       setShowSignup(false);
+      setMessage("");
     } catch (error) {
       setMessage(error.message || "Signup failed.");
     }
@@ -495,7 +509,6 @@ function App() {
     return (
       <div className="app-container">
         <div className="auth-card">
-
           <div className="brand-header">
             <div
               style={{
@@ -713,7 +726,6 @@ function App() {
 
   return (
     <div className="dashboard-container">
-
       <header className="topbar">
         <div>
           <h1>🏪 RateHub</h1>
@@ -790,11 +802,9 @@ function App() {
 
       {role === "admin" && (
         <div className="dashboard-content">
-
           <h2>System Administrator Dashboard</h2>
 
           <div className="stats-grid">
-
             <div className="stat-card">
               <h3>Total Users</h3>
               <strong>
@@ -815,11 +825,9 @@ function App() {
                 {adminStats.totalRatings}
               </strong>
             </div>
-
           </div>
 
           <div className="admin-actions">
-
             <button
               className="primary-btn"
               onClick={handleAdminUsers}
@@ -857,16 +865,13 @@ function App() {
             >
               Add Store
             </button>
-
           </div>
 
           {showAddUser && (
             <div className="form-card">
-
               <h2>Add User</h2>
 
               <form onSubmit={handleCreateUser}>
-
                 <input
                   type="text"
                   placeholder="Name"
@@ -933,18 +938,15 @@ function App() {
                 >
                   Add User
                 </button>
-
               </form>
             </div>
           )}
 
           {showAddStore && (
             <div className="form-card">
-
               <h2>Add Store</h2>
 
               <form onSubmit={handleCreateStore}>
-
                 <input
                   type="text"
                   placeholder="Store Name"
@@ -998,14 +1000,12 @@ function App() {
                 >
                   Create Store
                 </button>
-
               </form>
             </div>
           )}
 
           {adminUsers.length > 0 && (
             <div className="table-card">
-
               <div className="section-header">
                 <h2>All Users</h2>
 
@@ -1020,9 +1020,7 @@ function App() {
               </div>
 
               <div className="table-wrapper">
-
                 <table>
-
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -1035,11 +1033,8 @@ function App() {
                   <tbody>
                     {filteredAdminUsers.map((item) => (
                       <tr key={item.id}>
-
                         <td>{item.name}</td>
-
                         <td>{item.email}</td>
-
                         <td>{item.role}</td>
 
                         <td>
@@ -1052,13 +1047,10 @@ function App() {
                             View
                           </button>
                         </td>
-
                       </tr>
                     ))}
                   </tbody>
-
                 </table>
-
               </div>
 
               {filteredAdminUsers.length === 0 && (
@@ -1066,13 +1058,11 @@ function App() {
                   No matching users found.
                 </p>
               )}
-
             </div>
           )}
 
           {adminStores.length > 0 && (
             <div className="table-card">
-
               <div className="section-header">
                 <h2>All Stores</h2>
 
@@ -1087,9 +1077,7 @@ function App() {
               </div>
 
               <div className="table-wrapper">
-
                 <table>
-
                   <thead>
                     <tr>
                       <th>Store</th>
@@ -1103,9 +1091,7 @@ function App() {
                   <tbody>
                     {filteredAdminStores.map((item) => (
                       <tr key={item.id}>
-
                         <td>{item.name}</td>
-
                         <td>{item.address}</td>
 
                         <td>
@@ -1129,13 +1115,10 @@ function App() {
                             View
                           </button>
                         </td>
-
                       </tr>
                     ))}
                   </tbody>
-
                 </table>
-
               </div>
 
               {filteredAdminStores.length === 0 && (
@@ -1143,10 +1126,8 @@ function App() {
                   No matching stores found.
                 </p>
               )}
-
             </div>
           )}
-
         </div>
       )}
 
@@ -1154,13 +1135,12 @@ function App() {
 
       {role === "user" && (
         <div className="dashboard-content">
-
           <h2>Normal User Dashboard</h2>
 
           <div className="section-header">
-
             <div>
               <h2>All Stores</h2>
+
               <p>
                 Search and rate your favourite stores.
               </p>
@@ -1174,7 +1154,6 @@ function App() {
                 setStoreSearch(e.target.value)
               }
             />
-
           </div>
 
           {stores.length === 0 ? (
@@ -1184,7 +1163,6 @@ function App() {
             </div>
           ) : (
             <div className="store-grid">
-
               {stores
                 .filter((store) => {
                   const search =
@@ -1204,9 +1182,7 @@ function App() {
                     className="store-card"
                     key={store.id}
                   >
-
                     <div className="store-card-header">
-
                       <h3>{store.name}</h3>
 
                       <span>
@@ -1215,7 +1191,6 @@ function App() {
                           store.overall_rating || 0
                         ).toFixed(2)}
                       </span>
-
                     </div>
 
                     <p className="store-address">
@@ -1223,7 +1198,6 @@ function App() {
                     </p>
 
                     <div className="rating-info">
-
                       <p>
                         Your Rating:{" "}
                         <strong>
@@ -1232,7 +1206,6 @@ function App() {
                             : "Not rated"}
                         </strong>
                       </p>
-
                     </div>
 
                     <select
@@ -1281,10 +1254,8 @@ function App() {
                         ? "Update Rating"
                         : "Submit Rating"}
                     </button>
-
                   </div>
                 ))}
-
             </div>
           )}
 
@@ -1304,6 +1275,7 @@ function App() {
             }).length === 0 && (
               <div className="empty-card">
                 <h3>No matching stores found</h3>
+
                 <p>
                   Try another store name or address.
                 </p>
@@ -1315,7 +1287,6 @@ function App() {
               {message}
             </div>
           )}
-
         </div>
       )}
 
@@ -1323,14 +1294,11 @@ function App() {
 
       {role === "owner" && (
         <div className="dashboard-content">
-
           <h2>Store Owner Dashboard</h2>
 
           {ownerData?.store ? (
             <>
-
               <div className="owner-store-card">
-
                 <h2>
                   {ownerData.store.name}
                 </h2>
@@ -1338,13 +1306,10 @@ function App() {
                 <p>
                   {ownerData.store.address}
                 </p>
-
               </div>
 
               <div className="stats-grid">
-
                 <div className="stat-card">
-
                   <h3>Average Rating</h3>
 
                   <strong>
@@ -1352,42 +1317,33 @@ function App() {
                       ownerData.store.average_rating || 0
                     ).toFixed(2)}
                   </strong>
-
                 </div>
 
                 <div className="stat-card">
-
                   <h3>Total Ratings</h3>
 
                   <strong>
                     {ownerData.store.total_ratings || 0}
                   </strong>
-
                 </div>
 
                 <div className="stat-card">
-
                   <h3>Users Who Rated</h3>
 
                   <strong>
                     {ownerData.usersWhoRated?.length || 0}
                   </strong>
-
                 </div>
-
               </div>
 
               <div className="table-card">
-
                 <h2>
                   Users Who Rated Your Store
                 </h2>
 
                 {ownerData.usersWhoRated?.length > 0 ? (
                   <div className="table-wrapper">
-
                     <table>
-
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -1401,9 +1357,7 @@ function App() {
                         {ownerData.usersWhoRated.map(
                           (item) => (
                             <tr key={item.id}>
-
                               <td>{item.name}</td>
-
                               <td>{item.email}</td>
 
                               <td>
@@ -1417,33 +1371,28 @@ function App() {
                                     ).toLocaleDateString()
                                   : "-"}
                               </td>
-
                             </tr>
                           )
                         )}
                       </tbody>
-
                     </table>
-
                   </div>
                 ) : (
                   <p className="empty-text">
                     No users have rated your store yet.
                   </p>
                 )}
-
               </div>
-
             </>
           ) : (
             <div className="empty-card">
               <h3>No store assigned</h3>
+
               <p>
                 Please contact the administrator.
               </p>
             </div>
           )}
-
         </div>
       )}
 
@@ -1454,12 +1403,10 @@ function App() {
           className="modal-overlay"
           onClick={() => setSelectedUser(null)}
         >
-
           <div
             className="user-details-modal"
             onClick={(e) => e.stopPropagation()}
           >
-
             <button
               className="modal-close"
               onClick={() =>
@@ -1481,6 +1428,7 @@ function App() {
 
             <div className="user-detail-row">
               <span>Name</span>
+
               <strong>
                 {selectedUser.name}
               </strong>
@@ -1488,6 +1436,7 @@ function App() {
 
             <div className="user-detail-row">
               <span>Email</span>
+
               <strong>
                 {selectedUser.email}
               </strong>
@@ -1495,6 +1444,7 @@ function App() {
 
             <div className="user-detail-row">
               <span>Address</span>
+
               <strong>
                 {selectedUser.address ||
                   "Not provided"}
@@ -1503,6 +1453,7 @@ function App() {
 
             <div className="user-detail-row">
               <span>Role</span>
+
               <strong>
                 {selectedUser.role}
               </strong>
@@ -1516,7 +1467,6 @@ function App() {
             >
               Close
             </button>
-
           </div>
         </div>
       )}
@@ -1528,12 +1478,10 @@ function App() {
           className="modal-overlay"
           onClick={() => setSelectedStore(null)}
         >
-
           <div
             className="user-details-modal"
             onClick={(e) => e.stopPropagation()}
           >
-
             <button
               className="modal-close"
               onClick={() =>
@@ -1555,6 +1503,7 @@ function App() {
 
             <div className="user-detail-row">
               <span>Store Name</span>
+
               <strong>
                 {selectedStore.name}
               </strong>
@@ -1562,6 +1511,7 @@ function App() {
 
             <div className="user-detail-row">
               <span>Address</span>
+
               <strong>
                 {selectedStore.address}
               </strong>
@@ -1569,6 +1519,7 @@ function App() {
 
             <div className="user-detail-row">
               <span>Owner</span>
+
               <strong>
                 {selectedStore.owner_name ||
                   "Not assigned"}
@@ -1577,6 +1528,7 @@ function App() {
 
             <div className="user-detail-row">
               <span>Overall Rating</span>
+
               <strong>
                 ⭐{" "}
                 {Number(
@@ -1593,11 +1545,9 @@ function App() {
             >
               Close
             </button>
-
           </div>
         </div>
       )}
-
     </div>
   );
 }
