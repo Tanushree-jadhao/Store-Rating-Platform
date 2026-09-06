@@ -10405,3 +10405,57 @@ tbody tr:hover {
   font-size: 24px !important;
   font-weight: 800 !important;
 }
+/* ===== USER RATING STARS ===== */
+
+.star-rating-selector {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.rating-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.rating-stars-input {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 2px !important;
+  white-space: nowrap !important;
+}
+
+.star-button {
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 30px !important;
+  line-height: 34px !important;
+  color: #cbd5e1 !important;
+  cursor: pointer !important;
+}
+
+.star-button.selected {
+  color: #f59e0b !important;
+}
+
+.star-button:hover {
+  color: #fbbf24 !important;
+  transform: scale(1.1);
+}
+
+.rating-help {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  color: #64748b;
+}
