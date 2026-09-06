@@ -1,4 +1,3 @@
-
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   "https://store-rating-platform-mtuu.onrender.com";
@@ -188,9 +187,11 @@ export const getUserDetails = async (userId) => {
   return data.user || data;
 };
 
+// ==================== FIXED: ADMIN STORE VIEW ====================
+
 export const getStoreDetails = async (storeId) => {
   const response = await fetch(
-    `${API_BASE_URL}/api/stores/${storeId}`,
+    `${API_BASE_URL}/api/admin/stores/${storeId}`,
     {
       method: "GET",
       headers: authHeaders(),

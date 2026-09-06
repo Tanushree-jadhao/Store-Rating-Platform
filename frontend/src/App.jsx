@@ -342,11 +342,33 @@ function App() {
   // =========================================================
 
   const handleViewStore = async (id) => {
+    // Show the store immediately using the data already loaded in the table.
+    const currentStore = adminStores.find(
+      (item) => Number(item.id) === Number(id)
+    );
+
+    if (currentStore) {
+      setSelectedStore(currentStore);
+    }
+
+    // Then load complete store details from the backend.
     try {
       const data = await getStoreDetails(id);
-      setSelectedStore(data.store || data);
-    } catch {
-      setMessage("Unable to load store details.");
+      const storeDetails = data?.store || data;
+
+      if (storeDetails) {
+        setSelectedStore({
+          ...(currentStore || {}),
+          ...storeDetails,
+        });
+      }
+    } catch (error) {
+      console.error("Store details loading error:", error);
+
+      // Keep the popup open with the store data already available.
+      if (currentStore) {
+        setSelectedStore(currentStore);
+      }
     }
   };
 
@@ -972,6 +994,18 @@ function App() {
                 <span>★</span>
                 Ratings & Reviews
               </button>
+              <button className="sidebar-item" type="button">
+                <span>▥</span>
+                Reports
+              </button>
+              <button className="sidebar-item" type="button">
+                <span>👤</span>
+                Profile
+              </button>
+              <button className="sidebar-item" type="button">
+                <span>⚙</span>
+                Settings
+              </button>
             </>
           )}
 
@@ -981,16 +1015,29 @@ function App() {
                 <span>▦</span>
                 Explore Stores
               </button>
+              <button className="sidebar-item" type="button">
+                <span>★</span>
+                My Reviews
+              </button>
+              <button className="sidebar-item" type="button">
+                <span>♥</span>
+                Saved Stores
+              </button>
+              <button className="sidebar-item" type="button">
+                <span>👤</span>
+                Profile
+              </button>
+              <button className="sidebar-item" type="button">
+                <span>⚙</span>
+                Settings
+              </button>
             </>
           )}
 
-          {role !== "owner" && (
-            <div className="sidebar-help">
-              <span>?</span>
-              Help & Support
-            </div>
-          )}
-
+          <div className="sidebar-help">
+            <span>?</span>
+            Help & Support
+          </div>
         </aside>
 
         {/* MAIN CONTENT */}
@@ -1724,41 +1771,19 @@ function App() {
                             </strong>
                           </div>
 
-                          <div className="star-rating-selector">
-                            <span className="rating-label">Rate this store</span>
-
-                            <div className="rating-stars-input">
-                              {[1, 2, 3, 4, 5].map((star) => {
-                                const selectedRating = Number(
-                                  ratingValues[store.id] || store.user_rating || 0
-                                );
-
-                                return (
-                                  <button
-                                    key={star}
-                                    type="button"
-                                    className={
-                                      star <= selectedRating
-                                        ? "star-button selected"
-                                        : "star-button"
-                                    }
-                                    onClick={() =>
-                                      handleRatingChange(store.id, star)
-                                    }
-                                    aria-label={`Rate ${star} out of 5`}
-                                  >
-                                    ★
-                                  </button>
-                                );
-                              })}
-                            </div>
-
-                            <small className="rating-help">
-                              {ratingValues[store.id] || store.user_rating
-                                ? `${ratingValues[store.id] || store.user_rating} out of 5`
-                                : "Select stars"}
-                            </small>
-                          </div>
+                          <select
+                            value={ratingValues[store.id] || ""}
+                            onChange={(e) =>
+                              handleRatingChange(store.id, e.target.value)
+                            }
+                          >
+                            <option value="">Select Rating</option>
+                            <option value="1">⭐ 1</option>
+                            <option value="2">⭐ 2</option>
+                            <option value="3">⭐ 3</option>
+                            <option value="4">⭐ 4</option>
+                            <option value="5">⭐ 5</option>
+                          </select>
 
                           <button
                             className="primary-btn reference-rate-btn"

@@ -10376,3 +10376,32 @@ tbody tr:hover {
 .reference-dashboard .form-group select {
   font-size: 15px !important;
 }
+/* Owner Dashboard - Rating numbers only */
+.owner-reference-dashboard .rating-overview-number {
+  font-size: 32px !important;
+  font-weight: 800 !important;
+}
+
+.owner-reference-dashboard .rating-distribution-count {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+}
+/* Owner rating numbers - larger */
+.owner-reference-dashboard .rating-overview-number {
+  font-size: 40px !important;
+  font-weight: 800 !important;
+}
+
+.owner-reference-dashboard .rating-distribution-count {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+}
+/* STORE OWNER - RATING NUMBERS ONLY */
+
+.owner-reference-dashboard .rating-overview-number,
+.owner-reference-dashboard .rating-distribution-count,
+.owner-reference-dashboard .rating-overview-card strong,
+.owner-reference-dashboard .rating-distribution-item strong {
+  font-size: 24px !important;
+  font-weight: 800 !important;
+}
